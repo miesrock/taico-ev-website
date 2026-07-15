@@ -43,6 +43,19 @@ npm run dev
 
 Open the URL printed in the terminal (usually `http://localhost:4321`).
 
+## Deploy
+
+| Item | Status |
+|------|--------|
+| GitHub | ✅ private `https://github.com/miesrock/taico-ev-website` |
+| Cloudflare Pages | ⏳ connect Git + first deploy (see `DEPLOY.md`) |
+| Domain `taicoev.com` | ⏳ attach after Pages project exists |
+
+```sh
+# after local edits
+git add -A && git commit -m "update: ..." && git push
+```
+
 ## Roadmap (current stage)
 
 1. [x] Align project decisions
@@ -52,5 +65,7 @@ Open the URL printed in the terminal (usually `http://localhost:4321`).
 5. [x] Visual system (Analogue Waves / dark tech) + 3 Solutions pages
 6. [x] Product pages (G2V / M75 / H200) + TAICO-branded heroes
 7. [x] Case study pages + photorealistic scene visuals
-8. [ ] Real contact form
-9. [ ] GitHub + Cloudflare Pages + DNS
+8. [x] GitHub repo created + code pushed
+9. [ ] Cloudflare Pages connect + first deploy
+10. [ ] Domain DNS `taicoev.com`
+11. [ ] Real contact form
