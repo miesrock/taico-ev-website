@@ -29,9 +29,12 @@ Brand line:
 
 ## Key docs
 
+- `docs/新手说明-项目做了什么.md` — **beginner walkthrough (中文)**：做了什么、文件夹、怎么预览
 - `docs/handoff.md` — full project brief (IA, SEO, stack, page plan)
+- `docs/CLOUDFLARE_DEPLOY_HANDOFF.md` — Cloudflare deploy troubleshooting (for Codex)
 - `docs/TAICO_Mobile_Charging_Strategy.md` — market strategy
 - Product catalogs & cases under `docs/`
+- `DEPLOY.md` — production deploy steps
 
 ## Local website (after scaffold)
 
