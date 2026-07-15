@@ -1,0 +1,57 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import WaveField from "../../components/WaveField.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { products } from "../../data/products";
+---
+
+<Layout
+  title="Products | TAICO EV"
+  description="TAICO EV product tiers: portable G2V charging, mobile battery stations, and commercial energy hubs."
+>
+  <section class="relative overflow-hidden">
+    <WaveField intensity="mid" />
+    <div class="section-pad relative z-10">
+      <p class="label-tech">Product architecture</p>
+      <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold tracking-wide text-ink">
+        <span class="text-gradient">Three tiers.</span> One mobile energy stack.
+      </h1>
+      <p class="mt-4 max-w-2xl text-muted">
+        Solutions first — then hardware. Each product page explains who it serves, what it solves,
+        and the catalog baseline specs under the TAICO EV brand.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-pad !pt-0">
+    <div class="grid gap-6 lg:grid-cols-3">
+      {
+        products.map((p) => (
+          <a href={`/products/${p.slug}/`} class="glass glass-hover group flex flex-col overflow-hidden rounded-3xl">
+            <div class="aspect-[16/10] overflow-hidden bg-void-2">
+              <img
+                src={p.hero}
+                alt={p.title}
+                class="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
+                loading="lazy"
+              />
+            </div>
+            <div class="flex flex-1 flex-col p-6">
+              <p class="font-mono text-[11px] uppercase tracking-[0.18em] text-wave-violet">
+                {p.tier}
+              </p>
+              <h2 class="mt-2 text-xl font-semibold text-ink group-hover:text-wave-cyan">
+                {p.model}
+              </h2>
+              <p class="mt-1 text-sm font-medium text-ink/80">{p.title}</p>
+              <p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{p.summary}</p>
+              <span class="mt-6 text-sm font-semibold text-wave-cyan">Open product →</span>
+            </div>
+          </a>
+        ))
+      }
+    </div>
+  </section>
+
+  <CtaBand />
+</Layout>

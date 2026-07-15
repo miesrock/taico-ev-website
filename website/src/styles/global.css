@@ -1,0 +1,153 @@
+@import "tailwindcss";
+
+/* Limit scan to site source — avoid parent docs/PDFs */
+@source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+
+@theme {
+  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Orbitron", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Deep space base */
+  --color-void: #04060c;
+  --color-void-2: #070b16;
+  --color-panel: #0b1220;
+  --color-panel-2: #101a2e;
+
+  /* Analogue wave spectrum */
+  --color-wave-cyan: #22d3ee;
+  --color-wave-blue: #3b82f6;
+  --color-wave-violet: #8b5cf6;
+  --color-wave-mint: #34d399;
+  --color-wave-pink: #f472b6;
+
+  --color-ink: #e8eefc;
+  --color-muted: #94a3b8;
+  --color-faint: #64748b;
+  --color-line: rgba(148, 163, 184, 0.18);
+  --color-line-strong: rgba(34, 211, 238, 0.35);
+
+  --color-brand-50: #ecfeff;
+  --color-brand-100: #cffafe;
+  --color-brand-500: #22d3ee;
+  --color-brand-600: #06b6d4;
+  --color-brand-700: #0891b2;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-void text-ink antialiased font-sans;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(139, 92, 246, 0.12), transparent),
+      radial-gradient(ellipse 50% 30% at 0% 100%, rgba(34, 211, 238, 0.08), transparent);
+    background-attachment: fixed;
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.35);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .text-gradient {
+    background: linear-gradient(120deg, #e8eefc 0%, #22d3ee 45%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-soft {
+    background: linear-gradient(120deg, #94a3b8 0%, #e8eefc 50%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .glass {
+    background: linear-gradient(
+      145deg,
+      rgba(16, 26, 46, 0.75) 0%,
+      rgba(11, 18, 32, 0.55) 100%
+    );
+    border: 1px solid var(--color-line);
+    backdrop-filter: blur(16px);
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.04) inset,
+      0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  .glass-hover {
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .glass-hover:hover {
+    border-color: var(--color-line-strong);
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.1) inset,
+      0 0 40px -12px rgba(34, 211, 238, 0.35),
+      0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    transform: translateY(-2px);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold text-void transition;
+    background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 55%, #8b5cf6 100%);
+    box-shadow: 0 0 24px -4px rgba(34, 211, 238, 0.55);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 0 32px -2px rgba(34, 211, 238, 0.75);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold text-ink transition;
+    border-color: var(--color-line-strong);
+    background: rgba(11, 18, 32, 0.5);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(34, 211, 238, 0.1);
+    border-color: rgba(34, 211, 238, 0.55);
+  }
+
+  .label-tech {
+    @apply font-mono text-xs uppercase tracking-[0.22em] text-wave-cyan;
+  }
+
+  .section-pad {
+    @apply mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20;
+  }
+
+  .wave-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(34, 211, 238, 0.5),
+      rgba(139, 92, 246, 0.45),
+      transparent
+    );
+  }
+
+  .grid-overlay {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+  }
+}

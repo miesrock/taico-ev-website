@@ -1,0 +1,26 @@
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp
+Thumbs.db
+
+# Python leftover
+.venv/
+__pycache__/
+*.pyc
+
+# Node / Astro
+website/node_modules/
+website/dist/
+website/.astro/
+*.log
+.env
+.env.*
+
+# Large OEM catalogs / source PDFs (keep local only)
+docs/**/*.pdf
+assets/images/
+
+# Optional local product source sheets
+website/public/products/source/

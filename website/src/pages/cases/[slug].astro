@@ -1,0 +1,198 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import WaveField from "../../components/WaveField.astro";
+import CtaBand from "../../components/CtaBand.astro";
+import { cases, getCase } from "../../data/cases";
+import { getProduct } from "../../data/products";
+import { solutions } from "../../data/solutions";
+
+export function getStaticPaths() {
+  return cases.map((c) => ({ params: { slug: c.slug } }));
+}
+
+const { slug } = Astro.params;
+const item = getCase(slug!);
+if (!item) throw new Error(`Unknown case: ${slug}`);
+
+const product = getProduct(item.productSlug);
+const relatedSolutions = solutions.filter((s) => item.solutionSlugs.includes(s.slug));
+const others = cases.filter((c) => c.slug !== item.slug);
+---
+
+<Layout title={`${item.title} | TAICO EV Cases`} description={item.summary}>
+  <section class="relative overflow-hidden">
+    <WaveField intensity="low" />
+    <div class="section-pad relative z-10 !pt-16 !pb-10">
+      <a
+        href="/cases/"
+        class="font-mono text-xs uppercase tracking-[0.18em] text-faint transition hover:text-wave-cyan"
+      >
+        ← All cases
+      </a>
+
+      <div class="mt-8 grid items-start gap-10 lg:grid-cols-2">
+        <div>
+          <p class="label-tech">{item.eyebrow}</p>
+          <h1 class="font-display mt-3 text-3xl font-semibold tracking-wide text-ink sm:text-4xl">
+            <span class="text-gradient">{item.title}</span>
+          </h1>
+          <p class="mt-4 text-lg text-ink/90">{item.summary}</p>
+
+          <dl class="mt-8 grid gap-4 sm:grid-cols-2">
+            <div class="glass rounded-2xl px-4 py-3">
+              <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">Region</dt>
+              <dd class="mt-1 text-sm text-ink">{item.region}</dd>
+            </div>
+            <div class="glass rounded-2xl px-4 py-3">
+              <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
+                Customer type
+              </dt>
+              <dd class="mt-1 text-sm text-ink">{item.customerType}</dd>
+            </div>
+            <div class="glass rounded-2xl px-4 py-3 sm:col-span-2">
+              <dt class="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
+                Equipment
+              </dt>
+              <dd class="mt-1 text-sm text-ink">{item.equipment}</dd>
+            </div>
+          </dl>
+
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="btn-primary" href="#contact">Discuss a similar site</a>
+            {
+              product && (
+                <a class="btn-ghost" href={`/products/${product.slug}/`}>
+                  View {product.model}
+                </a>
+              )
+            }
+          </div>
+        </div>
+
+        <figure class="glass overflow-hidden rounded-3xl p-2">
+          <img
+            src={item.hero}
+            alt={item.title}
+            class="h-auto w-full rounded-2xl object-cover"
+            loading="eager"
+          />
+          <figcaption class="px-3 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-faint">
+            {item.visualNote}
+          </figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <div class="wave-divider"></div>
+
+  <section class="section-pad !py-14">
+    <div class="grid gap-6 lg:grid-cols-2">
+      <div class="glass rounded-3xl p-6 sm:p-8">
+        <p class="label-tech">Problem</p>
+        <h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink">
+          Operating constraints
+        </h2>
+        <ul class="mt-6 space-y-3">
+          {
+            item.problem.map((p) => (
+              <li class="flex gap-3 text-sm text-muted">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-wave-pink" />
+                <span class="text-ink/90">{p}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+      <div class="glass rounded-3xl p-6 sm:p-8">
+        <p class="label-tech">Solution path</p>
+        <h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink">
+          How capacity was deployed
+        </h2>
+        <ol class="mt-6 space-y-4">
+          {
+            item.solution.map((s, i) => (
+              <li class="flex gap-4 text-sm text-muted">
+                <span class="font-mono text-wave-cyan">{String(i + 1).padStart(2, "0")}</span>
+                <span class="text-ink/90">{s}</span>
+              </li>
+            ))
+          }
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-pad !pt-0">
+    <div class="grid gap-6 lg:grid-cols-3">
+      <div class="glass rounded-3xl p-6 lg:col-span-1">
+        <p class="label-tech">Deployment</p>
+        <p class="mt-4 text-sm leading-relaxed text-muted">{item.deployment}</p>
+        {
+          product && (
+            <a
+              href={`/products/${product.slug}/`}
+              class="mt-6 inline-flex text-sm font-semibold text-wave-cyan"
+            >
+              Product page →
+            </a>
+          )
+        }
+      </div>
+      <div class="glass rounded-3xl p-6 lg:col-span-2">
+        <p class="label-tech">Operational outcomes</p>
+        <ul class="mt-4 grid gap-3 sm:grid-cols-2">
+          {
+            item.results.map((r) => (
+              <li class="rounded-2xl border border-line bg-void/40 px-4 py-3 text-sm text-ink">
+                <span class="font-mono text-wave-mint">+</span> {r}
+              </li>
+            ))
+          }
+        </ul>
+        <p class="mt-5 text-xs leading-relaxed text-faint">{item.sourceNote}</p>
+      </div>
+    </div>
+  </section>
+
+  {
+    relatedSolutions.length > 0 && (
+      <section class="section-pad !pt-0">
+        <p class="label-tech">Related solutions</p>
+        <div class="mt-6 grid gap-4 md:grid-cols-2">
+          {relatedSolutions.map((s) => (
+            <a href={`/solutions/${s.slug}/`} class="glass glass-hover rounded-2xl p-5">
+              <h3 class="font-semibold text-ink">{s.title}</h3>
+              <p class="mt-2 text-sm text-muted">{s.headline}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  {
+    others.length > 0 && (
+      <section class="section-pad !pt-0">
+        <p class="label-tech">More cases</p>
+        <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {others.map((c) => (
+            <a href={`/cases/${c.slug}/`} class="glass glass-hover overflow-hidden rounded-2xl">
+              <img src={c.hero} alt="" class="aspect-[16/10] w-full object-cover" loading="lazy" />
+              <div class="p-4">
+                <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-wave-violet">
+                  {c.eyebrow}
+                </p>
+                <h3 class="mt-1 text-sm font-semibold text-ink">{c.title}</h3>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  <div id="contact">
+    <CtaBand title="Plan a similar deployment" label="Talk to an EV charging specialist" />
+  </div>
+</Layout>

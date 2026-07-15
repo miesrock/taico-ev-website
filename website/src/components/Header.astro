@@ -1,0 +1,47 @@
+---
+const nav = [
+  { label: "Solutions", href: "/#solutions" },
+  { label: "Products", href: "/products/" },
+  { label: "Cases", href: "/cases/" },
+  { label: "Company", href: "/#company" },
+];
+---
+
+<header class="sticky top-0 z-50 border-b border-line bg-void/70 backdrop-blur-xl">
+  <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
+    <a href="/" class="group flex items-center gap-3">
+      <img
+        src="/brand/taico-mark.png"
+        alt="TAICO"
+        class="h-7 w-auto rounded-sm shadow-[0_0_18px_-4px_rgba(34,211,238,0.45)]"
+        width="96"
+        height="28"
+      />
+      <span class="flex flex-col leading-tight">
+        <span class="font-display text-sm font-semibold tracking-[0.12em] text-ink">
+          TAICO EV
+        </span>
+        <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-faint">
+          Beyond the Grid
+        </span>
+      </span>
+    </a>
+
+    <nav class="hidden items-center gap-7 md:flex" aria-label="Primary">
+      {
+        nav.map((item) => (
+          <a
+            href={item.href}
+            class="text-sm font-medium text-muted transition hover:text-wave-cyan"
+          >
+            {item.label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <a href="/#contact" class="btn-primary !px-4 !py-2 text-xs sm:text-sm">
+      Talk to a Specialist
+    </a>
+  </div>
+</header>
