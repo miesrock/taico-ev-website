@@ -2,6 +2,7 @@
 import Layout from "../layouts/Layout.astro";
 import WaveField from "../components/WaveField.astro";
 import CtaBand from "../components/CtaBand.astro";
+import SolutionFinder from "../components/SolutionFinder.astro";
 import { solutions } from "../data/solutions";
 import { products } from "../data/products";
 import { cases } from "../data/cases";
@@ -20,18 +21,20 @@ const stack = [
     <div class="section-pad relative z-10 !pt-24 !pb-28 sm:!pt-28 sm:!pb-32">
       <p class="label-tech">TAICO EV · Mobile energy protocol</p>
       <h1
-        class="font-display mt-6 max-w-4xl text-4xl font-semibold leading-tight tracking-wide sm:text-5xl lg:text-6xl"
+        class="font-display mt-6 max-w-4xl pb-14 text-4xl font-semibold leading-tight tracking-wide sm:pb-16 sm:text-5xl lg:text-6xl"
       >
         <span class="text-gradient">Power Electric Mobility</span>
         <br />
-        <span class="text-ink">Beyond the Grid.</span>
+        <span class="ann ann-n ann-blue text-ink" data-note="charge where the road goes">
+          Beyond the Grid.
+        </span>
       </h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
         Mobile EV charging and energy storage for dealerships, fleets, commercial properties,
         and industrial sites constrained by infrastructure.
       </p>
       <div class="mt-10 flex flex-wrap gap-3">
-        <a class="btn-primary" href="#solutions">Find Your Solution</a>
+        <a class="btn-primary" href="#solution-finder">Find Your Solution</a>
         <a class="btn-ghost" href="#contact">Talk to a Specialist</a>
       </div>
 
@@ -81,9 +84,10 @@ const stack = [
 
     <div class="mt-12 glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
       <p class="label-tech">Composition</p>
-      <p class="mt-3 font-display text-xl tracking-wide text-ink sm:text-2xl">
+      <p class="mt-3 pb-16 font-display text-xl tracking-wide text-ink sm:pb-14 sm:text-2xl">
         Battery Storage <span class="text-wave-cyan">+</span> Fast Charging
-        <span class="text-wave-violet"> +</span> Flexible Deployment
+        <span class="text-wave-violet"> +</span>
+        <span class="ann ann-n ann-purple" data-note="move the capacity">Flexible Deployment</span>
       </p>
       <p class="mt-2 text-sm text-muted">= Charging capacity where it is needed.</p>
       <div class="mt-8 grid gap-4 md:grid-cols-3">
@@ -99,12 +103,17 @@ const stack = [
     </div>
   </section>
 
+  <SolutionFinder />
+
   <!-- Solutions -->
   <section id="solutions" class="relative">
     <div class="section-pad">
       <p class="label-tech">Solutions · First wave</p>
-      <h2 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink sm:text-4xl">
-        Start from the operating problem.
+      <h2 class="font-display mt-4 pb-14 text-3xl font-semibold tracking-wide text-ink sm:pb-16 sm:text-4xl">
+        Start from the
+        <span class="ann ann-n ann-green" data-note="start where the work happens">
+          operating problem.
+        </span>
       </h2>
       <p class="mt-3 max-w-2xl text-muted">
         Navigation prioritizes scenarios over model numbers — the way commercial buyers actually buy.

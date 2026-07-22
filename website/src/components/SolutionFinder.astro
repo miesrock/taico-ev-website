@@ -1,0 +1,372 @@
+---
+import { products } from "../data/products";
+import { solutions } from "../data/solutions";
+import { site } from "../data/site.ts";
+
+const questions = [
+  {
+    key: "customer",
+    title: "Who are you serving?",
+    options: [
+      {
+        value: "dealership",
+        label: "Automotive dealership",
+        description: "Demo, delivery, and aftersales vehicles",
+      },
+      {
+        value: "roadside",
+        label: "Roadside assistance / recovery",
+        description: "Response vehicles, towing, and EV recovery",
+      },
+      {
+        value: "commercial",
+        label: "Commercial property / temporary site",
+        description: "Hotels, parking, construction, and weak-grid sites",
+      },
+    ],
+  },
+  {
+    key: "challenge",
+    title: "What is your main challenge?",
+    options: [
+      {
+        value: "parked-vehicles",
+        label: "Charge vehicles where they already park",
+        description: "Keep demos, deliveries, or service vehicles moving",
+      },
+      {
+        value: "stranded-evs",
+        label: "Respond to stranded EVs quickly",
+        description: "Bring energy to the vehicle instead of moving the vehicle",
+      },
+      {
+        value: "grid-capacity",
+        label: "Add charging capacity without a grid upgrade",
+        description: "Start now while permanent infrastructure catches up",
+      },
+    ],
+  },
+  {
+    key: "deployment",
+    title: "How do you want to deploy?",
+    options: [
+      {
+        value: "mobile",
+        label: "Fully mobile",
+        description: "Move capacity between locations or shifts",
+      },
+      {
+        value: "semi-permanent",
+        label: "Semi-permanent or seasonal",
+        description: "Support temporary demand without committing to civil works",
+      },
+      {
+        value: "fixed",
+        label: "Fixed long-term site",
+        description: "Build a stable charging capability for one property",
+      },
+    ],
+  },
+];
+
+const resultData = Object.fromEntries(
+  solutions.map((solution) => {
+    const product = products.find((item) => item.relatedSolutions.includes(solution.slug));
+
+    return [
+      solution.slug,
+      {
+        title: solution.title,
+        headline: solution.headline,
+        summary: solution.summary,
+        href: `/solutions/${solution.slug}/`,
+        product: product
+          ? {
+              model: product.model,
+              title: product.title,
+              href: `/products/${product.slug}/`,
+            }
+          : null,
+      },
+    ];
+  }),
+);
+---
+
+<section id="solution-finder" data-solution-finder class="section-pad scroll-mt-24">
+  <div class="glass relative overflow-hidden rounded-3xl p-6 sm:p-8">
+    <div class="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-wave-violet/15 blur-3xl" aria-hidden="true"></div>
+    <div class="pointer-events-none absolute -bottom-24 left-16 h-48 w-48 rounded-full bg-wave-cyan/10 blur-3xl" aria-hidden="true"></div>
+
+    <div class="relative z-10">
+      <p class="label-tech">Guided fit · Three quick questions</p>
+      <div class="mt-4 flex flex-wrap items-end justify-between gap-4">
+        <div>
+          <h2 class="font-display text-3xl font-semibold tracking-wide text-ink sm:text-4xl">
+            Find Your Charging Solution
+          </h2>
+          <p class="mt-3 max-w-2xl text-muted">
+            Answer three quick questions to find the right starting point.
+          </p>
+        </div>
+        <p data-progress-label class="font-mono text-xs tracking-[0.18em] text-wave-cyan">01 / 03</p>
+      </div>
+
+      <div class="mt-6 h-1 overflow-hidden rounded-full bg-line" aria-hidden="true">
+        <div data-progress-fill class="h-full w-1/3 rounded-full bg-gradient-to-r from-wave-cyan to-wave-violet transition-[width] duration-300"></div>
+      </div>
+
+      <div data-finder-flow class="mt-10">
+        {
+          questions.map((question, index) => (
+            <fieldset data-step={index} hidden={index !== 0}>
+              <legend class="font-display max-w-3xl text-2xl font-semibold tracking-wide text-ink sm:text-3xl">
+                {question.title}
+              </legend>
+              <p class="mt-3 max-w-2xl text-sm text-muted">
+                Choose the description closest to your operating reality.
+              </p>
+
+              <div class="mt-6 grid gap-3 md:grid-cols-3">
+                {
+                  question.options.map((option) => (
+                    <button
+                      type="button"
+                      data-finder-option
+                      data-answer-key={question.key}
+                      data-answer-value={option.value}
+                      aria-pressed="false"
+                      class="finder-option glass-hover rounded-2xl border border-line bg-void/30 p-4 text-left transition"
+                    >
+                      <span class="block text-sm font-semibold text-ink">{option.label}</span>
+                      <span class="mt-2 block text-xs leading-relaxed text-muted">{option.description}</span>
+                    </button>
+                  ))
+                }
+              </div>
+            </fieldset>
+          ))
+        }
+      </div>
+
+      <div data-finder-controls class="mt-8 flex flex-wrap justify-between gap-3">
+        <button type="button" data-back class="btn-ghost" hidden>Back</button>
+        <button type="button" data-next class="btn-primary ml-auto" disabled>Continue</button>
+      </div>
+
+      <div data-finder-result hidden aria-live="polite" tabindex="-1" class="mt-10 rounded-3xl border border-line bg-void/40 p-6 sm:p-8">
+        <p class="label-tech">Your best-fit solution</p>
+        <h3 data-result-title class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl"></h3>
+        <p data-result-headline class="mt-3 max-w-2xl text-lg text-ink/90"></p>
+        <p data-result-summary class="mt-3 max-w-2xl text-sm leading-relaxed text-muted"></p>
+
+        <div data-result-product class="mt-6 rounded-2xl border border-line bg-panel/60 p-4">
+          <p class="label-tech">Suggested product tier</p>
+          <a data-result-product-link class="mt-2 inline-flex flex-wrap items-baseline gap-2 text-ink transition hover:text-wave-cyan" href="#">
+            <span data-result-product-model class="font-mono text-sm text-wave-cyan"></span>
+            <span data-result-product-title class="font-semibold"></span>
+          </a>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <a data-result-link class="btn-primary" href="#">Open solution</a>
+          <a class="btn-ghost" href={site.emailHref}>{site.email}</a>
+          <button type="button" data-reset class="btn-ghost">Start over</button>
+        </div>
+      </div>
+
+      <noscript>
+        <p class="mt-6 rounded-2xl border border-line bg-void/40 p-4 text-sm text-muted">
+          JavaScript is required for the guided selector. You can still browse the solution cards below.
+        </p>
+      </noscript>
+    </div>
+  </div>
+</section>
+
+<script define:vars={{ questions, resultData }}>
+  const root = document.querySelector("[data-solution-finder]");
+
+  if (root) {
+    const steps = [...root.querySelectorAll("[data-step]")];
+    const options = [...root.querySelectorAll("[data-finder-option]")];
+    const progressLabel = root.querySelector("[data-progress-label]");
+    const progressFill = root.querySelector("[data-progress-fill]");
+    const flow = root.querySelector("[data-finder-flow]");
+    const controls = root.querySelector("[data-finder-controls]");
+    const backButton = root.querySelector("[data-back]");
+    const nextButton = root.querySelector("[data-next]");
+    const resultPanel = root.querySelector("[data-finder-result]");
+    const resetButton = root.querySelector("[data-reset]");
+    const resultTitle = root.querySelector("[data-result-title]");
+    const resultHeadline = root.querySelector("[data-result-headline]");
+    const resultSummary = root.querySelector("[data-result-summary]");
+    const resultLink = root.querySelector("[data-result-link]");
+    const productPanel = root.querySelector("[data-result-product]");
+    const productLink = root.querySelector("[data-result-product-link]");
+    const productModel = root.querySelector("[data-result-product-model]");
+    const productTitle = root.querySelector("[data-result-product-title]");
+
+    const answers = {};
+    let currentStep = 0;
+
+    const baseSolutions = {
+      dealership: "ev-dealership-charging",
+      roadside: "ev-roadside-assistance",
+      commercial: "ev-charging-without-grid-upgrade",
+    };
+
+    const challengeSolutions = {
+      "parked-vehicles": "ev-dealership-charging",
+      "stranded-evs": "ev-roadside-assistance",
+      "grid-capacity": "ev-charging-without-grid-upgrade",
+    };
+
+    const deploymentWeights = {
+      mobile: {
+        "ev-dealership-charging": 2,
+        "ev-roadside-assistance": 2,
+        "ev-charging-without-grid-upgrade": 1,
+      },
+      "semi-permanent": {
+        "ev-dealership-charging": 1,
+        "ev-roadside-assistance": 1,
+        "ev-charging-without-grid-upgrade": 3,
+      },
+      fixed: {
+        "ev-dealership-charging": 0,
+        "ev-roadside-assistance": 0,
+        "ev-charging-without-grid-upgrade": 3,
+      },
+    };
+
+    const solutionSlugs = Object.keys(resultData);
+
+    function getRecommendation() {
+      const baseSolution = baseSolutions[answers.customer];
+      const scores = Object.fromEntries(solutionSlugs.map((slug) => [slug, 0]));
+
+      scores[baseSolution] += 5;
+      scores[challengeSolutions[answers.challenge]] += 4;
+
+      for (const [slug, weight] of Object.entries(deploymentWeights[answers.deployment])) {
+        scores[slug] += weight;
+      }
+
+      const highestScore = Math.max(...Object.values(scores));
+      const winners = solutionSlugs.filter((slug) => scores[slug] === highestScore);
+      const winner = winners.includes(baseSolution) ? baseSolution : winners[0];
+
+      return resultData[winner];
+    }
+
+    function render() {
+      const question = questions[currentStep];
+
+      steps.forEach((step, index) => {
+        step.hidden = index !== currentStep;
+      });
+
+      options.forEach((option) => {
+        const key = option.dataset.answerKey;
+        const isSelected = answers[key] === option.dataset.answerValue;
+        option.setAttribute("aria-pressed", String(isSelected));
+      });
+
+      progressLabel.textContent = `${String(currentStep + 1).padStart(2, "0")} / 03`;
+      progressFill.style.width = `${((currentStep + 1) / steps.length) * 100}%`;
+      backButton.hidden = currentStep === 0;
+      nextButton.disabled = !answers[question.key];
+      nextButton.textContent = currentStep === steps.length - 1 ? "See recommendation" : "Continue";
+    }
+
+    function showResult() {
+      const result = getRecommendation();
+
+      resultTitle.textContent = result.title;
+      resultHeadline.textContent = result.headline;
+      resultSummary.textContent = result.summary;
+      resultLink.href = result.href;
+
+      if (result.product) {
+        productPanel.hidden = false;
+        productLink.href = result.product.href;
+        productModel.textContent = result.product.model;
+        productTitle.textContent = result.product.title;
+      } else {
+        productPanel.hidden = true;
+      }
+
+      flow.hidden = true;
+      controls.hidden = true;
+      resultPanel.hidden = false;
+      resultPanel.focus({ preventScroll: true });
+    }
+
+    function reset() {
+      Object.keys(answers).forEach((key) => delete answers[key]);
+      currentStep = 0;
+      flow.hidden = false;
+      controls.hidden = false;
+      resultPanel.hidden = true;
+      render();
+    }
+
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        answers[option.dataset.answerKey] = option.dataset.answerValue;
+        render();
+      });
+    });
+
+    backButton.addEventListener("click", () => {
+      if (currentStep > 0) {
+        currentStep -= 1;
+        render();
+      }
+    });
+
+    nextButton.addEventListener("click", () => {
+      if (!answers[questions[currentStep].key]) return;
+
+      if (currentStep === steps.length - 1) {
+        showResult();
+        return;
+      }
+
+      currentStep += 1;
+      render();
+    });
+
+    resetButton.addEventListener("click", reset);
+    render();
+  }
+</script>
+
+<style>
+  .finder-option {
+    min-height: 116px;
+  }
+
+  .finder-option[aria-pressed="true"] {
+    border-color: var(--color-wave-cyan);
+    background: color-mix(in srgb, var(--color-wave-cyan) 12%, var(--color-panel));
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--color-wave-cyan) 35%, transparent) inset,
+      0 0 30px -16px var(--color-wave-cyan);
+  }
+
+  .finder-option:focus-visible,
+  [data-result-link]:focus-visible,
+  [data-result-product-link]:focus-visible {
+    outline: 2px solid var(--color-wave-cyan);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .finder-option,
+    [data-progress-fill] {
+      transition: none;
+    }
+  }
+</style>
