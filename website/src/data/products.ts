@@ -67,7 +67,9 @@ export const productCategories: { slug: ProductCategory; title: string; descript
 /**
  * Public facts are transcribed from TAICO MC 2026 Catalog v1.3, pages 4–11.
  * Keep new product claims, images, and specs in this file so navigation, routes,
- * comparison, and recommendations cannot drift apart.
+ * comparison, and recommendations cannot drift apart. `chargingGun` normalizes
+ * catalog `GBT` / `GBT*2` / `GBT*4` notation to the industry display form
+ * `GB/T` / `GB/T ×2` / `GB/T ×4`; connector types and quantities are unchanged.
  */
 export const products: Product[] = [
   {
@@ -159,6 +161,7 @@ export const products: Product[] = [
       { label: "Front/rear brake type", value: "Drum brake" },
       { label: "Parking brake type", value: "EPB electronic parking brake (rear wheels with speed sensors)" },
       { label: "Drive motor power", value: "3 kW" },
+      { label: "Full-load range", value: "Depends on the vehicle's total energy storage battery capacity" },
       { label: "Speed range", value: "1–15 km/h" },
       { label: "Control communication method", value: "CAN 2.0B" },
     ],
@@ -198,8 +201,8 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output"],
     applications: ["Mobile Charger", "AC Output"],
-    solutionSlugs: ["temporary-engineering-power"],
-    applicationSlugs: ["engineering-power-supply"],
+    solutionSlugs: ["ac-output-e-generator"],
+    applicationSlugs: ["ac-output-e-generator"],
     hero: "/products/tkmc-2000p-hero.webp",
     applicationImage: "/products/tkmc-2000p-application.webp",
     catalogSource: { version: "1.3", page: 7 },
@@ -229,8 +232,8 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output", "Engineering power supply"],
     applications: ["Mobile Charger", "AC Output", "Engineering Power Supply"],
-    solutionSlugs: ["temporary-engineering-power"],
-    applicationSlugs: ["engineering-power-supply"],
+    solutionSlugs: ["ac-output-e-generator", "temporary-engineering-power"],
+    applicationSlugs: ["ac-output-e-generator", "engineering-power-supply"],
     hero: "/products/tkmc-4000-hero.webp",
     applicationImage: "/products/tkmc-4000-application.webp",
     catalogSource: { version: "1.3", page: 8 },
@@ -260,8 +263,8 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "PV-storage charging", "AC output"],
     applications: ["Mobile Charger", "PV Storage Charger", "AC Output"],
-    solutionSlugs: ["temporary-engineering-power", "pv-ess-charging"],
-    applicationSlugs: ["engineering-power-supply", "pv-ess-charging-station"],
+    solutionSlugs: ["ac-output-e-generator", "pv-storage-charger"],
+    applicationSlugs: ["ac-output-e-generator", "pv-storage-charger"],
     hero: "/products/tkmc-10000-hero.webp",
     applicationImage: "/products/tkmc-10000-application.webp",
     catalogSource: { version: "1.3", page: 9 },

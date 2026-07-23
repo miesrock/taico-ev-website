@@ -46,26 +46,60 @@ export const solutions: Solution[] = [
     ],
   },
   {
-    slug: "temporary-engineering-power",
+    slug: "ac-output-e-generator",
     eyebrow: "Solution 03 · Field deployment",
-    title: "Temporary & Engineering Power",
-    headline: "Combine mobile EV charging with AC output for temporary power applications.",
+    title: "AC Output / E-Generator",
+    headline: "Combine mobile EV charging with AC output for E-Generator applications.",
     summary:
-      "Higher-capacity mobile energy storage systems are configured for mobile charging, AC output, and engineering power supply applications.",
+      "Mobile energy storage charging systems support mobile charging and AC output applications.",
     pains: [
-      "Power demand moves with a temporary or engineering operation",
-      "EV charging and site power can be required at the same deployment",
+      "Power demand moves with the operating location",
+      "EV charging and AC output can be required at the same deployment",
       "A fixed installation may not match the operating location",
     ],
     approach: [
       "Define the DC charging and AC power requirements separately",
       "Review deployment access, transport, and operating conditions",
-      "Confirm the project-specific power and recharge configuration",
+      "Confirm the project-specific power configuration",
+    ],
+  },
+  {
+    slug: "temporary-engineering-power",
+    eyebrow: "Solution 04 · Field deployment",
+    title: "Engineering Power Supply",
+    headline: "Use mobile energy storage charging for engineering power supply applications.",
+    summary: "Mobile energy storage charging systems support engineering power supply applications.",
+    pains: [
+      "Power demand moves with the engineering operation",
+      "EV charging and site power can be required at the same deployment",
+      "A fixed installation may not match the operating location",
+    ],
+    approach: [
+      "Define the DC charging and engineering power requirements separately",
+      "Review deployment access, transport, and operating conditions",
+      "Confirm the project-specific power configuration",
+    ],
+  },
+  {
+    slug: "pv-storage-charger",
+    eyebrow: "Solution 05 · Mobile energy",
+    title: "PV Storage Charger",
+    headline: "Use mobile energy storage charging for PV-storage charging applications.",
+    summary: "Mobile energy storage charging systems support PV-storage charging applications.",
+    pains: [
+      "Charging demand must be served at a changing operating location",
+      "PV-storage charging is required for the deployment",
+      "A fixed charging installation may not match the operation",
+    ],
+    approach: [
+      "Review the charging demand and operating location",
+      "Confirm the PV-storage charging requirements",
+      "Confirm the final system configuration before deployment",
     ],
   },
   {
     slug: "pv-ess-charging",
-    eyebrow: "Solution 04 · Stationary energy",
+    eyebrow: "Solution 06 · Stationary energy",
     title: "PV-ESS Charging",
     headline: "Build charging capacity around energy storage, solar input, and the available grid connection.",
     summary:
