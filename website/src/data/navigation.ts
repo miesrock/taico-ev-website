@@ -1,8 +1,8 @@
 export const primaryNavigation = [
-  { key: "solutions", label: "Solutions", href: "/solutions/emergency-ev-charging/" },
-  { key: "products", label: "Products", href: "/products/" },
-  { key: "applications", label: "Applications", href: "/applications/" },
-  { key: "resources", label: "Resources", href: "/resources/" },
+  { key: "solutions", label: "Solutions" },
+  { key: "products", label: "Products" },
+  { key: "applications", label: "Applications" },
+  { key: "resources", label: "Resources" },
 ] as const;
 
 export const resourceLinks = [
@@ -14,6 +14,6 @@ export const resourceLinks = [
   {
     label: "Technical Documentation",
     description: "Request the latest product documentation from the TAICO EV team.",
-    href: "/resources/",
+    href: "/resources/#technical-documentation",
   },
 ] as const;

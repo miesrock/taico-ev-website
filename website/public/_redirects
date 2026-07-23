@@ -1,7 +1,8 @@
 # Legacy tier pages have no verified one-to-one TKMC replacement.
-/products/g2v/ /products/ 302
-/products/mobile-battery-station/ /products/ 302
-/products/commercial-energy-hub/ /products/ 302
+/products/g2v/ /products/ 301
+/products/mobile-battery-station/ /products/ 301
+/products/commercial-energy-hub/ /products/ 301
 
 # Previous scenario-only case pages are replaced by catalog-supported applications.
-/cases/* /applications/ 302
+/cases/ /applications/ 301
+/cases/* /applications/ 301

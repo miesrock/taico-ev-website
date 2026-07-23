@@ -254,8 +254,20 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
   body,
+  .glass-hover,
+  .btn-primary,
+  .btn-ghost,
   .theme-toggle {
     transition: none;
+  }
+
+  .glass-hover:hover,
+  .theme-toggle:hover {
+    transform: none;
   }
 }

@@ -20,7 +20,7 @@ import { site } from "../../data/site";
     <div class="grid gap-5 md:grid-cols-2">
       {resourceLinks.map((resource) => <a href={resource.href} class="glass glass-hover rounded-3xl p-6"><p class="label-tech">Resource</p><h2 class="mt-3 text-xl font-semibold text-ink">{resource.label}</h2><p class="mt-3 text-sm leading-relaxed text-muted">{resource.description}</p><span class="mt-6 inline-block text-sm font-semibold text-wave-cyan">Open resource →</span></a>)}
     </div>
-    <div class="glass mt-6 rounded-3xl p-6"><p class="label-tech">Latest technical documents</p><h2 class="mt-3 text-xl font-semibold text-ink">Request the latest catalog and project documentation</h2><p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">Documentation requests are handled by the TAICO EV team so the material can match your target market and configuration requirements.</p><a href={site.emailHref} class="btn-primary mt-6">Request technical documentation</a></div>
+    <div id="technical-documentation" class="glass mt-6 rounded-3xl p-6"><p class="label-tech">Latest technical documents</p><h2 class="mt-3 text-xl font-semibold text-ink">Request the latest catalog and project documentation</h2><p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">Documentation requests are handled by the TAICO EV team so the material can match your target market and configuration requirements.</p><a href={site.emailHref} class="btn-primary mt-6">Request technical documentation</a></div>
   </section>
 
   <CtaBand title="Ready to discuss a configuration?" />

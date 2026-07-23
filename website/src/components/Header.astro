@@ -80,7 +80,7 @@ const featuredProduct = getProduct("tkmc-800");
             <p class="label-tech">Solutions</p>
             <p class="mt-2 text-sm text-muted">Start with the energy challenge, then review suitable hardware.</p>
           </div>
-          <a href="/solutions/emergency-ev-charging/" class="text-sm font-semibold text-wave-cyan">Explore solutions →</a>
+          <a href="/#solutions" class="text-sm font-semibold text-wave-cyan">Explore solutions →</a>
         </div>
         <div class="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.15fr]">
           {
@@ -314,6 +314,9 @@ const featuredProduct = getProduct("tkmc-800");
   });
 
   mobileOpen?.addEventListener("click", () => mobileDialog?.showModal());
+  mobileDialog?.addEventListener("click", (event) => {
+    if (event.target === mobileDialog) mobileDialog.close();
+  });
   mobileDialog?.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => mobileDialog?.close()));
 
   syncThemeButton();
