@@ -1,165 +1,366 @@
 export type SpecRow = { label: string; value: string };
 
-export type Product = {
-  slug: string;
-  tier: string;
-  model: string;
-  title: string;
-  headline: string;
-  summary: string;
-  hero: string;
-  gallery?: string[];
-  bestFor: string[];
-  solves: string[];
-  features: string[];
-  specs: SpecRow[];
-  connectors: string[];
-  relatedSolutions: string[];
-  note?: string;
+export type ProductCategory =
+  | "mobile-charging"
+  | "charging-robot"
+  | "mobile-power"
+  | "stationary-charging";
+
+export type CatalogSource = {
+  version: "1.3";
+  page: number;
 };
 
-/**
- * Specs aligned to OEM catalog sheets (Xiaofu line) under TAICO EV brand.
- * Do not invent unverified certifications or performance claims.
- */
-export const products: Product[] = [
+export type Product = {
+  slug: string;
+  model: string;
+  productType: string;
+  category: ProductCategory;
+  summary: string;
+  capacityKwh: number;
+  outputPowerKw: number;
+  outputVoltage: string;
+  outputCurrent: string;
+  hmi: string;
+  chargeMode: string;
+  workingTemperature: string;
+  cableLengthM: number;
+  chargingGun: string;
+  /** Model-specific catalog rows, including recharge modes and robot mobility data. */
+  specs: SpecRow[];
+  dimensions: string;
+  weight: string;
+  protectionLevel: string;
+  capabilities: string[];
+  applications: string[];
+  solutionSlugs: string[];
+  applicationSlugs: string[];
+  hero: string;
+  applicationImage: string;
+  catalogSource: CatalogSource;
+  published: boolean;
+};
+
+export const productCategories: { slug: ProductCategory; title: string; description: string }[] = [
   {
-    slug: "g2v",
-    tier: "01 · Portable & Flexible",
-    model: "G2V",
-    title: "G2V Portable Flexible Charging",
-    headline: "Move charging capacity across the lot — without waiting for fixed bays.",
-    summary:
-      "Compact, rollable EV charging unit for dealerships, temporary events, and light commercial sites that need flexible DC charging without grid expansion projects.",
-    hero: "/products/g2v-hero.jpg",
-    bestFor: [
-      "Automotive dealers & 4S stores",
-      "Demo / delivery vehicle support",
-      "Temporary events and overflow bays",
-      "Light commercial parking operators",
-    ],
-    solves: [
-      "Fixed chargers are full or not yet installed",
-      "Need to charge vehicles where they park",
-      "Want a lower-threshold entry into mobile charging service",
-    ],
-    features: [
-      "Portable footprint for on-lot repositioning",
-      "Touch HMI for operator-friendly sessions",
-      "Cable reel form factor for quick connect",
-      "Designed for commercial service workflows, not only DIY parking",
-    ],
-    specs: [
-      { label: "Product class", value: "Portable / flexible mobile DC charging" },
-      { label: "Primary use", value: "Dealership & temporary commercial charging" },
-      { label: "Deployment", value: "Rollable / relocatable on site" },
-      { label: "Connector options", value: "CCS / GB/T / CHAdeMO (project configured)" },
-      { label: "Protection", value: "Outdoor commercial operation (IP-class unit dependent)" },
-      { label: "Brand", value: "TAICO EV" },
-    ],
-    connectors: ["CCS1 / CCS2", "GB/T", "CHAdeMO (optional)"],
-    relatedSolutions: [
-      "ev-dealership-charging",
-      "ev-charging-without-grid-upgrade",
-    ],
-    note: "G2V is positioned as the entry portable tier for retail and temporary charging. Final power and battery configuration confirmed per project quote.",
+    slug: "mobile-charging",
+    title: "Mobile Charging Systems",
+    description: "Battery-backed mobile charging for emergency and flexible deployment.",
   },
   {
-    slug: "mobile-battery-station",
-    tier: "02 · Mobile Battery Station",
-    model: "M75",
-    title: "Mobile Battery Charging Station",
-    headline: "Bring 60 kW DC charging to the vehicle — roadside, hotel, or service van.",
-    summary:
-      "Battery-backed mobile charging station for roadside assistance, doorstep charging, and premium automotive service. Catalog baseline: 75 kWh storage with 60 kW DC output (XF-7560 class).",
-    hero: "/products/m75-hero.jpg",
-    gallery: ["/products/m75-hero-alt.jpg"],
-    bestFor: [
-      "Roadside assistance & insurance partners",
-      "Mobile charging operators",
-      "Hotels, clubs, and property concierge charging",
-      "High-end doorstep / membership services",
-    ],
-    solves: [
-      "Stranded EV drivers need on-site energy, not only a tow",
-      "Fixed infrastructure cannot reach premium or temporary locations",
-      "Operators want a billable mobile charging service asset",
-    ],
-    features: [
-      "Integrated battery + DC fast charge architecture",
-      "Van-mountable / pallet-deployable form factors in the product family",
-      "Multi-standard gun options for international fleets",
-      "IP54 outdoor-oriented cabinet design (catalog baseline)",
-    ],
-    specs: [
-      { label: "Battery capacity", value: "75 kWh (catalog baseline)" },
-      { label: "Output power", value: "60 kW DC" },
-      { label: "Output voltage", value: "DC 200–1000 V" },
-      { label: "Output current", value: "0–150 A" },
-      { label: "HMI", value: '7" touch screen' },
-      { label: "Cable length", value: "7 m (typical)" },
-      { label: "Charger standards", value: "GB/T · CCS1 · CCS2 · CHAdeMO" },
-      { label: "Recharge mode", value: "EV DC charger + AC 3-phase ~20 kW (catalog)" },
-      { label: "Size (approx.)", value: "1580 × 925 × 1050 mm" },
-      { label: "Weight (approx.)", value: "~900 kg" },
-      { label: "Working temperature", value: "−10 °C to 60 °C" },
-      { label: "Protection", value: "IP54" },
-    ],
-    connectors: ["GB/T", "CCS1", "CCS2", "CHAdeMO"],
-    relatedSolutions: ["ev-roadside-assistance", "ev-dealership-charging"],
-    note: "Specs reflect OEM catalog baseline (XF-7560 class) under TAICO EV brand. Project-specific variants (e.g. higher capacity mobile units) available on request.",
+    slug: "charging-robot",
+    title: "Charging Robot",
+    description: "Self-propelled energy storage charging for on-demand service.",
   },
   {
-    slug: "commercial-energy-hub",
-    tier: "03 · Commercial Energy Hub",
-    model: "H200",
-    title: "Commercial Mobile Energy Hub",
-    headline: "200 kWh mobile energy for weak grids, construction, and solar-storage-EV sites.",
-    summary:
-      "Higher-capacity energy hub for commercial and industrial deployment. Catalog baseline X200120: 200 kWh / 120 kW with AC site power; F200120 solar-storage charging option for grid-complementary sites.",
-    hero: "/products/h200-hero.jpg",
-    gallery: ["/products/h200-solar-hero.jpg", "/products/f200120-hero.jpg"],
-    bestFor: [
-      "Hotels, malls, and commercial parking without grid upgrade",
-      "Construction & temporary high-power sites",
-      "Fuel station / logistics yard energy upgrades",
-      "Farms, resorts, and weak-grid locations",
-    ],
-    solves: [
-      "Grid capacity blocks permanent high-power chargers",
-      "Need both EV DC charging and site AC power",
-      "Want a path from temporary deployment to solar-storage-EV",
-    ],
-    features: [
-      "Large storage buffer for peak shaving and off-grid windows",
-      "Dual-role DC EV charging + AC industrial/site output (X-class)",
-      "Trailer / pallet deployment options for field mobility",
-      "Optional solar PV input path via F-class stationary hub",
-    ],
-    specs: [
-      { label: "Battery capacity", value: "200 kWh (catalog baseline)" },
-      { label: "Output power", value: "120 kW DC" },
-      { label: "Output voltage", value: "DC 200–1000 V" },
-      { label: "Output current", value: "0–250 A" },
-      { label: "HMI", value: '10" touch screen' },
-      { label: "Cable length", value: "7 m (typical)" },
-      { label: "Charger standards", value: "GB/T · CCS1 · CCS2 · CHAdeMO" },
-      { label: "AC output / recharge", value: "AC single / three-phase (project configured)" },
-      { label: "Size (approx., X-class)", value: "2660 × 1250 × 1300 mm" },
-      { label: "Weight (approx., X-class)", value: "~2500 kg" },
-      { label: "Working temperature", value: "−10 °C to 60 °C" },
-      { label: "Protection", value: "IP54" },
-      { label: "Solar option (F-class)", value: "Optional PV input · stationary hub form" },
-    ],
-    connectors: ["GB/T", "CCS1", "CCS2", "CHAdeMO"],
-    relatedSolutions: [
-      "ev-charging-without-grid-upgrade",
-      "ev-dealership-charging",
-    ],
-    note: "Primary hero shows mobile X-class hub. F-class solar-storage charging pedestal is an optional commercial path for fixed or semi-fixed sites. Confirm final BOM in quotation.",
+    slug: "mobile-power",
+    title: "Mobile Power Systems",
+    description: "Higher-capacity charging and temporary power deployment.",
+  },
+  {
+    slug: "stationary-charging",
+    title: "Stationary Charging Systems",
+    description: "PV-storage charging and grid-complementary deployment.",
   },
 ];
 
+/**
+ * Public facts are transcribed from TAICO MC 2026 Catalog v1.3, pages 4–11.
+ * Keep new product claims, images, and specs in this file so navigation, routes,
+ * comparison, and recommendations cannot drift apart.
+ */
+export const products: Product[] = [
+  {
+    slug: "tkmc-800",
+    model: "TKMC-800",
+    productType: "Mobile Energy Storage Charging System",
+    category: "mobile-charging",
+    summary: "Mobile energy storage charging for mobile charger and roadside EV rescue applications.",
+    capacityKwh: 75,
+    outputPowerKw: 60,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–150 A",
+    hmi: '7" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T / CCS1 / CCS2 / CHAdeMO",
+    specs: [
+      { label: "Recharge mode 1", value: "EV DC Charger" },
+      { label: "Recharge mode 2", value: "AC 3-phase / 20 kW" },
+    ],
+    dimensions: "1580 × 925 × 1050 mm",
+    weight: "≈900 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Mobile charging"],
+    applications: ["Mobile Charger", "Roadside EV Rescue"],
+    solutionSlugs: ["emergency-ev-charging"],
+    applicationSlugs: ["roadside-ev-rescue"],
+    hero: "/products/tkmc-800-hero.webp",
+    applicationImage: "/products/tkmc-800-application.webp",
+    catalogSource: { version: "1.3", page: 4 },
+    published: true,
+  },
+  {
+    slug: "tkmc-1500",
+    model: "TKMC-1500",
+    productType: "Mobile Energy Storage Charging System",
+    category: "mobile-charging",
+    summary: "Mobile energy storage charging for mobile charger and roadside EV rescue applications.",
+    capacityKwh: 140,
+    outputPowerKw: 120,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '7" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T / CCS1 / CCS2 / CHAdeMO",
+    specs: [
+      { label: "Recharge mode 1", value: "EV DC Charger" },
+      { label: "Recharge mode 2", value: "AC 3-phase / 40 kW" },
+    ],
+    dimensions: "2300 × 1200 × 1000 mm",
+    weight: "≈1682 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Mobile charging"],
+    applications: ["Mobile Charger", "Roadside EV Rescue"],
+    solutionSlugs: ["emergency-ev-charging"],
+    applicationSlugs: ["roadside-ev-rescue"],
+    hero: "/products/tkmc-1500-hero.webp",
+    applicationImage: "/products/tkmc-1500-application.webp",
+    catalogSource: { version: "1.3", page: 5 },
+    published: true,
+  },
+  {
+    slug: "tkmc-1000",
+    model: "TKMC-1000",
+    productType: "Mobile Energy Storage Charging Robot",
+    category: "charging-robot",
+    summary: "Self-propelled mobile energy storage charging for mobile EV charger applications.",
+    capacityKwh: 100,
+    outputPowerKw: 90,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–150 A",
+    hmi: '7" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 5,
+    chargingGun: "GB/T / CCS1 / CCS2 / CHAdeMO",
+    specs: [
+      { label: "Recharge mode 1", value: "EV DC Charger" },
+      { label: "Recharge mode 2", value: "AC 3-phase / 20 kW" },
+      { label: "Wheelbase", value: "1100 mm" },
+      { label: "Minimum ground clearance", value: "100 mm" },
+      { label: "Parking slope", value: "25%" },
+      { label: "Maximum gradeability at full load", value: "20%" },
+      { label: "Minimum turning radius", value: "2.5 m" },
+      { label: "Drive method", value: "Rear-wheel drive" },
+      { label: "Front/rear brake type", value: "Drum brake" },
+      { label: "Parking brake type", value: "EPB electronic parking brake (rear wheels with speed sensors)" },
+      { label: "Drive motor power", value: "3 kW" },
+      { label: "Speed range", value: "1–15 km/h" },
+      { label: "Control communication method", value: "CAN 2.0B" },
+    ],
+    dimensions: "2035 × 920 × 1491 mm",
+    weight: "≈1256 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Self-propelled mobile charging"],
+    applications: ["Mobile EV Charger"],
+    solutionSlugs: ["charge-on-demand"],
+    applicationSlugs: ["on-demand-charging"],
+    hero: "/products/tkmc-1000-hero.webp",
+    applicationImage: "/products/tkmc-1000-application.webp",
+    catalogSource: { version: "1.3", page: 6 },
+    published: true,
+  },
+  {
+    slug: "tkmc-2000p",
+    model: "TKMC-2000P",
+    productType: "Mobile Energy Storage Charging System",
+    category: "mobile-power",
+    summary: "Mobile energy storage charging with AC output for flexible mobile deployment.",
+    capacityKwh: 200,
+    outputPowerKw: 120,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '10" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T ×2 (CCS1 / CCS2 / CHAdeMO)",
+    specs: [
+      { label: "Recharge mode", value: "EV DC Charger + AC three phase" },
+      { label: "AC output", value: "AC single / three phase" },
+    ],
+    dimensions: "2660 × 1250 × 1300 mm",
+    weight: "≈2500 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Mobile charging", "AC output"],
+    applications: ["Mobile Charger", "AC Output"],
+    solutionSlugs: ["temporary-engineering-power"],
+    applicationSlugs: ["engineering-power-supply"],
+    hero: "/products/tkmc-2000p-hero.webp",
+    applicationImage: "/products/tkmc-2000p-application.webp",
+    catalogSource: { version: "1.3", page: 7 },
+    published: true,
+  },
+  {
+    slug: "tkmc-4000",
+    model: "TKMC-4000",
+    productType: "Mobile Energy Storage EV Charger",
+    category: "mobile-power",
+    summary: "Mobile energy storage EV charging for AC output and engineering power supply applications.",
+    capacityKwh: 400,
+    outputPowerKw: 360,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '10" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T ×2 (CCS1 / CCS2 / CHAdeMO)",
+    specs: [
+      { label: "Recharge mode 1", value: "EV DC Charger" },
+      { label: "Recharge mode 2", value: "AC 3-phase / 120 kW" },
+    ],
+    dimensions: "3500 × 1750 × 1250 mm",
+    weight: "≈4800 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Mobile charging", "AC output", "Engineering power supply"],
+    applications: ["Mobile Charger", "AC Output", "Engineering Power Supply"],
+    solutionSlugs: ["temporary-engineering-power"],
+    applicationSlugs: ["engineering-power-supply"],
+    hero: "/products/tkmc-4000-hero.webp",
+    applicationImage: "/products/tkmc-4000-application.webp",
+    catalogSource: { version: "1.3", page: 8 },
+    published: true,
+  },
+  {
+    slug: "tkmc-10000",
+    model: "TKMC-10000",
+    productType: "Mobile Energy Storage Charging System",
+    category: "mobile-power",
+    summary: "Large mobile energy storage charging for PV-storage charging and AC output applications.",
+    capacityKwh: 1000,
+    outputPowerKw: 480,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '10" Touching Screen ×2',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T ×4 (CCS1 / CCS2 / CHAdeMO)",
+    specs: [
+      { label: "Recharge mode 1", value: "EV DC Charger" },
+      { label: "Recharge mode 2", value: "AC 3-phase / 240 kW" },
+    ],
+    dimensions: "6058 × 2550 × 2441 mm",
+    weight: "≈17000 kg",
+    protectionLevel: "IP54",
+    capabilities: ["Mobile charging", "PV-storage charging", "AC output"],
+    applications: ["Mobile Charger", "PV Storage Charger", "AC Output"],
+    solutionSlugs: ["temporary-engineering-power", "pv-ess-charging"],
+    applicationSlugs: ["engineering-power-supply", "pv-ess-charging-station"],
+    hero: "/products/tkmc-10000-hero.webp",
+    applicationImage: "/products/tkmc-10000-application.webp",
+    catalogSource: { version: "1.3", page: 9 },
+    published: true,
+  },
+  {
+    slug: "tkmc-2000",
+    model: "TKMC-2000",
+    productType: "Stationary Energy Storage Charging System",
+    category: "stationary-charging",
+    summary: "Stationary energy storage charging for PV-storage charging stations and grid-complementary systems.",
+    capacityKwh: 200,
+    outputPowerKw: 120,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '10" Touching Screen',
+    chargeMode: "Single-player / OCPP 1.6J",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T ×2 (CCS1 / CCS2 / CHAdeMO)",
+    specs: [
+      { label: "Recharge mode 1", value: "AC 3-phase / 30 kW" },
+      { label: "Recharge mode 2", value: "Solar PV-IN (optional)" },
+    ],
+    dimensions: "1300 × 1100 × 2077 mm",
+    weight: "≈2161 kg",
+    protectionLevel: "IP54",
+    capabilities: ["PV-storage charging", "Grid-complementary deployment"],
+    applications: ["PV-Storage Charging Station", "Grid Complementary System"],
+    solutionSlugs: ["pv-ess-charging"],
+    applicationSlugs: ["pv-ess-charging-station"],
+    hero: "/products/tkmc-2000-hero.webp",
+    applicationImage: "/products/tkmc-2000-application.webp",
+    catalogSource: { version: "1.3", page: 10 },
+    published: true,
+  },
+  {
+    slug: "tkmc-2600",
+    model: "TKMC-2600",
+    productType: "Stationary Energy Storage Charging System",
+    category: "stationary-charging",
+    summary: "Stationary energy storage charging for PV-storage charging stations and grid-complementary systems.",
+    capacityKwh: 261,
+    outputPowerKw: 120,
+    outputVoltage: "DC 200–1000 V",
+    outputCurrent: "0–250 A",
+    hmi: '10" Touching Screen',
+    chargeMode: "OCPP 1.6J / touching",
+    workingTemperature: "−10 °C to 60 °C",
+    cableLengthM: 7,
+    chargingGun: "GB/T ×2 (CCS1 / CCS2 / CHAdeMO)",
+    specs: [
+      { label: "Recharge mode 1", value: "AC 3-phase / 40 kW" },
+      { label: "Recharge mode 2", value: "Solar PV-IN (optional)" },
+    ],
+    dimensions: "1300 × 1100 × 2077 mm",
+    weight: "≈2365 kg",
+    protectionLevel: "IP54",
+    capabilities: ["PV-storage charging", "Grid-complementary deployment"],
+    applications: ["PV-Storage Charging Station", "Grid Complementary System"],
+    solutionSlugs: ["pv-ess-charging"],
+    applicationSlugs: ["pv-ess-charging-station"],
+    hero: "/products/tkmc-2600-hero.webp",
+    applicationImage: "/products/tkmc-2600-application.webp",
+    catalogSource: { version: "1.3", page: 11 },
+    published: true,
+  },
+];
+
+export function getPublishedProducts() {
+  return products.filter((product) => product.published);
+}
+
 export function getProduct(slug: string) {
-  return products.find((p) => p.slug === slug);
+  return getPublishedProducts().find((product) => product.slug === slug);
+}
+
+export function getProductsForSolution(slug: string) {
+  return getPublishedProducts().filter((product) => product.solutionSlugs.includes(slug));
+}
+
+export function getProductsForApplication(slug: string) {
+  return getPublishedProducts().filter((product) => product.applicationSlugs.includes(slug));
+}
+
+export function getProductSpecs(product: Product): SpecRow[] {
+  return [
+    { label: "Battery capacity", value: `${product.capacityKwh} kWh` },
+    { label: "Output power", value: `${product.outputPowerKw} kW` },
+    { label: "Output voltage", value: product.outputVoltage },
+    { label: "Output current", value: product.outputCurrent },
+    { label: "HMI", value: product.hmi },
+    { label: "Charge mode", value: product.chargeMode },
+    { label: "Working temperature", value: product.workingTemperature },
+    { label: "Charger cable length", value: `${product.cableLengthM} m` },
+    { label: "Charging gun", value: product.chargingGun },
+    ...product.specs,
+    { label: "Size", value: product.dimensions },
+    { label: "Weight", value: product.weight },
+    { label: "Protection level", value: product.protectionLevel },
+  ];
 }

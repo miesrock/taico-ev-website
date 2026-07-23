@@ -4,135 +4,85 @@ export type Solution = {
   title: string;
   headline: string;
   summary: string;
-  audience: string[];
   pains: string[];
-  outcomes: string[];
   approach: string[];
-  productsHint: string;
-  keywords: string[];
 };
 
 export const solutions: Solution[] = [
   {
-    slug: "ev-dealership-charging",
-    eyebrow: "Priority 01 · Automotive retail",
-    title: "EV Dealership Charging",
-    headline: "Build mobile charging service capability for modern dealerships.",
+    slug: "emergency-ev-charging",
+    eyebrow: "Solution 01 · Mobile response",
+    title: "Emergency EV Charging",
+    headline: "Bring energy to the vehicle when the charger is not where it is needed.",
     summary:
-      "Help dealers keep demo, delivery, and aftersales vehicles ready without waiting for grid expansion or fixed bay construction.",
-    audience: [
-      "Automotive dealers & 4S stores",
-      "Dealer groups and OEM retail networks",
-      "Aftersales & membership service teams",
-    ],
+      "A mobile energy storage charging system supports roadside EV rescue and other response-led charging deployments.",
     pains: [
-      "Demo and delivery vehicles need reliable top-ups on demand",
-      "Fixed charging bays are limited or fully occupied",
-      "Site grid capacity blocks fast expansion",
-      "New fixed infrastructure takes too long to permit and install",
-      "EV customer experience and service revenue are under pressure",
-    ],
-    outcomes: [
-      "Rapid energy for test-drive and showroom vehicles",
-      "Delivery-ready charge assurance",
-      "Aftersales emergency / courtesy charging",
-      "Doorstep or on-lot mobile service options",
-      "Differentiated customer experience",
-      "Membership and paid add-on service models",
+      "An EV needs energy away from a fixed charging bay",
+      "The response location changes from call to call",
+      "Charging capacity must travel with the service operation",
     ],
     approach: [
-      "Map vehicle mix, dwell times, and peak retail moments",
-      "Deploy portable or mobile battery-backed chargers on the lot",
-      "Integrate into demo, PDI, delivery, and aftersales workflows",
-      "Enable staff-operated or branded customer-facing service packages",
-    ],
-    productsHint: "G2V portable / flexible charging · mid-size mobile battery stations",
-    keywords: [
-      "EV charging solution for dealerships",
-      "mobile EV charging for car dealers",
-      "dealership EV charging without grid upgrade",
+      "Confirm vehicle, connector, and operating location requirements",
+      "Select a mobile charging system with the required storage and output power",
+      "Confirm final operating and deployment configuration before quotation",
     ],
   },
   {
-    slug: "ev-roadside-assistance",
-    eyebrow: "Priority 02 · Roadside & insurance",
-    title: "Roadside Assistance Charging",
-    headline: "Bring fast charging directly to stranded EV drivers.",
+    slug: "charge-on-demand",
+    eyebrow: "Solution 02 · Flexible service",
+    title: "Charge On Demand",
+    headline: "Move charging capability to the vehicle instead of reserving a fixed bay.",
     summary:
-      "Turn roadside assistance into a high-value EV recovery service — charge on site, reduce unnecessary towing, and protect the driver experience.",
-    audience: [
-      "Roadside assistance fleets",
-      "Towing operators expanding into EV recovery",
-      "Insurers and automotive service platforms",
-      "EV charging service operators",
-    ],
+      "A mobile energy storage charging robot supports on-demand EV charging where flexible positioning is required.",
     pains: [
-      "Stranded EVs create long recovery times and frustrated drivers",
-      "Towing is costly, slow, and not always necessary",
-      "Fixed chargers are not where the vehicle actually stopped",
-      "Operators need a service model that can bill per call, membership, or annual cover",
-    ],
-    outcomes: [
-      "On-location energy delivery to stranded vehicles",
-      "Fewer unnecessary tows",
-      "Faster response outcomes for drivers",
-      "Better NPS for insurers and service platforms",
-      "New pay-per-use, membership, or annual service packages",
+      "Vehicles may not be parked beside a fixed charger",
+      "Charging demand shifts between bays or operating periods",
+      "Operators need a mobile charging format for the service workflow",
     ],
     approach: [
-      "Outfit response vehicles with mobile battery charging units",
-      "Define dispatch rules by SOC, vehicle class, and location",
-      "Train crews for safe high-power mobile charging workflows",
-      "Package offerings for B2B contracts with insurers and platforms",
-    ],
-    productsHint: "XF-class mid-size mobile charging stations · portable high-power units",
-    keywords: [
-      "mobile EV roadside assistance charger",
-      "EV recovery charging",
-      "charge stranded EV on site",
+      "Map where vehicles wait and where charging service is required",
+      "Assess travel paths, grades, clearance, and operating space",
+      "Confirm final configuration and operating procedure before deployment",
     ],
   },
   {
-    slug: "ev-charging-without-grid-upgrade",
-    eyebrow: "Priority 03 · Commercial property",
-    title: "Charging Without Grid Upgrade",
-    headline: "Deploy EV charging capacity where the grid cannot keep up.",
+    slug: "temporary-engineering-power",
+    eyebrow: "Solution 03 · Field deployment",
+    title: "Temporary & Engineering Power",
+    headline: "Combine mobile EV charging with AC output for temporary power applications.",
     summary:
-      "For hotels, malls, parking operators, and properties that need EV charging now — without multi-year infrastructure projects.",
-    audience: [
-      "Hotels, malls, and commercial parking",
-      "Property managers and REITs",
-      "Resorts and mixed-use destinations",
-      "Charging operators bridging temporary demand",
-    ],
+      "Higher-capacity mobile energy storage systems are configured for mobile charging, AC output, and engineering power supply applications.",
     pains: [
-      "EV demand is rising but fixed infrastructure is slow and expensive",
-      "Grid capacity upgrades block projects",
-      "Temporary events, seasonal peaks, or construction phases need flexible capacity",
-      "Revenue and guest experience opportunities are deferred for years",
-    ],
-    outcomes: [
-      "Battery-backed or temporary EV charging stations",
-      "Faster go-live versus permanent civil + grid works",
-      "Capacity where it is needed, when it is needed",
-      "Option to relocate or scale as demand shifts",
-      "Pathway from temporary deployment to permanent strategy",
+      "Power demand moves with a temporary or engineering operation",
+      "EV charging and site power can be required at the same deployment",
+      "A fixed installation may not match the operating location",
     ],
     approach: [
-      "Audit peak demand, dwell patterns, and available power",
-      "Size storage + charging power for realistic utilization",
-      "Deploy mobile energy hubs or temporary stations",
-      "Monitor utilization and plan grid-tied expansion only when ROI is clear",
+      "Define the DC charging and AC power requirements separately",
+      "Review deployment access, transport, and operating conditions",
+      "Confirm the project-specific power and recharge configuration",
     ],
-    productsHint: "Mobile battery charging stations · X/F-class commercial energy hubs",
-    keywords: [
-      "EV charging without grid upgrade",
-      "battery-powered EV charging station",
-      "temporary EV charging for commercial parking",
+  },
+  {
+    slug: "pv-ess-charging",
+    eyebrow: "Solution 04 · Stationary energy",
+    title: "PV-ESS Charging",
+    headline: "Build charging capacity around energy storage, solar input, and the available grid connection.",
+    summary:
+      "Stationary energy storage charging systems support PV-storage charging stations and grid-complementary system applications.",
+    pains: [
+      "A charging site needs energy storage alongside DC charging",
+      "Solar input may be part of the site energy design",
+      "The available grid connection must be considered in the final configuration",
+    ],
+    approach: [
+      "Review the site load, grid connection, and charging demand",
+      "Determine whether PV input is required for the project",
+      "Confirm the final station configuration and installation scope",
     ],
   },
 ];
 
 export function getSolution(slug: string) {
-  return solutions.find((s) => s.slug === slug);
+  return solutions.find((solution) => solution.slug === slug);
 }

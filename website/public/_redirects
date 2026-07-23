@@ -1,2 +1,7 @@
-# Cloudflare Pages redirects (if needed later)
-# /old-path /new-path 301
+# Legacy tier pages have no verified one-to-one TKMC replacement.
+/products/g2v/ /products/ 302
+/products/mobile-battery-station/ /products/ 302
+/products/commercial-energy-hub/ /products/ 302
+
+# Previous scenario-only case pages are replaced by catalog-supported applications.
+/cases/* /applications/ 302

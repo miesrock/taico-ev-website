@@ -1,89 +1,66 @@
 ---
+import { applications } from "../data/applications";
+import { resourceLinks } from "../data/navigation";
+import { getPublishedProducts } from "../data/products";
+import { site } from "../data/site";
 import { solutions } from "../data/solutions";
-import { products } from "../data/products";
-import { cases } from "../data/cases";
 
+const products = getPublishedProducts();
 const year = new Date().getFullYear();
 ---
 
 <footer class="border-t border-line bg-void-2/80">
   <div class="wave-divider"></div>
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
       <div class="lg:col-span-1">
         <div class="flex items-center gap-3">
           <img src="/brand/taico-mark.png" alt="TAICO" class="h-6 w-auto rounded-sm" />
           <p class="font-display text-sm font-semibold tracking-[0.14em] text-ink">TAICO EV</p>
         </div>
         <p class="mt-3 max-w-sm text-sm leading-relaxed text-muted">
-          Mobile EV charging and energy storage for commercial users constrained by grid,
-          site, or time.
-        </p>
-        <p class="mt-4 font-mono text-[11px] uppercase tracking-[0.16em] text-faint">
-          Powered by TAICO · Manufacturing excellence
+          Mobile energy storage charging systems for flexible EV charging, temporary power, and PV-ESS applications.
         </p>
       </div>
 
       <div>
         <p class="label-tech mb-4">Solutions</p>
         <ul class="space-y-2 text-sm text-muted">
-          {
-            solutions.map((s) => (
-              <li>
-                <a class="transition hover:text-wave-cyan" href={`/solutions/${s.slug}/`}>
-                  {s.title}
-                </a>
-              </li>
-            ))
-          }
+          {solutions.map((solution) => <li><a class="transition hover:text-wave-cyan" href={`/solutions/${solution.slug}/`}>{solution.title}</a></li>)}
         </ul>
       </div>
 
       <div>
         <p class="label-tech mb-4">Products</p>
         <ul class="space-y-2 text-sm text-muted">
-          {
-            products.map((p) => (
-              <li>
-                <a class="transition hover:text-wave-cyan" href={`/products/${p.slug}/`}>
-                  {p.model}
-                </a>
-              </li>
-            ))
-          }
+          {products.map((product) => <li><a class="transition hover:text-wave-cyan" href={`/products/${product.slug}/`}>{product.model}</a></li>)}
         </ul>
       </div>
 
       <div>
-        <p class="label-tech mb-4">Cases</p>
+        <p class="label-tech mb-4">Applications</p>
         <ul class="space-y-2 text-sm text-muted">
-          {
-            cases.map((c) => (
-              <li>
-                <a class="transition hover:text-wave-cyan" href={`/cases/${c.slug}/`}>
-                  {c.eyebrow.replace(/^Case \d+ · /, "")}
-                </a>
-              </li>
-            ))
-          }
+          {applications.map((application) => <li><a class="transition hover:text-wave-cyan" href={`/applications/${application.slug}/`}>{application.title}</a></li>)}
         </ul>
       </div>
 
       <div>
-        <p class="label-tech mb-4">Signal</p>
-        <p class="text-sm text-muted">
-          <a class="transition hover:text-wave-cyan" href="https://taicoev.com">taicoev.com</a>
-        </p>
-        <p class="mt-2 text-sm text-muted">
-          <a class="transition hover:text-wave-cyan" href="mailto:hello@taicoev.com">
-            hello@taicoev.com
-          </a>
-        </p>
+        <p class="label-tech mb-4">Resources</p>
+        <ul class="space-y-2 text-sm text-muted">
+          {resourceLinks.map((resource) => <li><a class="transition hover:text-wave-cyan" href={resource.href}>{resource.label}</a></li>)}
+        </ul>
+        <p class="mt-5 text-sm text-muted"><a class="transition hover:text-wave-cyan" href={site.emailHref}>{site.email}</a></p>
+      </div>
+
+      <div>
+        <p class="label-tech mb-4">Company</p>
+        <p class="text-sm leading-relaxed text-muted">TAICO EV</p>
+        <a class="mt-2 inline-block text-sm text-muted transition hover:text-wave-cyan" href={site.emailHref}>Contact the team</a>
       </div>
     </div>
 
     <p class="mt-10 border-t border-line pt-6 font-mono text-[11px] text-faint">
-      © {year} TAICO EV · Analogue Waves interface · Content evolving
+      © {year} TAICO EV · Product facts sourced from TAICO MC 2026 Catalog v1.3
     </p>
   </div>
 </footer>

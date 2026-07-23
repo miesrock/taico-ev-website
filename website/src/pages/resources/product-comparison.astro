@@ -1,0 +1,26 @@
+---
+import CtaBand from "../../components/CtaBand.astro";
+import Layout from "../../layouts/Layout.astro";
+import { getPublishedProducts, productCategories } from "../../data/products";
+
+const products = getPublishedProducts();
+---
+
+<Layout title="Product Comparison | TAICO EV" description="Compare published TKMC battery capacity, output power, format, and catalog application.">
+  <section class="section-pad">
+    <p class="label-tech">TKMC product comparison</p>
+    <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold tracking-wide text-ink">Compare published capacity and output power.</h1>
+    <p class="mt-4 max-w-2xl text-muted">This table uses only fields published in TAICO MC 2026 Catalog v1.3. Confirm the final configuration for your project.</p>
+  </section>
+
+  <section class="section-pad !pt-0">
+    <div class="glass overflow-x-auto rounded-3xl">
+      <table class="w-full min-w-[820px] text-left text-sm">
+        <thead class="border-b border-line bg-void/30 text-muted"><tr><th class="px-6 py-4 font-medium">Model</th><th class="px-6 py-4 font-medium">Product type</th><th class="px-6 py-4 font-medium">Category</th><th class="px-6 py-4 font-medium">Capacity</th><th class="px-6 py-4 font-medium">Output</th><th class="px-6 py-4 font-medium">Catalog applications</th></tr></thead>
+        <tbody>{products.map((product, index) => <tr class:list={[index % 2 === 0 ? "bg-void/20" : "bg-transparent"]}><td class="px-6 py-4 font-mono text-wave-cyan"><a href={`/products/${product.slug}/`} class="hover:underline">{product.model}</a></td><td class="px-6 py-4 text-ink">{product.productType}</td><td class="px-6 py-4 text-muted">{productCategories.find((category) => category.slug === product.category)?.title}</td><td class="px-6 py-4 text-ink">{product.capacityKwh} kWh</td><td class="px-6 py-4 text-ink">{product.outputPowerKw} kW</td><td class="px-6 py-4 text-muted">{product.applications.join(" · ")}</td></tr>)}</tbody>
+      </table>
+    </div>
+  </section>
+
+  <CtaBand title="Need a project-specific comparison?" body="Share the operating scenario, vehicles, expected energy demand, and available site power." />
+</Layout>

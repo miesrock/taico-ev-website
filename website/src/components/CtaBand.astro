@@ -1,4 +1,5 @@
 ---
+import {site} from "../data/site.ts";
 interface Props {
   title?: string;
   body?: string;
@@ -9,8 +10,8 @@ interface Props {
 const {
   title = "Tell Us About Your Charging Challenge",
   body = "Share your site constraints, vehicle mix, and deployment timeline. We will map a mobile energy solution.",
-  href = "/#contact",
-  label = "Talk to an EV Charging Specialist",
+  href = site.emailHref,
+  label = "Request configuration",
 } = Astro.props;
 ---
 
@@ -35,7 +36,7 @@ const {
     <p class="mt-3 max-w-xl text-muted">{body}</p>
     <div class="mt-8 flex flex-wrap gap-3">
       <a class="btn-primary" href={href}>{label}</a>
-      <a class="btn-ghost" href="mailto:hello@taicoev.com">hello@taicoev.com</a>
+      <a class="btn-ghost" href="/resources/product-comparison/">Compare TKMC products</a>
     </div>
   </div>
 </section>
