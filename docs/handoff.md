@@ -2,6 +2,8 @@
 
 以下内容可直接交给 Codex、新对话或外部开发人员，作为项目启动上下文。
 
+> **Current v1 catalog scope (authoritative):** Public product facts come only from TAICO MC 2026 Catalog v1.3, represented in `website/src/data/products.ts`. The published range is TKMC-800, TKMC-1500, TKMC-1000, TKMC-2000P, TKMC-4000, TKMC-10000, TKMC-2000, and TKMC-2600. Product applications are defined by the current catalog-backed data model. The historical strategy, customer segments, legacy models, routes, cases, benefits, and metrics below are **archived planning context**; do not turn them into public copy or product claims without current catalog support.
+
 ---
 
 ## 1. 项目背景

@@ -65,9 +65,9 @@ git add -A && git commit -m "update: ..." && git push
 2. [x] Organize folders + copy handoff
 3. [x] Scaffold Astro + Tailwind
 4. [x] Layout shell + Home placeholder
-5. [x] Visual system (Analogue Waves / dark tech) + 3 Solutions pages
-6. [x] Product pages (G2V / M75 / H200) + TAICO-branded heroes
-7. [x] Case study pages + photorealistic scene visuals
+5. [x] Visual system (Analogue Waves / dark tech) + catalog-backed solution pages
+6. [x] Product pages for the eight TKMC Catalog v1.3 models
+7. [x] Catalog-backed application and comparison pages
 8. [x] GitHub repo created + code pushed
 9. [ ] Cloudflare Pages connect + first deploy
 10. [ ] Domain DNS `taicoev.com`
