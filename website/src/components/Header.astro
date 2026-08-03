@@ -2,7 +2,7 @@
 import { applications } from "../data/applications";
 import { resourceLinks, primaryNavigation } from "../data/navigation";
 import { getProduct, getPublishedProducts, productCategories } from "../data/products";
-import { site } from "../data/site";
+import { contactHref, site } from "../data/site";
 import { solutions } from "../data/solutions";
 
 const products = getPublishedProducts();
@@ -57,7 +57,7 @@ const featuredProduct = getProduct("tkmc-800");
         </svg>
       </button>
 
-      <a href={site.emailHref} class="btn-primary hidden !px-4 !py-2 text-sm sm:inline-flex">Talk to a Specialist</a>
+      <a href={contactHref({ source: "header" })} class="btn-primary hidden !px-4 !py-2 text-sm sm:inline-flex">Talk to a Specialist</a>
       <button
         type="button"
         class="nav-menu-button inline-flex h-9 w-9 items-center justify-center rounded-full border border-line-strong text-wave-cyan lg:hidden"
@@ -218,7 +218,7 @@ const featuredProduct = getProduct("tkmc-800");
         {resourceLinks.map((resource) => <li><a href={resource.href}>{resource.label}</a></li>)}
       </ul>
     </details>
-    <a href={site.emailHref} class="btn-primary mt-5 w-full">Talk to a Specialist</a>
+    <a href={contactHref({ source: "mobile-header" })} class="btn-primary mt-5 w-full">Talk to a Specialist</a>
   </nav>
 </dialog>
 

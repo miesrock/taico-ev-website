@@ -1,18 +1,27 @@
 ---
-import {site} from "../data/site.ts";
+import { contactHref } from "../data/site.ts";
 interface Props {
   title?: string;
   body?: string;
-  href?: string;
   label?: string;
+  source?: string;
+  product?: string;
+  solution?: string;
+  application?: string;
+  pagePath?: string;
 }
 
 const {
   title = "Tell Us About Your Charging Challenge",
   body = "Share your site constraints, vehicle mix, and deployment timeline. We will map a mobile energy solution.",
-  href = site.emailHref,
   label = "Request configuration",
+  source = "cta-band",
+  product,
+  solution,
+  application,
+  pagePath,
 } = Astro.props;
+const href = contactHref({ source, product, solution, application, page: pagePath });
 ---
 
 <section class="section-pad">

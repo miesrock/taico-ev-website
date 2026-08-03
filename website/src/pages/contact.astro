@@ -1,0 +1,71 @@
+---
+import LeadForm from "../components/LeadForm.astro";
+import WaveField from "../components/WaveField.astro";
+import { getApplication } from "../data/applications";
+import { getProduct } from "../data/products";
+import { site } from "../data/site";
+import { getSolution } from "../data/solutions";
+import Layout from "../layouts/Layout.astro";
+
+const query = Astro.url.searchParams;
+const limited = (value: string | null, max: number) => {
+  const normalized = value?.trim() || "";
+  return normalized.length <= max ? normalized : "";
+};
+const safeSlug = (value: string | null) => /^[a-z0-9-]{1,80}$/.test(value || "") ? value! : "";
+const product = getProduct(safeSlug(query.get("product")));
+const solution = getSolution(safeSlug(query.get("solution")));
+const application = getApplication(safeSlug(query.get("application")));
+const source = /^[a-z0-9][a-z0-9_-]{0,79}$/.test(query.get("source") || "") ? query.get("source")! : "contact-page";
+const pagePath = /^\/[\x20-\x7e]{0,199}$/.test(query.get("page") || "") ? query.get("page")! : "/contact/";
+const utm = {
+  utm_source: limited(query.get("utm_source"), 100),
+  utm_medium: limited(query.get("utm_medium"), 100),
+  utm_campaign: limited(query.get("utm_campaign"), 100),
+  utm_content: limited(query.get("utm_content"), 100),
+  utm_term: limited(query.get("utm_term"), 100),
+};
+const contextLabel = [
+  product && `Product: ${product.model}`,
+  solution && `Solution: ${solution.title}`,
+  application && `Application: ${application.title}`,
+].filter(Boolean).join(" · ");
+const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "";
+---
+
+<Layout title="Contact TAICO EV | Mobile Energy Solutions" description="Share your EV charging, temporary power, or PV-storage deployment requirements with TAICO EV.">
+  {siteKey && <script slot="head" src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>}
+  <section class="relative overflow-hidden">
+    <WaveField intensity="low" />
+    <div class="section-pad relative z-10 !pb-10">
+      <p class="label-tech">TAICO EV · Inquiry channel</p>
+      <h1 class="font-display mt-5 max-w-3xl text-4xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">Tell us where energy needs to move.</span></h1>
+      <p class="mt-5 max-w-2xl text-lg leading-relaxed text-muted">Share your operating scenario, vehicle mix, deployment location, and timeline. The TAICO EV team will help identify a suitable starting configuration.</p>
+      {contextLabel && <p class="mt-6 max-w-2xl text-sm text-wave-cyan">{contextLabel}</p>}
+    </div>
+  </section>
+
+  <section class="section-pad !pt-0">
+    <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_20rem]">
+      <LeadForm
+        siteKey={siteKey}
+        source={source}
+        product={product?.slug}
+        solution={solution?.slug}
+        applicationContext={application?.slug}
+        pagePath={pagePath}
+        utm={utm}
+        contextLabel={contextLabel}
+      />
+      <aside class="glass h-fit rounded-3xl p-6">
+        <p class="label-tech">What happens next</p>
+        <ol class="mt-5 space-y-5 text-sm text-muted">
+          <li class="flex gap-3"><span class="font-mono text-wave-cyan">01</span><span>We review your operating context and required capacity.</span></li>
+          <li class="flex gap-3"><span class="font-mono text-wave-cyan">02</span><span>We confirm the relevant product or solution starting point.</span></li>
+          <li class="flex gap-3"><span class="font-mono text-wave-cyan">03</span><span>We reply with the next configuration questions.</span></li>
+        </ol>
+        <p class="mt-6 border-t border-line pt-5 text-sm leading-relaxed text-muted">Prefer email? <a class="text-wave-cyan hover:underline" href={site.emailHref}>{site.email}</a></p>
+      </aside>
+    </div>
+  </section>
+</Layout>

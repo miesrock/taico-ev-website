@@ -2,7 +2,7 @@
 import { applications } from "../data/applications";
 import { resourceLinks } from "../data/navigation";
 import { getPublishedProducts } from "../data/products";
-import { site } from "../data/site";
+import { contactHref, site } from "../data/site";
 import { solutions } from "../data/solutions";
 
 const products = getPublishedProducts();
@@ -55,7 +55,7 @@ const year = new Date().getFullYear();
       <div>
         <p class="label-tech mb-4">Company</p>
         <p class="text-sm leading-relaxed text-muted">TAICO EV</p>
-        <a class="mt-2 inline-block text-sm text-muted transition hover:text-wave-cyan" href={site.emailHref}>Contact the team</a>
+        <a class="mt-2 inline-block text-sm text-muted transition hover:text-wave-cyan" href={contactHref({ source: "footer" })}>Contact the team</a>
       </div>
     </div>
 

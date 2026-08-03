@@ -1,3 +1,5 @@
+import type { IcpMatchResult } from "../../src/lib/icp/types.ts";
+
 export const applications = [
   "EV dealership",
   "Roadside assistance",
@@ -34,6 +36,25 @@ export type LeadValidation =
   | { ok: true; value: LeadInput }
   | { ok: false; fields: Partial<Record<keyof LeadInput, string>> };
 
+export type LeadContext = {
+  sourceComponent: string;
+  productSlug: string;
+  solutionSlug: string;
+  applicationSlug: string;
+  pagePath: string;
+  locale: "en";
+  referrer: string;
+  utmSource: string;
+  utmMedium: string;
+  utmCampaign: string;
+  utmContent: string;
+  utmTerm: string;
+};
+
+export type LeadContextValidation =
+  | { ok: true; value: LeadContext }
+  | { ok: false; fields: Record<string, string> };
+
 const hasValue = <T extends readonly string[]>(values: T, value: string): value is T[number] =>
   (values as readonly string[]).includes(value);
 
@@ -50,6 +71,40 @@ export function normalizeText(value: unknown): string {
 
 export function sanitizeEmailHeader(value: string): string {
   return normalizeText(value).replace(/\n+/g, " ");
+}
+
+export function validateLeadContext(input: Record<string, unknown>): LeadContextValidation {
+  const value: LeadContext = {
+    sourceComponent: normalizeText(input.source).toLowerCase() || "contact-page",
+    productSlug: normalizeText(input.product).toLowerCase(),
+    solutionSlug: normalizeText(input.solution).toLowerCase(),
+    applicationSlug: normalizeText(input.application_context).toLowerCase(),
+    pagePath: normalizeText(input.page_path) || "/contact/",
+    locale: "en",
+    referrer: normalizeText(input.referrer),
+    utmSource: normalizeText(input.utm_source),
+    utmMedium: normalizeText(input.utm_medium),
+    utmCampaign: normalizeText(input.utm_campaign),
+    utmContent: normalizeText(input.utm_content),
+    utmTerm: normalizeText(input.utm_term),
+  };
+  const fields: Record<string, string> = {};
+
+  if (!/^[a-z0-9][a-z0-9_-]{0,79}$/.test(value.sourceComponent)) fields.source = "Enter a valid source.";
+  if (!/^\/[\x20-\x7e]{0,199}$/.test(value.pagePath)) fields.page_path = "Enter a valid page path.";
+  if (value.referrer.length > 500 || (value.referrer && !/^https?:\/\//i.test(value.referrer))) {
+    fields.referrer = "Enter a valid referrer.";
+  }
+  if (value.productSlug.length > 80) fields.product = "Enter a valid product context.";
+  if (value.solutionSlug.length > 80) fields.solution = "Enter a valid solution context.";
+  if (value.applicationSlug.length > 80) fields.application_context = "Enter a valid application context.";
+  if (value.utmSource.length > 100) fields.utm_source = "Enter a shorter campaign source.";
+  if (value.utmMedium.length > 100) fields.utm_medium = "Enter a shorter campaign medium.";
+  if (value.utmCampaign.length > 100) fields.utm_campaign = "Enter a shorter campaign name.";
+  if (value.utmContent.length > 100) fields.utm_content = "Enter a shorter campaign content value.";
+  if (value.utmTerm.length > 100) fields.utm_term = "Enter a shorter campaign term.";
+
+  return Object.keys(fields).length ? { ok: false, fields } : { ok: true, value };
 }
 
 export function validateLead(input: Record<string, unknown>): LeadValidation {
@@ -77,4 +132,65 @@ export function validateLead(input: Record<string, unknown>): LeadValidation {
   if (!value.privacyConsent) fields.privacyConsent = "Consent is required to send an inquiry.";
 
   return Object.keys(fields).length ? { ok: false, fields } : { ok: true, value };
+}
+
+export type LeadNotificationInput = {
+  lead: LeadInput;
+  context: LeadContext;
+  icp: IcpMatchResult;
+  createdAt: string;
+};
+
+export type LeadNotification = {
+  subject: string;
+  replyTo: string;
+  text: string;
+  html: string;
+};
+
+const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (character) => ({
+  "&": "&amp;",
+  "<": "&lt;",
+  ">": "&gt;",
+  '"': "&quot;",
+  "'": "&#39;",
+}[character] ?? character));
+
+const htmlText = (value: string) => escapeHtml(value).replace(/\n/g, "<br />");
+
+export function buildLeadNotification({ lead, context, icp, createdAt }: LeadNotificationInput): LeadNotification {
+  const topMatch = icp.matches[0];
+  const subject = sanitizeEmailHeader(`[TAICO EV Lead] ${lead.country} · ${lead.application} · ${lead.company}`);
+  const rows = [
+    ["Contact", lead.name],
+    ["Company", lead.company],
+    ["Country / region", lead.country],
+    ["Work email", lead.email],
+    ["Phone / WhatsApp", lead.phone || "Not provided"],
+    ["Application", lead.application],
+    ["Purchase timeline", lead.timeline || "Not provided"],
+    ["Product", context.productSlug || "Not provided"],
+    ["Solution", context.solutionSlug || "Not provided"],
+    ["Application context", context.applicationSlug || "Not provided"],
+    ["Source", context.sourceComponent],
+    ["Page path", context.pagePath],
+    ["Referrer", context.referrer || "Not provided"],
+    ["UTM", [context.utmSource, context.utmMedium, context.utmCampaign, context.utmContent, context.utmTerm].filter(Boolean).join(" / ") || "Not provided"],
+    ["ICP decision", icp.decision],
+    ["ICP top match", topMatch?.icpSlug || "Not matched"],
+    ["ICP score / band", topMatch ? `${topMatch.fitScore} / ${topMatch.fitBand}` : "Not matched"],
+    ["ICP rule version", icp.ruleVersion],
+    ["Submitted at", createdAt],
+  ] as const;
+  const text = [
+    subject,
+    "",
+    ...rows.map(([label, value]) => `${label}: ${value}`),
+    "",
+    "Requirements:",
+    lead.requirements,
+  ].join("\n");
+  const html = `<h1>${escapeHtml(subject)}</h1><table>${rows.map(([label, value]) => `<tr><th align="left">${escapeHtml(label)}</th><td>${htmlText(value)}</td></tr>`).join("")}</table><h2>Requirements</h2><p>${htmlText(lead.requirements)}</p>`;
+
+  return { subject, replyTo: sanitizeEmailHeader(lead.email), text, html };
 }

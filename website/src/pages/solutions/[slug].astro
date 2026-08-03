@@ -3,6 +3,7 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getProductsForSolution } from "../../data/products";
+import { contactHref } from "../../data/site";
 import { getSolution, solutions } from "../../data/solutions";
 
 export function getStaticPaths() {
@@ -14,6 +15,7 @@ if (!solution) throw new Error(`Unknown solution: ${Astro.params.slug}`);
 
 const products = getProductsForSolution(solution.slug);
 const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
+const solutionContact = contactHref({ source: "solution-detail", solution: solution.slug, page: Astro.url.pathname });
 ---
 
 <Layout title={`${solution.title} | TAICO EV`} description={solution.summary}>
@@ -25,7 +27,7 @@ const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
       <h1 class="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.title}</span></h1>
       <p class="mt-4 max-w-2xl text-xl text-ink/90">{solution.headline}</p>
       <p class="mt-4 max-w-2xl text-muted leading-relaxed">{solution.summary}</p>
-      <div class="mt-8 flex flex-wrap gap-3"><a class="btn-primary" href="#contact">Discuss this scenario</a><a class="btn-ghost" href="/products/">View products</a></div>
+      <div class="mt-8 flex flex-wrap gap-3"><a class="btn-primary" href={solutionContact}>Discuss this scenario</a><a class="btn-ghost" href="/products/">View products</a></div>
     </div>
   </section>
 
@@ -45,5 +47,5 @@ const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
 
   <section class="section-pad !pt-0"><p class="label-tech">Other solutions</p><div class="mt-5 grid gap-4 md:grid-cols-3">{otherSolutions.map((item) => <a href={`/solutions/${item.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.title}</h2><p class="mt-2 text-sm text-muted">{item.headline}</p></a>)}</div></section>
 
-  <div id="contact"><CtaBand title={`Discuss ${solution.title}`} /></div>
+  <div id="contact"><CtaBand source="solution-detail" solution={solution.slug} pagePath={Astro.url.pathname} title={`Discuss ${solution.title}`} /></div>
 </Layout>

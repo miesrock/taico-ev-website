@@ -2,5 +2,19 @@
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "taico-ev",
   "pages_build_output_dir": "./dist",
-  "compatibility_date": "2026-07-15"
+  "compatibility_date": "2026-07-15",
+  "vars": {
+    "ALLOWED_ORIGINS": "https://taicoev.com,https://www.taicoev.com",
+    "LEAD_FALLBACK_EMAIL": "sales12@taicopower.com",
+    "LEAD_RETENTION_DAYS": "180"
+  },
+  "d1_databases": [
+    {
+      "binding": "LEADS_DB",
+      "database_name": "taico-ev-leads",
+      // Replace this placeholder after `wrangler d1 create`; do not deploy it as-is.
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "./migrations"
+    }
+  ]
 }

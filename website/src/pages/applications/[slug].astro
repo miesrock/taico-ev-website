@@ -36,5 +36,5 @@ const solution = getSolution(application.solutionSlug);
     </div>
   </section>
 
-  <div id="contact"><CtaBand title={`Discuss ${application.title}`} /></div>
+  <div id="contact"><CtaBand source="application-detail" application={application.slug} solution={application.solutionSlug} pagePath={Astro.url.pathname} title={`Discuss ${application.title}`} /></div>
 </Layout>

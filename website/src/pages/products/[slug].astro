@@ -3,6 +3,7 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getProduct, getProductSeo, getProductSpecs, getProductStructuredData, getPublishedProducts, productCategories } from "../../data/products";
+import { contactHref } from "../../data/site";
 import { solutions } from "../../data/solutions";
 
 export function getStaticPaths() {
@@ -19,6 +20,7 @@ const relatedSolutions = solutions.filter((solution) => product.solutionSlugs.in
 const relatedProducts = getPublishedProducts().filter(
   (item) => item.category === product.category && item.slug !== product.slug,
 );
+const productContact = contactHref({ source: "product-detail", product: product.slug, page: Astro.url.pathname });
 ---
 
 <Layout title={seo.title} description={seo.description}>
@@ -35,7 +37,7 @@ const relatedProducts = getPublishedProducts().filter(
           <p class="mt-4 max-w-xl text-muted leading-relaxed">{product.summary}</p>
           <p class="mt-6 font-mono text-lg text-wave-cyan">{product.capacityKwh} kWh · {product.outputPowerKw} kW</p>
           <div class="mt-8 flex flex-wrap gap-3">
-            <a class="btn-primary" href="#contact">Request configuration</a>
+            <a class="btn-primary" href={productContact}>Request configuration</a>
             <a class="btn-ghost" href="#specifications">View specifications</a>
           </div>
           <p class="mt-6 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">TAICO MC 2026 Catalog v{product.catalogSource.version} · Page {product.catalogSource.page}</p>
@@ -114,5 +116,5 @@ const relatedProducts = getPublishedProducts().filter(
     )
   }
 
-  <div id="contact"><CtaBand title={`Configure ${product.model} for your project`} body="Share your vehicle, charging, power, and deployment requirements with the TAICO EV team." /></div>
+  <div id="contact"><CtaBand source="product-detail" product={product.slug} pagePath={Astro.url.pathname} title={`Configure ${product.model} for your project`} body="Share your vehicle, charging, power, and deployment requirements with the TAICO EV team." /></div>
 </Layout>
