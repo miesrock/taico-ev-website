@@ -2,7 +2,7 @@
 import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
-import { getProduct, getProductSpecs, getPublishedProducts, productCategories } from "../../data/products";
+import { getProduct, getProductSeo, getProductSpecs, getProductStructuredData, getPublishedProducts, productCategories } from "../../data/products";
 import { solutions } from "../../data/solutions";
 
 export function getStaticPaths() {
@@ -13,13 +13,16 @@ const product = getProduct(Astro.params.slug!);
 if (!product) throw new Error(`Unknown product: ${Astro.params.slug}`);
 
 const specifications = getProductSpecs(product);
+const seo = getProductSeo(product);
+const structuredData = getProductStructuredData(product, Astro.site ?? "https://taicoev.com");
 const relatedSolutions = solutions.filter((solution) => product.solutionSlugs.includes(solution.slug));
 const relatedProducts = getPublishedProducts().filter(
   (item) => item.category === product.category && item.slug !== product.slug,
 );
 ---
 
-<Layout title={`${product.model} | ${product.productType} | TAICO EV`} description={product.summary}>
+<Layout title={seo.title} description={seo.description}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
   <section class="relative overflow-hidden">
     <WaveField intensity="mid" />
     <div class="section-pad relative z-10 !pt-16 !pb-10">
@@ -47,9 +50,9 @@ const relatedProducts = getPublishedProducts().filter(
   <section class="section-pad !py-12">
     <div class="grid gap-6 lg:grid-cols-2">
       <div class="glass rounded-3xl p-6">
-        <p class="label-tech">Catalog applications</p>
+        <p class="label-tech">Catalog use cases</p>
         <ul class="mt-4 space-y-3">
-          {product.applications.map((application) => <li class="flex gap-3 text-sm text-muted"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-wave-cyan"></span>{application}</li>)}
+          {product.catalogApplications.map((application) => <li class="flex gap-3 text-sm text-muted"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-wave-cyan"></span>{application}</li>)}
         </ul>
       </div>
       <div class="glass rounded-3xl p-6">

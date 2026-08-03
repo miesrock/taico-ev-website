@@ -2,6 +2,7 @@
 import "../styles/global.css";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
+import { site } from "../data/site";
 
 interface Props {
   title?: string;
@@ -12,6 +13,27 @@ const {
   title = "TAICO EV | Mobile Energy Solutions Beyond the Grid",
   description = "Mobile and stationary energy storage charging systems for roadside EV rescue, on-demand charging, AC output, engineering power supply, and PV-storage charging applications.",
 } = Astro.props;
+const siteUrl = new URL("/", `https://${site.domain}`).href;
+const structuredData = {
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteUrl}#organization`,
+      name: site.name,
+      url: siteUrl,
+      logo: new URL(site.logo, siteUrl).href,
+      email: site.email,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteUrl}#website`,
+      name: site.name,
+      url: siteUrl,
+      publisher: { "@id": `${siteUrl}#organization` },
+    },
+  ],
+};
 ---
 
 <!doctype html>
@@ -21,13 +43,17 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
     <meta name="theme-color" content="#04060c" />
+    <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+    <slot name="head" />
     <script is:inline>
       (() => {
         try {
-          if (localStorage.getItem("taico-theme") === "light") {
-            document.documentElement.dataset.theme = "light";
-            document.querySelector('meta[name="theme-color"]')?.setAttribute("content", "#f4f7fb");
-          }
+          const savedTheme = localStorage.getItem("taico-theme");
+          const theme = savedTheme === "light" || savedTheme === "dark"
+            ? savedTheme
+            : window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+          document.documentElement.dataset.theme = theme;
+          document.querySelector('meta[name="theme-color"]')?.setAttribute("content", theme === "light" ? "#f4f7fb" : "#04060c");
         } catch {}
       })();
     </script>
@@ -36,7 +62,11 @@ const {
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700&family=Sora:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/syabro/neat-annotations/neat-annotations.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Orbitron:wght@500;600;700&family=Shantell+Sans:wght@400;500;600&family=Sora:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
     <title>{title}</title>

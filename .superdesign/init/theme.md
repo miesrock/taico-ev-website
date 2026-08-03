@@ -1,0 +1,343 @@
+# Design tokens
+
+## Compact token summary
+- Framework: Astro 7 + Tailwind CSS 4.
+- Fonts: Sora (body), Orbitron (display), JetBrains Mono (technical labels/specs).
+- Dark base: `#04060c` void, `#070b16` secondary void, `#0b1220` panels, `#e8eefc` ink.
+- Accent spectrum: cyan `#22d3ee`, blue `#3b82f6`, violet `#8b5cf6`, mint `#34d399`, pink `#f472b6`.
+- Light theme overrides are defined under `html[data-theme="light"]`.
+- Layout: max content width `max-w-6xl`; sections use 16px/24px horizontal and 64px/80px vertical padding.
+- Shapes: cards `rounded-2xl`/ `rounded-3xl`; CTAs are pill-shaped.
+- Surface: dark glass gradient, one-pixel low-contrast border, backdrop blur, cyan/violet glow.
+- Motion: 180–250ms transitions; reduced-motion mode disables smooth scroll, transitions, and hover translation.
+
+## Global CSS source
+```css
+@import "tailwindcss";
+
+/* Limit scan to site source — avoid parent docs/PDFs */
+@source "../**/*.{astro,html,js,jsx,ts,tsx,md,mdx}";
+
+@theme {
+  --font-sans: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Orbitron", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* Deep space base */
+  --color-void: #04060c;
+  --color-void-2: #070b16;
+  --color-panel: #0b1220;
+  --color-panel-2: #101a2e;
+
+  /* Analogue wave spectrum */
+  --color-wave-cyan: #22d3ee;
+  --color-wave-blue: #3b82f6;
+  --color-wave-violet: #8b5cf6;
+  --color-wave-mint: #34d399;
+  --color-wave-pink: #f472b6;
+
+  --color-ink: #e8eefc;
+  --color-muted: #94a3b8;
+  --color-faint: #64748b;
+  --color-line: rgba(148, 163, 184, 0.18);
+  --color-line-strong: rgba(34, 211, 238, 0.35);
+
+  --color-brand-50: #ecfeff;
+  --color-brand-100: #cffafe;
+  --color-brand-500: #22d3ee;
+  --color-brand-600: #06b6d4;
+  --color-brand-700: #0891b2;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    color-scheme: dark;
+  }
+
+  html[data-theme="light"] {
+    color-scheme: light;
+    --color-void: #f4f7fb;
+    --color-void-2: #e9eff7;
+    --color-panel: #ffffff;
+    --color-panel-2: #edf3f9;
+    --color-wave-cyan: #0891b2;
+    --color-wave-blue: #2563eb;
+    --color-wave-violet: #7c3aed;
+    --color-wave-mint: #059669;
+    --color-wave-pink: #db2777;
+    --color-ink: #0b1628;
+    --color-muted: #43536a;
+    --color-faint: #64748b;
+    --color-line: rgba(15, 23, 42, 0.13);
+    --color-line-strong: rgba(8, 145, 178, 0.4);
+  }
+
+  body {
+    @apply bg-void text-ink antialiased font-sans;
+    overflow-x: clip;
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(59, 130, 246, 0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(139, 92, 246, 0.12), transparent),
+      radial-gradient(ellipse 50% 30% at 0% 100%, rgba(34, 211, 238, 0.08), transparent);
+    background-attachment: fixed;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  html[data-theme="light"] body {
+    background-image:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(37, 99, 235, 0.13), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 0%, rgba(124, 58, 237, 0.09), transparent),
+      radial-gradient(ellipse 50% 30% at 0% 100%, rgba(8, 145, 178, 0.09), transparent);
+  }
+
+  ::selection {
+    background: rgba(34, 211, 238, 0.35);
+    color: #fff;
+  }
+}
+
+@layer components {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .text-gradient {
+    background: linear-gradient(120deg, #e8eefc 0%, #22d3ee 45%, #8b5cf6 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  .text-gradient-soft {
+    background: linear-gradient(120deg, #94a3b8 0%, #e8eefc 50%, #22d3ee 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  html[data-theme="light"] .text-gradient {
+    background-image: linear-gradient(120deg, #0b1628 0%, #0284a8 48%, #6d28d9 100%);
+  }
+
+  html[data-theme="light"] .text-gradient-soft {
+    background-image: linear-gradient(120deg, #475569 0%, #0b1628 50%, #0284a8 100%);
+  }
+
+  .glass {
+    background: linear-gradient(
+      145deg,
+      rgba(16, 26, 46, 0.75) 0%,
+      rgba(11, 18, 32, 0.55) 100%
+    );
+    border: 1px solid var(--color-line);
+    backdrop-filter: blur(16px);
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.04) inset,
+      0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  .glass-hover {
+    transition:
+      border-color 0.25s ease,
+      box-shadow 0.25s ease,
+      transform 0.25s ease;
+  }
+
+  .glass-hover:hover {
+    border-color: var(--color-line-strong);
+    box-shadow:
+      0 0 0 1px rgba(34, 211, 238, 0.1) inset,
+      0 0 40px -12px rgba(34, 211, 238, 0.35),
+      0 20px 50px -20px rgba(0, 0, 0, 0.6);
+    transform: translateY(-2px);
+  }
+
+  html[data-theme="light"] .glass {
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.86), rgba(237, 243, 249, 0.72));
+    box-shadow:
+      0 0 0 1px rgba(8, 145, 178, 0.04) inset,
+      0 20px 50px -24px rgba(15, 23, 42, 0.22);
+  }
+
+  html[data-theme="light"] .glass-hover:hover {
+    box-shadow:
+      0 0 0 1px rgba(8, 145, 178, 0.08) inset,
+      0 0 36px -16px rgba(8, 145, 178, 0.25),
+      0 20px 50px -24px rgba(15, 23, 42, 0.22);
+  }
+
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-full px-5 py-3 text-sm font-semibold transition;
+    color: #04060c;
+    background: linear-gradient(135deg, #22d3ee 0%, #3b82f6 55%, #8b5cf6 100%);
+    box-shadow: 0 0 24px -4px rgba(34, 211, 238, 0.55);
+  }
+
+  .btn-primary:hover {
+    filter: brightness(1.08);
+    box-shadow: 0 0 32px -2px rgba(34, 211, 238, 0.75);
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center rounded-full border px-5 py-3 text-sm font-semibold text-ink transition;
+    border-color: var(--color-line-strong);
+    background: rgba(11, 18, 32, 0.5);
+  }
+
+  .btn-ghost:hover {
+    background: rgba(34, 211, 238, 0.1);
+    border-color: rgba(34, 211, 238, 0.55);
+  }
+
+  html[data-theme="light"] .btn-ghost {
+    background: rgba(255, 255, 255, 0.62);
+  }
+
+  html[data-theme="light"] .btn-ghost:hover {
+    background: rgba(8, 145, 178, 0.09);
+    border-color: rgba(8, 145, 178, 0.55);
+  }
+
+  .theme-toggle {
+    @apply inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-wave-cyan transition;
+    border-color: var(--color-line-strong);
+    background: color-mix(in srgb, var(--color-panel) 62%, transparent);
+  }
+
+  .theme-toggle:hover {
+    background: color-mix(in srgb, var(--color-wave-cyan) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid var(--color-wave-cyan);
+    outline-offset: 3px;
+  }
+
+  .theme-toggle svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .theme-icon-moon,
+  html[data-theme="light"] .theme-icon-sun {
+    display: none;
+  }
+
+  html[data-theme="light"] .theme-icon-moon {
+    display: block;
+  }
+
+  .label-tech {
+    @apply font-mono text-xs uppercase tracking-[0.22em] text-wave-cyan;
+  }
+
+  .section-pad {
+    @apply mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20;
+  }
+
+  .wave-divider {
+    height: 1px;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(34, 211, 238, 0.5),
+      rgba(139, 92, 246, 0.45),
+      transparent
+    );
+  }
+
+  .grid-overlay {
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.06) 1px, transparent 1px);
+    background-size: 48px 48px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 40%, black, transparent);
+  }
+
+  html[data-theme="light"] .grid-overlay {
+    background-image:
+      linear-gradient(rgba(51, 65, 85, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(51, 65, 85, 0.08) 1px, transparent 1px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body,
+  .glass-hover,
+  .btn-primary,
+  .btn-ghost,
+  .theme-toggle {
+    transition: none;
+  }
+
+  .glass-hover:hover,
+  .theme-toggle:hover {
+    transform: none;
+  }
+}
+
+```
+
+## Astro configuration
+```js
+// @ts-check
+import { defineConfig } from 'astro/config';
+
+import tailwindcss from '@tailwindcss/vite';
+
+// https://astro.build/config
+export default defineConfig({
+  site: 'https://taicoev.com',
+  trailingSlash: 'always',
+  vite: {
+    plugins: [tailwindcss()],
+    server: {
+      watch: {
+        ignored: ['**/docs/**', '**/assets/**', '**/.venv/**'],
+      },
+    },
+  },
+});
+
+```
+
+## Package manifest
+```json
+{
+  "name": "taico-ev-website",
+  "type": "module",
+  "version": "0.0.1",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "test": "node --experimental-strip-types --test tests/*.test.ts",
+    "deploy": "npm run build && wrangler pages deploy dist --project-name taico-ev",
+    "preview": "astro preview",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.9",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "wrangler": "^4.111.0"
+  }
+}
+
+```
+

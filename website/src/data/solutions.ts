@@ -8,7 +8,7 @@ export type Solution = {
   approach: string[];
 };
 
-export const solutions: Solution[] = [
+export const solutions = [
   {
     slug: "emergency-ev-charging",
     eyebrow: "Solution 01 · Mobile response",
@@ -115,7 +115,9 @@ export const solutions: Solution[] = [
       "Confirm the final station configuration and installation scope",
     ],
   },
-];
+] as const satisfies readonly Solution[];
+
+export type SolutionSlug = (typeof solutions)[number]["slug"];
 
 export function getSolution(slug: string) {
   return solutions.find((solution) => solution.slug === slug);

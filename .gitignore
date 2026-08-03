@@ -24,3 +24,6 @@ assets/images/
 
 # Optional local product source sheets
 website/public/products/source/
+
+# Superdesign local draft workspace
+.superdesign/tmp/

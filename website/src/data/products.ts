@@ -1,3 +1,6 @@
+import type { ApplicationSlug } from "./applications";
+import type { SolutionSlug } from "./solutions";
+
 export type SpecRow = { label: string; value: string };
 
 export type ProductCategory =
@@ -10,6 +13,13 @@ export type CatalogSource = {
   version: "1.3";
   page: number;
 };
+
+export type ProductSeo = {
+  title: string;
+  description: string;
+};
+
+export type JsonLd = Record<string, unknown>;
 
 export type Product = {
   slug: string;
@@ -32,9 +42,10 @@ export type Product = {
   weight: string;
   protectionLevel: string;
   capabilities: string[];
-  applications: string[];
-  solutionSlugs: string[];
-  applicationSlugs: string[];
+  /** Exact wording from the catalog; not the site's application entity relation. */
+  catalogApplications: string[];
+  solutionSlugs: SolutionSlug[];
+  applicationSlugs: ApplicationSlug[];
   hero: string;
   applicationImage: string;
   catalogSource: CatalogSource;
@@ -95,7 +106,7 @@ export const products: Product[] = [
     weight: "≈900 kg",
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
-    applications: ["Mobile Charger", "Roadside EV Rescue"],
+    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
     solutionSlugs: ["emergency-ev-charging"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-800-hero.webp",
@@ -126,7 +137,7 @@ export const products: Product[] = [
     weight: "≈1682 kg",
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
-    applications: ["Mobile Charger", "Roadside EV Rescue"],
+    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
     solutionSlugs: ["emergency-ev-charging"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-1500-hero.webp",
@@ -169,7 +180,7 @@ export const products: Product[] = [
     weight: "≈1256 kg",
     protectionLevel: "IP54",
     capabilities: ["Self-propelled mobile charging"],
-    applications: ["Mobile EV Charger"],
+    catalogApplications: ["Mobile EV Charger"],
     solutionSlugs: ["charge-on-demand"],
     applicationSlugs: ["on-demand-charging"],
     hero: "/products/tkmc-1000-hero.webp",
@@ -200,7 +211,7 @@ export const products: Product[] = [
     weight: "≈2500 kg",
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output"],
-    applications: ["Mobile Charger", "AC Output"],
+    catalogApplications: ["Mobile Charger", "AC Output"],
     solutionSlugs: ["ac-output-e-generator"],
     applicationSlugs: ["ac-output-e-generator"],
     hero: "/products/tkmc-2000p-hero.webp",
@@ -231,7 +242,7 @@ export const products: Product[] = [
     weight: "≈4800 kg",
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output", "Engineering power supply"],
-    applications: ["Mobile Charger", "AC Output", "Engineering Power Supply"],
+    catalogApplications: ["Mobile Charger", "AC Output", "Engineering Power Supply"],
     solutionSlugs: ["ac-output-e-generator", "temporary-engineering-power"],
     applicationSlugs: ["ac-output-e-generator", "engineering-power-supply"],
     hero: "/products/tkmc-4000-hero.webp",
@@ -262,7 +273,7 @@ export const products: Product[] = [
     weight: "≈17000 kg",
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "PV-storage charging", "AC output"],
-    applications: ["Mobile Charger", "PV Storage Charger", "AC Output"],
+    catalogApplications: ["Mobile Charger", "PV Storage Charger", "AC Output"],
     solutionSlugs: ["ac-output-e-generator", "pv-storage-charger"],
     applicationSlugs: ["ac-output-e-generator", "pv-storage-charger"],
     hero: "/products/tkmc-10000-hero.webp",
@@ -293,7 +304,7 @@ export const products: Product[] = [
     weight: "≈2161 kg",
     protectionLevel: "IP54",
     capabilities: ["PV-storage charging", "Grid-complementary deployment"],
-    applications: ["PV-Storage Charging Station", "Grid Complementary System"],
+    catalogApplications: ["PV-Storage Charging Station", "Grid Complementary System"],
     solutionSlugs: ["pv-ess-charging"],
     applicationSlugs: ["pv-ess-charging-station"],
     hero: "/products/tkmc-2000-hero.webp",
@@ -324,7 +335,7 @@ export const products: Product[] = [
     weight: "≈2365 kg",
     protectionLevel: "IP54",
     capabilities: ["PV-storage charging", "Grid-complementary deployment"],
-    applications: ["PV-Storage Charging Station", "Grid Complementary System"],
+    catalogApplications: ["PV-Storage Charging Station", "Grid Complementary System"],
     solutionSlugs: ["pv-ess-charging"],
     applicationSlugs: ["pv-ess-charging-station"],
     hero: "/products/tkmc-2600-hero.webp",
@@ -365,5 +376,46 @@ export function getProductSpecs(product: Product): SpecRow[] {
     { label: "Size", value: product.dimensions },
     { label: "Weight", value: product.weight },
     { label: "Protection level", value: product.protectionLevel },
+  ];
+}
+
+export function getProductSeo(product: Product): ProductSeo {
+  return {
+    title: `${product.model} | ${product.productType} | TAICO EV`,
+    description: product.summary,
+  };
+}
+
+export function getProductStructuredData(product: Product, site: URL | string): JsonLd[] {
+  const productUrl = new URL(`/products/${product.slug}/`, site).href;
+  const category = productCategories.find((item) => item.slug === product.category)?.title;
+
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "@id": `${productUrl}#product`,
+      name: product.model,
+      description: product.summary,
+      url: productUrl,
+      image: new URL(product.hero, site).href,
+      model: product.model,
+      brand: { "@type": "Brand", name: "TAICO EV" },
+      ...(category && { category }),
+      additionalProperty: getProductSpecs(product).map(({ label, value }) => ({
+        "@type": "PropertyValue",
+        name: label,
+        value,
+      })),
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", site).href },
+        { "@type": "ListItem", position: 2, name: "Products", item: new URL("/products/", site).href },
+        { "@type": "ListItem", position: 3, name: product.model, item: productUrl },
+      ],
+    },
   ];
 }

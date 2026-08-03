@@ -1,0 +1,33 @@
+# TAICO EV
+
+> English-language v1 website for TAICO EV mobile and stationary energy storage charging systems.
+
+## Source and claim boundary
+
+Product facts on this site are limited to TAICO MC 2026 Catalog v1.3, pages 4–11. Treat the published catalog as the source for product specifications, capabilities, and applications; final configurations are project-specific. Do not infer or state unconfirmed ICPs, customer cases, certifications, performance metrics, ROI, or other claims.
+
+## Important public routes
+
+- https://taicoev.com/ — overview
+- https://taicoev.com/solutions/ — deployment solutions
+- https://taicoev.com/products/ — TKMC product range
+- https://taicoev.com/applications/ — catalog-supported applications
+- https://taicoev.com/resources/ — catalog resources
+- https://taicoev.com/resources/product-comparison/ — product comparison
+
+Solution routes: https://taicoev.com/solutions/emergency-ev-charging/, https://taicoev.com/solutions/charge-on-demand/, https://taicoev.com/solutions/ac-output-e-generator/, https://taicoev.com/solutions/temporary-engineering-power/, https://taicoev.com/solutions/pv-storage-charger/, https://taicoev.com/solutions/pv-ess-charging/.
+
+Application routes: https://taicoev.com/applications/roadside-ev-rescue/, https://taicoev.com/applications/on-demand-charging/, https://taicoev.com/applications/ac-output-e-generator/, https://taicoev.com/applications/engineering-power-supply/, https://taicoev.com/applications/pv-storage-charger/, https://taicoev.com/applications/pv-ess-charging-station/.
+
+## Published catalog models
+
+- TKMC-800 — Mobile Energy Storage Charging System — https://taicoev.com/products/tkmc-800/
+- TKMC-1500 — Mobile Energy Storage Charging System — https://taicoev.com/products/tkmc-1500/
+- TKMC-1000 — Mobile Energy Storage Charging Robot — https://taicoev.com/products/tkmc-1000/
+- TKMC-2000P — Mobile Energy Storage Charging System — https://taicoev.com/products/tkmc-2000p/
+- TKMC-4000 — Mobile Energy Storage EV Charger — https://taicoev.com/products/tkmc-4000/
+- TKMC-10000 — Mobile Energy Storage Charging System — https://taicoev.com/products/tkmc-10000/
+- TKMC-2000 — Stationary Energy Storage Charging System — https://taicoev.com/products/tkmc-2000/
+- TKMC-2600 — Stationary Energy Storage Charging System — https://taicoev.com/products/tkmc-2600/
+
+For the current catalog or a project-specific configuration review, use the technical-documentation request on https://taicoev.com/resources/#technical-documentation.

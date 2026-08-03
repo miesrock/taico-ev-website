@@ -7,7 +7,7 @@ export type Application = {
 };
 
 /** Application wording is limited to the TAICO MC 2026 Catalog v1.3. */
-export const applications: Application[] = [
+export const applications = [
   {
     slug: "roadside-ev-rescue",
     eyebrow: "Application 01 · Catalog use",
@@ -50,7 +50,9 @@ export const applications: Application[] = [
     summary: "Stationary energy storage charging for PV-storage and grid-complementary systems.",
     solutionSlug: "pv-ess-charging",
   },
-];
+] as const satisfies readonly Application[];
+
+export type ApplicationSlug = (typeof applications)[number]["slug"];
 
 export function getApplication(slug: string) {
   return applications.find((application) => application.slug === slug);

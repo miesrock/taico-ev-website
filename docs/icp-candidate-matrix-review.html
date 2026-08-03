@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>TAICO EV 内部 ICP 模型｜管理层审阅</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --ink: #16223a;
+        --muted: #66758c;
+        --line: #d9e2ec;
+        --page: #f4f7fb;
+        --surface: #ffffff;
+        --navy: #142a4b;
+        --blue: #1d6fd1;
+        --blue-soft: #eaf3ff;
+        --amber: #9b5a00;
+        --amber-soft: #fff4df;
+        --green: #12673b;
+        --green-soft: #e9f8ee;
+        --red: #a22b2b;
+        --red-soft: #fff0f0;
+        --shadow: 0 18px 42px rgba(23, 42, 72, .10);
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+        line-height: 1.55;
+      }
+
+      .page { width: min(1160px, calc(100% - 32px)); margin: 0 auto 64px; }
+      .hero {
+        margin: 28px 0 22px;
+        padding: clamp(28px, 6vw, 64px);
+        border-radius: 24px;
+        color: #fff;
+        background: radial-gradient(circle at 86% 15%, rgba(84, 173, 255, .48), transparent 24%), linear-gradient(120deg, #142440, #1a558f);
+        box-shadow: var(--shadow);
+      }
+      .eyebrow { margin: 0 0 12px; color: #b9dcff; font-size: 13px; font-weight: 700; letter-spacing: .1em; }
+      h1 { max-width: 800px; margin: 0; font-size: clamp(30px, 5vw, 52px); line-height: 1.12; letter-spacing: -.04em; }
+      h2 { margin: 0 0 8px; font-size: 22px; letter-spacing: -.02em; }
+      h3 { margin: 0; font-size: 16px; }
+      p { margin: 0; }
+      .hero-copy { max-width: 745px; margin-top: 18px; color: #e6f2ff; font-size: 17px; }
+      .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+      .tag { padding: 5px 10px; border: 1px solid rgba(255, 255, 255, .28); border-radius: 999px; color: #eef7ff; font-size: 12px; font-weight: 650; }
+      section { margin-top: 22px; }
+      .lead, .small { color: var(--muted); }
+      .small { font-size: 13px; }
+      .grid { display: grid; gap: 14px; }
+      .metrics { grid-template-columns: repeat(4, minmax(0, 1fr)); margin-top: 14px; }
+      .two { grid-template-columns: minmax(0, 1.1fr) minmax(310px, .9fr); }
+      .card { padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+      .metric-value { margin: 6px 0 2px; color: var(--navy); font-size: 34px; font-weight: 750; letter-spacing: -.04em; }
+      .metric-label { color: var(--muted); font-size: 13px; }
+      .notice { display: grid; grid-template-columns: auto 1fr; gap: 12px; align-items: start; padding: 18px; border: 1px solid #f0d38b; border-radius: 16px; background: var(--amber-soft); color: #5b3c04; }
+      .notice-mark { display: grid; width: 26px; height: 26px; place-items: center; border-radius: 50%; background: #f0c35b; color: #563400; font-weight: 800; }
+      .notice strong { display: block; margin-bottom: 2px; }
+
+      .model { grid-template-columns: repeat(3, minmax(0, 1fr)); margin-top: 14px; }
+      .layer { position: relative; min-height: 220px; padding: 18px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+      .layer::after { position: absolute; top: 43px; right: -18px; z-index: 1; color: #8b99ad; content: "→"; font-size: 25px; }
+      .layer:last-child::after { content: none; }
+      .layer-number { display: inline-grid; width: 30px; height: 30px; place-items: center; border-radius: 50%; background: var(--blue-soft); color: var(--blue); font-size: 13px; font-weight: 800; }
+      .layer h3 { margin-top: 12px; }
+      .layer p { margin-top: 7px; color: var(--muted); font-size: 14px; }
+      .layer ul { display: grid; gap: 5px; margin: 13px 0 0; padding-left: 18px; color: #415067; font-size: 13px; }
+
+      .scope { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+      .scope-item { padding: 14px; border-radius: 12px; }
+      .scope-item strong { display: block; margin-bottom: 3px; font-size: 14px; }
+      .scope-yes { background: var(--green-soft); color: #225c3b; }
+      .scope-no { background: var(--red-soft); color: #803131; }
+
+      .evidence { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 7px; margin-top: 14px; }
+      .evidence-step { min-height: 180px; padding: 13px; border-top: 4px solid #c9d3e0; background: #f8fafc; }
+      .evidence-step.current { border-color: var(--amber); background: var(--amber-soft); }
+      .evidence-step.crm { border-color: #4c9a70; background: #eef9f1; }
+      .evidence-step.proposal { border-color: var(--blue); background: var(--blue-soft); }
+      .evidence-step strong { display: block; font-size: 19px; }
+      .evidence-step p { margin-top: 6px; color: #546277; font-size: 13px; }
+      .evidence-step .rule { display: block; margin-top: 12px; font-size: 12px; font-weight: 750; }
+      .blocked { color: var(--red); }
+      .conditional { color: var(--green); }
+      .proposal-text { color: var(--blue); }
+
+      .score-flow { display: grid; gap: 8px; margin-top: 14px; }
+      .score-row { display: grid; grid-template-columns: 32px 1fr auto; gap: 10px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--line); }
+      .score-row:last-child { border-bottom: 0; }
+      .score-number { display: grid; width: 28px; height: 28px; place-items: center; border-radius: 50%; background: var(--blue-soft); color: var(--blue); font-size: 13px; font-weight: 800; }
+      .pending { padding: 4px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); font-size: 12px; font-weight: 700; white-space: nowrap; }
+      .fit-summary { display: grid; gap: 10px; margin-top: 14px; }
+      .fit-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 12px; }
+      .fit-row p { margin-top: 3px; color: var(--muted); font-size: 13px; }
+      .badge { align-self: start; padding: 4px 8px; border-radius: 999px; background: var(--amber-soft); color: var(--amber); font-size: 12px; font-weight: 700; white-space: nowrap; }
+
+      .review { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+      .review-item { padding: 15px; border-left: 3px solid var(--blue); background: var(--surface); }
+      .review-item h3 { font-size: 15px; }
+      .review-item p { margin-top: 5px; color: var(--muted); font-size: 13px; }
+      .table-wrap { overflow-x: auto; margin-top: 14px; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); }
+      table { width: 100%; min-width: 850px; border-collapse: collapse; font-size: 13px; }
+      th, td { padding: 12px 14px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
+      th { background: #f8fafc; color: #526176; font-size: 12px; white-space: nowrap; }
+      tbody tr:last-child td { border-bottom: 0; }
+      code { padding: 2px 5px; border-radius: 5px; background: #edf2f7; color: #31425a; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 11px; }
+      .source { margin-top: 20px; color: var(--muted); font-size: 12px; }
+      .source a { color: var(--blue); }
+
+      @media (max-width: 900px) {
+        .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .model, .review { grid-template-columns: 1fr; }
+        .layer { min-height: 0; }
+        .layer::after { top: auto; right: auto; bottom: -27px; left: 50%; content: "↓"; }
+        .evidence { grid-template-columns: 1fr; }
+        .evidence-step { min-height: 0; border-top-width: 0; border-left: 4px solid #c9d3e0; }
+        .two { grid-template-columns: 1fr; }
+      }
+      @media (max-width: 540px) {
+        .page { width: min(100% - 20px, 1160px); }
+        .hero { margin-top: 10px; border-radius: 18px; }
+        .metrics, .scope { grid-template-columns: 1fr; }
+        .fit-row { grid-template-columns: 1fr; }
+        .badge { justify-self: start; }
+      }
+      @media print {
+        body { background: #fff; }
+        .page { width: 100%; margin: 0; }
+        .hero { box-shadow: none; }
+        .card, .layer, .evidence-step, .table-wrap { break-inside: avoid; }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <p class="eyebrow">TAICO EV · 管理层内部审阅</p>
+        <h1>ICP 不是网站栏目；它是一条必须被验证的商业关系</h1>
+        <p class="hero-copy">本页审阅已批准的三层内部 ICP 模型：先登记候选组织类型，再核对产品适配，最后用研究与销售证据决定是否升级。当前范围为全球出口的通用探索，不代表任何国家、客户、市场需求或公开承诺。</p>
+        <div class="meta">
+          <span class="tag">仅限内部候选</span>
+          <span class="tag">全球出口 · 通用范围</span>
+          <span class="tag">TKMC 目录 v1.3 · 第 4–11 页</span>
+          <span class="tag">审阅：2026-07-31</span>
+        </div>
+      </header>
+
+      <section>
+        <div class="notice">
+          <div class="notice-mark">!</div>
+          <div><strong>审计结论：当前没有可公开的 ICP。</strong>候选对象是内部工作假设，不是已确认客户、市场事实或销售主张。现有 18 条产品—ICP 关系全部为 E1：目录支持用途，尚未证明买方、地区可售性或成交机会。</div>
+        </div>
+        <div class="grid metrics">
+          <article class="card"><p class="metric-label">注册候选 ICP</p><p class="metric-value">15</p><p class="small">去重后的组织类型</p></article>
+          <article class="card"><p class="metric-label">产品—ICP 适配关系</p><p class="metric-value">18</p><p class="small">当前目录范围内</p></article>
+          <article class="card"><p class="metric-label">销售确认（E2+）</p><p class="metric-value">0</p><p class="small">暂无书面确认</p></article>
+          <article class="card"><p class="metric-label">可公开 ICP</p><p class="metric-value">0</p><p class="small">暂无公开提案资格</p></article>
+        </div>
+      </section>
+
+      <section>
+        <h2>已批准的三层内部模型</h2>
+        <p class="lead">每一层回答不同问题；不得从“产品用途”直接跳到“公开客户页面”。</p>
+        <div class="grid model" aria-label="三层 ICP 内部模型">
+          <article class="layer">
+            <span class="layer-number">1</span>
+            <h3>ICP Registry<br>候选 ICP 注册表</h3>
+            <p>统一登记一个可治理的候选组织类型，而非把营销语变成事实。</p>
+            <ul>
+              <li><code>icpId</code>、<code>icpSlug</code> 与组织类型</li>
+              <li>候选组织类型；采购角色另行验证</li>
+              <li>范围：全球出口 / 通用</li>
+              <li>默认证据、CRM / 公开状态</li>
+            </ul>
+          </article>
+          <article class="layer">
+            <span class="layer-number">2</span>
+            <h3>Product–ICP Fit<br>产品—ICP 适配</h3>
+            <p>把候选 ICP 连到具体产品与目录用途，并保留可追溯的技术证据。</p>
+            <ul>
+              <li><code>relationshipId</code>、确切型号与目录页</li>
+              <li>原始目录用途与场景适配 1–5</li>
+              <li>证据等级 E0–E4</li>
+              <li>不是客户关系的证明</li>
+            </ul>
+          </article>
+          <article class="layer">
+            <span class="layer-number">3</span>
+            <h3>Validation &amp; Priority<br>验证与优先级</h3>
+            <p>记录研究、销售确认和升级决定；研究排序不等于商业优先级。</p>
+            <ul>
+              <li>跨市场复用度与购买紧迫度</li>
+              <li>研究优先级 = 三项评分之和</li>
+              <li>销售确认的 TAICO 商业适配</li>
+              <li>CRM / 公开晋级门槛</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="grid two">
+        <article class="card">
+          <h2>候选边界：范围可以宽，事实不能虚构</h2>
+          <p class="lead">第一层可以保留未来全球研究入口；但它不替代国家进入策略、可售配置或客户验证。</p>
+          <div class="scope">
+            <div class="scope-item scope-yes"><strong>可以内部记录</strong>全球出口通用范围、候选组织类型、角色假设、待核实的国家与场景。</div>
+            <div class="scope-item scope-no"><strong>不能由候选直接推出</strong>某国已可售、某客户会购买、市场规模、ROI、认证、交付案例或公开细分市场主张。</div>
+          </div>
+        </article>
+        <article class="card">
+          <h2>升级规则：谁能进入哪里</h2>
+          <p class="lead">每一步都需要记录证据与商业负责人；网站与 CRM 不是 E1 的默认去处。</p>
+          <div class="score-flow">
+            <div class="score-row"><span class="score-number">1</span><div><h3>先完成产品—ICP 关系</h3><p class="small">目录用途支持后仍只是 E1 内部候选。</p></div><span class="pending">内部</span></div>
+            <div class="score-row"><span class="score-number">2</span><div><h3>销售书面确认</h3><p class="small">确认买方、产品配置、目标区域与证据，才可升级 E2。</p></div><span class="pending">待销售</span></div>
+            <div class="score-row"><span class="score-number">3</span><div><h3>客户 / 营收验证与审批</h3><p class="small">公开表达还需客户许可、当前市场复核与独立批准。</p></div><span class="pending">独立门槛</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <h2>证据等级与公开门槛</h2>
+        <p class="lead">E0–E4 是证据成熟度，不是市场热度，更不是自动发布按钮。</p>
+        <div class="evidence" aria-label="E0 到 E4 的证据晋级图">
+          <article class="evidence-step"><strong>E0</strong><p>纯研究假设；没有目录关联或商业证据。</p><span class="rule blocked">仅内部研究 · 不公开</span></article>
+          <article class="evidence-step current"><strong>E1 · 当前 18 条</strong><p>目录用途支持；不能证明买方关系、区域机会或订单可能。</p><span class="rule blocked">内部候选矩阵 · 不公开</span></article>
+          <article class="evidence-step crm"><strong>E2</strong><p>销售确认的关系；仍须负责人和分群批准。</p><span class="rule conditional">未来 CRM 候选 · 不自动进入</span></article>
+          <article class="evidence-step proposal"><strong>E3</strong><p>客户已验证；仍须当前市场、措辞与客户同意。</p><span class="rule proposal-text">仅可提交公开提案</span></article>
+          <article class="evidence-step"><strong>E4</strong><p>营收已证明；用于商业优先级，仍须当前市场复核。</p><span class="rule conditional">可商业排序 · 不自动公开</span></article>
+        </div>
+      </section>
+
+      <section class="grid two">
+        <article class="card">
+          <h2>研究优先级：先评分三个初始维度</h2>
+          <p class="lead">这是决定先研究什么，不是宣布谁是 TAICO 的优先市场。每项 1–5，研究优先级为三项之和，证据来源必须可追溯。</p>
+          <div class="score-flow">
+            <div class="score-row"><span class="score-number">1</span><div><h3>产品 / 场景适配度</h3><p class="small">目录用途、配置与实际工作流是否相符。</p></div><span class="pending">可先研究</span></div>
+            <div class="score-row"><span class="score-number">2</span><div><h3>跨市场复用度</h3><p class="small">该关系是否能在多个出口市场重复研究；不是任何国家已可售的声明。</p></div><span class="pending">可先研究</span></div>
+            <div class="score-row"><span class="score-number">3</span><div><h3>购买紧迫度</h3><p class="small">痛点、预算窗口与替代方案是否形成可验证的购买动因。</p></div><span class="pending">可先研究</span></div>
+          </div>
+          <div class="notice" style="margin-top: 14px; padding: 14px;">
+            <div class="notice-mark">?</div>
+            <div><strong>TAICO 商业适配暂不评分。</strong>它必须由销售确认订单潜力、渠道与交付条件；在此之前不能把研究排序写成商业优先级。</div>
+          </div>
+        </article>
+        <article class="card">
+          <h2>当前最值得先核实的适配关系</h2>
+          <p class="lead">以下仅按目录用途的直接性列为研究起点，不是市场优先级或销售推荐。</p>
+          <div class="fit-summary">
+            <div class="fit-row"><div><h3>道路救援服务商 × TKMC-800 / 1500</h3><p>目录明确列出道路救援用途；仍待确认买方、区域和配置。</p></div><span class="badge">E1 · 内部</span></div>
+            <div class="fit-row"><div><h3>PV-ESS 集成商 × TKMC-10000</h3><p>目录列出 PV 储能充电用途；仍待确认方案角色与目标市场。</p></div><span class="badge">E1 · 内部</span></div>
+            <div class="fit-row"><div><h3>充电运营商 × TKMC-2000 / 2600</h3><p>目录列出 PV-储能充电站与电网互补；仍待确认运营模型与商业条件。</p></div><span class="badge">E1 · 内部</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section>
+        <h2>管理层审阅标准</h2>
+        <p class="lead">逐层通过，才允许进入下一层；缺任何一项就保留为内部候选。</p>
+        <div class="review">
+          <article class="review-item"><h3>1. Registry 是否可治理？</h3><p>组织类型是否去重？候选角色是否明确标注？是否仅使用“全球出口 / 通用”范围，而未暗示国家可售性？</p></article>
+          <article class="review-item"><h3>2. Fit 是否可追溯？</h3><p>是否能指向确切型号、目录页和用途？是否避免把用途证据误写成客户、买方或市场证据？</p></article>
+          <article class="review-item"><h3>3. Validation 是否能升级？</h3><p>是否有下一步研究、负责人和证据位置？销售是否确认 TAICO 商业适配，并批准 CRM 或公开用途？</p></article>
+        </div>
+      </section>
+
+      <section>
+        <h2>当前审计台账</h2>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>层级</th><th>当前状态</th><th>已知事实</th><th>未确认 / 不可外推</th><th>下一门槛</th></tr></thead>
+            <tbody>
+              <tr><td>ICP Registry</td><td>15 个候选 ICP；内部可见</td><td>候选组织类型、<code>icpId</code> / <code>icpSlug</code> 可统一登记；范围为全球出口通用探索</td><td>国家优先级、客户名单、采购角色与市场存在</td><td>指派商业负责人，记录研究范围</td></tr>
+              <tr><td>Product–ICP Fit</td><td>18 条关系，全部 E1</td><td>目录支持关联产品的用途；可记录 <code>relationshipId</code> 与场景适配</td><td>客户关系、采购意愿、可售配置、认证和成交机会</td><td>销售确认后才能升至 E2</td></tr>
+              <tr><td>Validation &amp; Priority</td><td>18 条 E1 研究初评；TAICO 商业适配待销售</td><td>已按产品 / 场景适配、跨市场复用度、购买紧迫度形成研究排序</td><td>商业优先级、CRM 分群、网站主张</td><td>记录销售证据与独立公开审批</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <p class="source">内部依据：<a href="./icp-candidate-matrix.md">ICP Candidate Matrix and Validation Sheet</a>、<a href="./icp-archive-signal-register.md">ICP Archive Signal Register</a>、<a href="../website/src/data/products.ts">产品技术记录</a>。本页为独立本地审阅页；候选关系与研究排序均不构成公开事实。</p>
+    </main>
+  </body>
+</html>
