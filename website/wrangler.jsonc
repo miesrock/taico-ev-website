@@ -12,8 +12,7 @@
     {
       "binding": "LEADS_DB",
       "database_name": "taico-ev-leads",
-      // Replace this placeholder after `wrangler d1 create`; do not deploy it as-is.
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "52fdc34b-c3e7-4738-9e02-e7c4a323385f",
       "migrations_dir": "./migrations"
     }
   ]
