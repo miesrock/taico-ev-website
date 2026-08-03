@@ -1,0 +1,1 @@
+ALTER TABLE leads ADD COLUMN company_type TEXT NOT NULL DEFAULT '';

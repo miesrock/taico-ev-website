@@ -7,6 +7,7 @@ import { sanitizeEmailHeader, validateLead, validateLeadContext } from "../funct
 const validLead = {
   name: "  Avery  Lee ",
   company: "Northstar Mobility",
+  companyType: "fleet_operator",
   email: "AVERY@EXAMPLE.COM",
   country: "United Kingdom",
   application: "Fleet charging",
@@ -37,6 +38,7 @@ test("returns field errors at required and length boundaries", () => {
     company: "",
     email: "not-an-email",
     country: "",
+    companyType: "unknown",
     application: "Unknown",
     requirements: "Too short",
     privacyConsent: false,
@@ -47,6 +49,7 @@ test("returns field errors at required and length boundaries", () => {
     assert.deepEqual(Object.keys(result.fields).sort(), [
       "application",
       "company",
+      "companyType",
       "country",
       "email",
       "name",
@@ -110,33 +113,34 @@ class FakeDatabase {
               updated_at: values[2],
               name: values[3],
               company: values[4],
-              email: values[5],
-              country: values[6],
-              phone: values[8],
-              application: values[9],
-              timeline: values[10],
-              message: values[11],
-              product_slug: values[12],
-              solution_slug: values[13],
-              application_slug: values[14],
-              page_path: values[15],
-              source_component: values[16],
-              locale: values[17],
-              referrer: values[18],
-              utm_source: values[19],
-              utm_medium: values[20],
-              utm_campaign: values[21],
-              utm_content: values[22],
-              utm_term: values[23],
-              icp_decision: values[24],
-              icp_top_match: values[25],
-              icp_score: values[26],
-              icp_band: values[27],
-              icp_rule_version: values[28],
-              icp_snapshot: values[29],
-              notification_status: values[30],
-              notification_attempts: values[31],
-              notification_error: values[32],
+              company_type: values[5],
+              email: values[6],
+              country: values[7],
+              phone: values[9],
+              application: values[10],
+              timeline: values[11],
+              message: values[12],
+              product_slug: values[13],
+              solution_slug: values[14],
+              application_slug: values[15],
+              page_path: values[16],
+              source_component: values[17],
+              locale: values[18],
+              referrer: values[19],
+              utm_source: values[20],
+              utm_medium: values[21],
+              utm_campaign: values[22],
+              utm_content: values[23],
+              utm_term: values[24],
+              icp_decision: values[25],
+              icp_top_match: values[26],
+              icp_score: values[27],
+              icp_band: values[28],
+              icp_rule_version: values[29],
+              icp_snapshot: values[30],
+              notification_status: values[31],
+              notification_attempts: values[32],
+              notification_error: values[33],
             };
             return { meta: { changes: 1 } };
           }
@@ -177,6 +181,7 @@ class FakeDatabase {
 const validRequest = {
   ...validLead,
   application: "Roadside assistance",
+  companyType: "roadside_assistance",
   requirements: "We need mobile charging for roadside EV rescue operations.",
   submission_key: "11111111-1111-4111-8111-111111111111",
   source: "product-detail",
@@ -202,9 +207,15 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
   const pending: Promise<unknown>[] = [];
   const originalFetch = globalThis.fetch;
   let emailCalls = 0;
-  globalThis.fetch = async (input) => {
-    if (String(input).includes("siteverify")) return Response.json({ success: true });
+  let siteverifyIdempotencyKey = "";
+  let notificationText = "";
+  globalThis.fetch = async (input, init) => {
+    if (String(input).includes("siteverify")) {
+      siteverifyIdempotencyKey = new URLSearchParams(String(init?.body || "")).get("idempotency_key") || "";
+      return Response.json({ success: true });
+    }
     emailCalls += 1;
+    notificationText = String((JSON.parse(String(init?.body || "{}")) as { text?: unknown }).text || "");
     return emailOk ? Response.json({ success: true, result: { delivered: ["sales@example.com"] } }) : Response.json({ success: false }, { status: 400 });
   };
   try {
@@ -222,7 +233,7 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
       waitUntil: (promise) => pending.push(promise),
     });
     await Promise.all(pending);
-    return { response, emailCalls };
+    return { response, emailCalls, siteverifyIdempotencyKey, notificationText };
   } finally {
     globalThis.fetch = originalFetch;
   }
@@ -230,9 +241,11 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
 
 test("stores a server-derived ICP snapshot and ignores client ICP fields", async () => {
   const database = new FakeDatabase();
-  const { response } = await submitLead(database, { ...validRequest, icp_decision: "matched", icp_top_match: "forged", icp_score: "100" });
+  const { response, siteverifyIdempotencyKey, notificationText } = await submitLead(database, { ...validRequest, icp_decision: "matched", icp_top_match: "forged", icp_score: "100" });
 
   assert.equal(response.status, 200);
+  assert.equal(siteverifyIdempotencyKey, validRequest.submission_key);
+  assert.match(notificationText, /Company type: Roadside assistance provider/);
   assert.equal(database.row?.icp_top_match, "roadside-assistance-provider");
   assert.notEqual(database.row?.icp_top_match, "forged");
   const snapshot = JSON.parse(String(database.row?.icp_snapshot));
@@ -240,6 +253,16 @@ test("stores a server-derived ICP snapshot and ignores client ICP fields", async
   assert.equal(snapshot.ruleVersion, "0.1.0");
   assert.equal(snapshot.matches[0].fitScore, 100);
   assert.equal(snapshot.eligibleForPublicUse, false);
+});
+
+test("passes the explicit company type to ICP instead of inferring it from application", async () => {
+  const database = new FakeDatabase();
+  await submitLead(database, { ...validRequest, companyType: "fleet_operator", submission_key: "22222222-2222-4222-8222-222222222222" });
+
+  const snapshot = JSON.parse(String(database.row?.icp_snapshot));
+  assert.equal(snapshot.matches[0].icpSlug, "roadside-assistance-provider");
+  assert.equal(snapshot.matches[0].matchedSignals.some((signal: { type: string; value: string }) => signal.type === "companyType"), false);
+  assert.equal(snapshot.matches[0].unmatchedSignals.some((signal: { type: string; value: string }) => signal.type === "companyType" && signal.value === "fleet_operator"), true);
 });
 
 test("same submission key is idempotent and sends one notification", async () => {

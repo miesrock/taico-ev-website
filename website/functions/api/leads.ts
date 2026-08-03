@@ -48,6 +48,7 @@ type StoredLead = {
   created_at: string;
   name: string;
   company: string;
+  company_type: string;
   email: string;
   country: string;
   phone: string | null;
@@ -81,13 +82,14 @@ const solutionSlugs = new Set(solutions.map((solution) => solution.slug));
 const applicationSlugs = new Set(catalogApplications.map((application) => application.slug));
 const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
-const applicationIcpSignals: Record<string, Pick<IcpMatchContext, "companyType" | "applicationSlug">> = {
-  "EV dealership": { companyType: "distributor" },
-  "Roadside assistance": { companyType: "roadside_assistance", applicationSlug: "roadside-ev-rescue" },
-  "Fleet charging": { companyType: "fleet_operator" },
-  "Commercial property": { companyType: "parking_operator" },
-  "Construction / temporary site": { companyType: "construction_infrastructure_contractor" },
-  "Distributor / partnership": { companyType: "distributor" },
+const applicationIcpSignals: Record<string, Pick<IcpMatchContext, "applicationSlug">> = {
+  // ponytail: only exact catalog mappings; company identity stays an explicit form field.
+  "EV dealership": {},
+  "Roadside assistance": { applicationSlug: "roadside-ev-rescue" },
+  "Fleet charging": {},
+  "Commercial property": {},
+  "Construction / temporary site": {},
+  "Distributor / partnership": {},
   Other: {},
 };
 
@@ -214,13 +216,13 @@ function validateContext(input: Record<string, unknown>) {
   return Object.keys(errors).length ? { ok: false as const, fields: errors } : { ok: true as const, value: fields };
 }
 
-async function verifyTurnstile(token: string, secret: string): Promise<"ok" | "failed" | "unavailable"> {
+async function verifyTurnstile(token: string, secret: string, idempotencyKey: string): Promise<"ok" | "failed" | "unavailable"> {
   if (!token || token.length > 2048) return "failed";
   try {
     const response = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", {
       method: "POST",
       headers: { "content-type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams({ secret, response: token }),
+      body: new URLSearchParams({ secret, response: token, idempotency_key: idempotencyKey }),
     });
     if (!response.ok) return "unavailable";
     const result = await response.json() as { success?: unknown };
@@ -239,7 +241,7 @@ function inferredCountry(request: Request) {
 function icpContext(lead: LeadInput, context: LeadContext): IcpMatchContext {
   const applicationSignal = applicationIcpSignals[lead.application] || {};
   return {
-    companyType: applicationSignal.companyType,
+    companyType: lead.companyType || undefined,
     applicationSlug: context.applicationSlug || applicationSignal.applicationSlug,
     productSlug: context.productSlug || undefined,
     solutionSlug: context.solutionSlug || undefined,
@@ -254,6 +256,7 @@ function leadFromRow(row: StoredLead): LeadInput {
   return {
     name: row.name,
     company: row.company,
+    companyType: row.company_type as LeadInput["companyType"],
     email: row.email,
     country: row.country,
     application: row.application as LeadInput["application"],
@@ -400,7 +403,7 @@ export async function onRequest(context: LeadRequestContext): Promise<Response> 
   const submissionKey = suppliedKey || crypto.randomUUID();
   const turnstileSecret = normalizeText(env.TURNSTILE_SECRET_KEY);
   if (!turnstileSecret) return errorResponse(context, 503, "CONFIGURATION_ERROR");
-  const turnstile = await verifyTurnstile(normalizeText(input["cf-turnstile-response"]), turnstileSecret);
+  const turnstile = await verifyTurnstile(normalizeText(input["cf-turnstile-response"]), turnstileSecret, submissionKey);
   if (turnstile === "unavailable") return errorResponse(context, 503, "TURNSTILE_UNAVAILABLE");
   if (turnstile !== "ok") return errorResponse(context, 403, "TURNSTILE_FAILED");
   if (!env.LEADS_DB) return errorResponse(context, 503, "CONFIGURATION_ERROR");
@@ -416,20 +419,21 @@ export async function onRequest(context: LeadRequestContext): Promise<Response> 
     existingBefore = await selectLead(env.LEADS_DB, submissionKey);
     if (!existingBefore) {
       await env.LEADS_DB.prepare(`INSERT OR IGNORE INTO leads (
-        id, submission_key, created_at, updated_at, name, company, email, country, cf_country, phone,
+        id, submission_key, created_at, updated_at, name, company, company_type, email, country, cf_country, phone,
         application, timeline, message, product_slug, solution_slug, application_slug, page_path,
         source_component, locale, referrer, utm_source, utm_medium, utm_campaign, utm_content, utm_term,
         consent_at, icp_decision, icp_top_match, icp_score, icp_band, icp_rule_version, icp_snapshot,
         notification_status, notification_attempts, notification_error, notification_started_at, notified_at
       ) VALUES (
         ?1, ?2, ?3, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18, ?19,
-        ?20, ?21, ?22, ?23, ?24, ?3, ?25, ?26, ?27, ?28, ?29, ?30, ?31, ?32, ?33, NULL, NULL, NULL
+        ?20, ?21, ?22, ?23, ?24, ?25, ?3, ?26, ?27, ?28, ?29, ?30, ?31, ?32, ?33, ?34, NULL, NULL, NULL
       )`).bind(
         id,
         submissionKey,
         createdAt,
         lead.name,
         lead.company,
+        lead.companyType,
         lead.email,
         lead.country,
         inferredCountry(request),

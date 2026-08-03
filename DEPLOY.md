@@ -71,7 +71,7 @@ Cloudflare rebuilds automatically on push to `main`.
 
 ## Lead capture configuration
 
-The contact form is static HTML enhanced by `website/functions/api/leads.ts`. It only reports success after D1 has saved the lead; email notification is a follow-up task.
+The contact form is native HTML enhanced by `website/functions/api/leads.ts`. JavaScript adds inline feedback, while the native form remains the progressive-enhancement/script-failure path and redirects to `/thank-you/` only after D1 has saved the lead. Turnstile still must pass in production; because Turnstile requires JavaScript, no-JavaScript users see the direct-email fallback instead of a bypass.
 
 1. Create a D1 database and replace `REPLACE_WITH_D1_DATABASE_ID` in `website/wrangler.jsonc`:
 

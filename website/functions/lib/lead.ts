@@ -1,4 +1,4 @@
-import type { IcpMatchResult } from "../../src/lib/icp/types.ts";
+import { companyTypes, type CompanyType, type IcpMatchResult } from "../../src/lib/icp/types.ts";
 
 export const applications = [
   "EV dealership",
@@ -17,12 +17,33 @@ export const purchaseTimelines = [
   "Researching options",
 ] as const;
 
+export const companyTypeLabels = {
+  roadside_assistance: "Roadside assistance provider",
+  ev_mobility_service_provider: "EV mobility service provider",
+  automotive_club: "Automotive club",
+  on_demand_charging_operator: "On-demand EV charging operator",
+  fleet_operator: "Fleet operator",
+  delivery_fleet_operator: "Delivery fleet operator",
+  parking_operator: "Parking operator",
+  mobile_charging_service_provider: "Mobile charging service provider",
+  temporary_power_provider: "Temporary power provider",
+  construction_infrastructure_contractor: "Construction / infrastructure contractor",
+  pv_ess_integrator: "PV-ESS integrator",
+  installer: "C&I solar installer",
+  epc: "EPC / engineering contractor",
+  charging_operator: "Charge point operator (CPO)",
+  charging_infrastructure_developer: "Charging infrastructure developer",
+  distributor: "Distributor / partnership",
+  commercial_site_operator: "Commercial site operator",
+} satisfies Record<CompanyType, string>;
+
 type Application = (typeof applications)[number];
 type PurchaseTimeline = (typeof purchaseTimelines)[number];
 
 export type LeadInput = {
   name: string;
   company: string;
+  companyType: CompanyType | "";
   email: string;
   country: string;
   application: Application | "";
@@ -111,6 +132,7 @@ export function validateLead(input: Record<string, unknown>): LeadValidation {
   const value: LeadInput = {
     name: normalizeText(input.name),
     company: normalizeText(input.company),
+    companyType: normalizeText(input.companyType) as LeadInput["companyType"],
     email: normalizeText(input.email).toLowerCase(),
     country: normalizeText(input.country),
     application: normalizeText(input.application) as LeadInput["application"],
@@ -123,6 +145,7 @@ export function validateLead(input: Record<string, unknown>): LeadValidation {
 
   if (value.name.length < 2 || value.name.length > 80) fields.name = "Enter a name between 2 and 80 characters.";
   if (value.company.length < 2 || value.company.length > 120) fields.company = "Enter a company name between 2 and 120 characters.";
+  if (!hasValue(companyTypes, value.companyType)) fields.companyType = "Choose a company type.";
   if (value.email.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.email)) fields.email = "Enter a valid business email.";
   if (value.country.length < 2 || value.country.length > 80) fields.country = "Enter a country or region between 2 and 80 characters.";
   if (!hasValue(applications, value.application)) fields.application = "Choose an application.";
@@ -164,6 +187,7 @@ export function buildLeadNotification({ lead, context, icp, createdAt }: LeadNot
   const rows = [
     ["Contact", lead.name],
     ["Company", lead.company],
+    ["Company type", lead.companyType ? companyTypeLabels[lead.companyType] : "Not provided"],
     ["Country / region", lead.country],
     ["Work email", lead.email],
     ["Phone / WhatsApp", lead.phone || "Not provided"],

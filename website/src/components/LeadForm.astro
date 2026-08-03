@@ -1,5 +1,6 @@
 ---
-import { applications, purchaseTimelines } from "../../functions/lib/lead";
+import { applications, companyTypeLabels, purchaseTimelines } from "../../functions/lib/lead";
+import { companyTypes } from "../lib/icp/types";
 import { site } from "../data/site";
 
 interface Props {
@@ -59,6 +60,14 @@ const {
       <p data-error-for="company" class="mt-2 text-sm text-wave-pink" role="alert"></p>
     </div>
     <div>
+      <label for="lead-company-type" class="text-sm font-medium text-ink">Company type <span class="text-wave-pink" aria-hidden="true">*</span></label>
+      <select id="lead-company-type" name="companyType" required class="mt-2 w-full rounded-2xl border border-line bg-void/40 px-4 py-3 text-ink outline-none transition focus:border-wave-cyan">
+        <option value="">Choose a company type</option>
+        {companyTypes.map((companyType) => <option value={companyType}>{companyTypeLabels[companyType]}</option>)}
+      </select>
+      <p data-error-for="companyType" class="mt-2 text-sm text-wave-pink" role="alert"></p>
+    </div>
+    <div>
       <label for="lead-email" class="text-sm font-medium text-ink">Work email <span class="text-wave-pink" aria-hidden="true">*</span></label>
       <input id="lead-email" name="email" type="email" required maxlength="254" autocomplete="email" class="mt-2 w-full rounded-2xl border border-line bg-void/40 px-4 py-3 text-ink outline-none transition focus:border-wave-cyan" />
       <p data-error-for="email" class="mt-2 text-sm text-wave-pink" role="alert"></p>
@@ -110,6 +119,9 @@ const {
   ) : (
     <p class="mt-6 rounded-2xl border border-line px-4 py-3 text-sm text-muted">Anti-spam protection is awaiting Cloudflare configuration. If the form is unavailable, email <a class="text-wave-cyan hover:underline" href={site.emailHref}>{site.email}</a> directly.</p>
   )}
+  <noscript>
+    <p class="mt-4 rounded-2xl border border-line px-4 py-3 text-sm text-muted">The anti-spam check requires JavaScript. If JavaScript is unavailable, please email <a class="text-wave-cyan hover:underline" href={site.emailHref}>{site.email}</a> directly; production submissions must still pass Cloudflare Turnstile.</p>
+  </noscript>
 
   <div class="mt-6 flex items-start gap-3">
     <input id="lead-consent" name="privacyConsent" type="checkbox" value="on" required class="mt-1 h-4 w-4 accent-cyan-400" />

@@ -172,6 +172,7 @@ flowchart LR
 |---|---:|---|---|
 | Name | 是 | 2–80 字符 | 联系人称呼 |
 | Company | 是 | 2–120 字符 | B2B 资格判断 |
+| Company type | 是 | 受控 ICP `companyTypes` 枚举 | 服务端 ICP 判断 |
 | Work email | 是 | 最长 254 字符，基础格式校验 | 主要回复渠道 |
 | Country / Region | 是 | 2–80 字符 | 市场、标准和销售判断 |
 | Application | 是 | 固定枚举 | 区分经销商、救援、车队等场景 |
@@ -331,7 +332,7 @@ ORDER BY created_at DESC;
 ### 9.4 兼容性
 
 - 支持当前主流 Chrome、Edge、Safari 和 Firefox。
-- JavaScript 可用时提供内联反馈；JavaScript 不可用时仍能通过标准表单提交并收到服务端跳转结果。
+- JavaScript 可用时提供内联反馈；原生表单保留为渐进增强和脚本失败路径。Turnstile 依赖 JavaScript，无 JavaScript 时显示直接邮箱兜底，不绕过服务端校验。
 
 ## 10. 技术架构
 
@@ -596,7 +597,7 @@ JSON 模式：
 - 正常英文询盘。
 - 产品页携带 product slug。
 - Solution Finder 携带 solution slug。
-- 无 JavaScript 标准提交。
+- 无 JavaScript 时显示直接邮箱兜底，不能绕过 Turnstile。
 - Turnstile token 缺失、过期、重复和无效。
 - 蜜罐命中。
 - 非法 Origin。
@@ -627,7 +628,7 @@ JSON 模式：
 - [ ] 数据库失败时用户看到可恢复错误和直接邮箱。
 - [ ] 服务端日志不含完整 PII、token 或消息正文。
 - [ ] 表单可通过键盘和屏幕阅读器使用。
-- [ ] 无 JavaScript 时仍可提交。
+- [ ] 无 JavaScript 时显示清晰的邮箱兜底，且不绕过 Turnstile。
 - [ ] Production 收件邮箱完成真实 smoke test。
 - [ ] 运营人员知道如何查询未通知询盘。
 - [ ] Privacy Policy 和数据保留时间已确认。
