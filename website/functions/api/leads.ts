@@ -115,6 +115,7 @@ function responseHeaders(extra: Record<string, string> = {}) {
 }
 
 function errorResponse(context: LeadRequestContext, status: number, code: string, fields?: Record<string, string>) {
+  console.warn("lead.request_rejected", { status, code, fields: fields ? Object.keys(fields) : [] });
   const payload = {
     ok: false,
     code,
