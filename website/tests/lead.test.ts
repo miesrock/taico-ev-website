@@ -197,8 +197,10 @@ const validRequest = {
 const leadEnv = (database: FakeDatabase, overrides: Partial<LeadEnv> = {}): LeadEnv => ({
   LEADS_DB: database,
   TURNSTILE_SECRET_KEY: "turnstile-secret",
-  EMAIL_API_ACCOUNT_ID: "account-id",
-  EMAIL_API_TOKEN: "email-token",
+  SMTP_HOST: "smtp.example.com",
+  SMTP_PORT: "465",
+  SMTP_USER: "sales@example.com",
+  SMTP_PASSWORD: "smtp-password",
   LEAD_NOTIFICATION_TO: "sales@example.com",
   LEAD_NOTIFICATION_FROM: "noreply@example.com",
   ALLOWED_ORIGINS: "https://taicoev.com",
@@ -216,9 +218,7 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
       siteverifyIdempotencyKey = new URLSearchParams(String(init?.body || "")).get("idempotency_key") || "";
       return Response.json({ success: true });
     }
-    emailCalls += 1;
-    notificationText = String((JSON.parse(String(init?.body || "{}")) as { text?: unknown }).text || "");
-    return emailOk ? Response.json({ success: true, result: { delivered: ["sales@example.com"] } }) : Response.json({ success: false }, { status: 400 });
+    throw new Error(`Unexpected fetch: ${String(input)}`);
   };
   try {
     const response = await onRequest({
@@ -233,6 +233,11 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
       }),
       env: leadEnv(database, overrides),
       waitUntil: (promise) => pending.push(promise),
+      notificationSender: async (_env, message) => {
+        emailCalls += 1;
+        notificationText = message.text;
+        return emailOk ? null : "smtp_550";
+      },
     });
     await Promise.all(pending);
     return { response, emailCalls, siteverifyIdempotencyKey, notificationText };
@@ -302,5 +307,5 @@ test("notification failure preserves the saved inquiry and marks it failed", asy
 
   assert.equal(response.status, 200);
   assert.equal(database.row?.notification_status, "failed");
-  assert.equal(database.row?.notification_error, "provider_400");
+  assert.equal(database.row?.notification_error, "smtp_550");
 });

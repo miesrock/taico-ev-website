@@ -73,7 +73,7 @@ Cloudflare rebuilds automatically on push to `main`.
 
 The contact form is native HTML enhanced by `website/functions/api/leads.ts`. JavaScript adds inline feedback, while the native form remains the progressive-enhancement/script-failure path and redirects to `/thank-you/` only after D1 has saved the lead. Turnstile still must pass in production; because Turnstile requires JavaScript, no-JavaScript users see the direct-email fallback instead of a bypass.
 
-1. Create a D1 database and replace `REPLACE_WITH_D1_DATABASE_ID` in `website/wrangler.jsonc`:
+1. Create the D1 database if it does not already exist, then confirm its ID matches the `LEADS_DB` binding in `website/wrangler.jsonc`:
 
    ```sh
    cd website
@@ -81,17 +81,26 @@ The contact form is native HTML enhanced by `website/functions/api/leads.ts`. Ja
    npx wrangler d1 migrations apply taico-ev-leads --remote
    ```
 
-2. In Pages → Settings → Functions, bind the database as `LEADS_DB` and add these values. Keep secrets out of Git:
+2. Treat `website/wrangler.jsonc` as the source of truth for the D1 binding and all non-secret runtime variables. Tencent Exmail SMTP is configured as follows:
+
+   - `LEAD_NOTIFICATION_TO` = `sales12@taicopower.com`
+   - `LEAD_NOTIFICATION_FROM` = `sales12@taicopower.com`
+   - `SMTP_HOST` = `smtp.exmail.qq.com`
+   - `SMTP_PORT` = `465` (implicit TLS)
+   - `SMTP_USER` = `sales12@taicopower.com`
+
+   Confirm `ALLOWED_ORIGINS` contains every production or preview origin being tested.
+
+   In Pages → Settings → Variables and Secrets, add only the encrypted secrets:
 
    - Secret `TURNSTILE_SECRET_KEY`
-   - Secret `EMAIL_API_TOKEN` with Cloudflare Email Sending permission
-   - Variable `EMAIL_API_ACCOUNT_ID`
-   - Variable `LEAD_NOTIFICATION_TO`
-   - Variable `LEAD_NOTIFICATION_FROM` using a verified Email Service sender
-   - Build variable `PUBLIC_TURNSTILE_SITE_KEY`
-   - `ALLOWED_ORIGINS` for production and the exact preview/local origins being tested
+   - Secret `SMTP_PASSWORD` using the Tencent Exmail client-specific password, not the web login password
 
-   Cloudflare Email Service must have the sending domain onboarded before the first notification. Missing email configuration is recorded as `notification_status = 'failed'`; the inquiry remains in D1.
+   `PUBLIC_TURNSTILE_SITE_KEY` is an Astro build-time variable, not a Pages Function runtime variable. Supply it in the Git build environment if overriding the checked-in fallback site key.
+
+   Missing SMTP configuration or a rejected SMTP login is recorded as `notification_status = 'failed'`; the inquiry remains in D1.
+
+   For local Function testing, copy `website/.dev.vars.example` to `website/.dev.vars` and fill in the runtime credentials locally. The example intentionally leaves secrets blank.
 
 3. Verify preview with a real Turnstile test key and a test inbox. No production deployment or credential is performed by this repository change.
 

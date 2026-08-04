@@ -1,0 +1,13 @@
+# Copy this file to .dev.vars for local Cloudflare Pages Function testing.
+# Never commit .dev.vars or real credentials.
+
+ALLOWED_ORIGINS=http://localhost:4321
+LEAD_NOTIFICATION_TO=sales12@taicopower.com
+LEAD_NOTIFICATION_FROM=sales12@taicopower.com
+SMTP_HOST=smtp.exmail.qq.com
+SMTP_PORT=465
+SMTP_USER=sales12@taicopower.com
+
+# Required at runtime; provide real values only in your local .dev.vars or Pages settings.
+TURNSTILE_SECRET_KEY=
+SMTP_PASSWORD=

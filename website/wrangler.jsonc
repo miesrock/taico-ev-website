@@ -3,10 +3,16 @@
   "name": "taico-ev",
   "pages_build_output_dir": "./dist",
   "compatibility_date": "2026-07-15",
+  "compatibility_flags": ["nodejs_compat"],
   "vars": {
     "ALLOWED_ORIGINS": "https://taicoev.com,https://www.taicoev.com",
     "LEAD_FALLBACK_EMAIL": "sales12@taicopower.com",
-    "LEAD_RETENTION_DAYS": "180"
+    "LEAD_NOTIFICATION_FROM": "sales12@taicopower.com",
+    "LEAD_NOTIFICATION_TO": "sales12@taicopower.com",
+    "LEAD_RETENTION_DAYS": "180",
+    "SMTP_HOST": "smtp.exmail.qq.com",
+    "SMTP_PORT": "465",
+    "SMTP_USER": "sales12@taicopower.com"
   },
   "d1_databases": [
     {

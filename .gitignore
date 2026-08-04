@@ -14,6 +14,7 @@ __pycache__/
 website/node_modules/
 website/dist/
 website/.astro/
+website/.dev.vars
 *.log
 .env
 .env.*

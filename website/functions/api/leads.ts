@@ -12,6 +12,7 @@ import {
   type LeadContext,
   type LeadInput,
 } from "../lib/lead.ts";
+import { sendSmtp, type SmtpMessage } from "../lib/smtp.ts";
 
 export const MAX_BODY_BYTES = 16 * 1024;
 
@@ -28,8 +29,10 @@ type LeadDatabase = { prepare(query: string): D1Statement };
 export type LeadEnv = {
   LEADS_DB?: LeadDatabase;
   TURNSTILE_SECRET_KEY?: string;
-  EMAIL_API_ACCOUNT_ID?: string;
-  EMAIL_API_TOKEN?: string;
+  SMTP_HOST?: string;
+  SMTP_PORT?: string;
+  SMTP_USER?: string;
+  SMTP_PASSWORD?: string;
   LEAD_NOTIFICATION_TO?: string;
   LEAD_NOTIFICATION_FROM?: string;
   LEAD_FALLBACK_EMAIL?: string;
@@ -40,6 +43,7 @@ export type LeadRequestContext = {
   request: Request;
   env: LeadEnv;
   waitUntil?: (promise: Promise<unknown>) => void;
+  notificationSender?: (env: LeadEnv, message: SmtpMessage) => Promise<string | null>;
 };
 
 type StoredLead = {
@@ -285,45 +289,16 @@ function contextFromRow(row: StoredLead): LeadContext {
   };
 }
 
-function notificationResult(status: number, payload: unknown, recipient: string) {
-  if (!Number.isInteger(status) || status < 200 || status >= 300) return `provider_${status}`;
-  if (!payload || typeof payload !== "object" || (payload as { success?: unknown }).success !== true) return "provider_rejected";
-  const permanentBounces = (payload as { result?: { permanent_bounces?: unknown } }).result?.permanent_bounces;
-  if (Array.isArray(permanentBounces) && permanentBounces.includes(recipient)) return "permanent_bounce";
-  return null;
-}
-
-async function sendNotification(env: LeadEnv, row: StoredLead, icp: IcpMatchResult) {
-  const accountId = normalizeText(env.EMAIL_API_ACCOUNT_ID);
-  const token = normalizeText(env.EMAIL_API_TOKEN);
+async function sendNotification(env: LeadEnv, message: SmtpMessage) {
+  const host = normalizeText(env.SMTP_HOST);
+  const port = Number(normalizeText(env.SMTP_PORT));
+  const user = normalizeText(env.SMTP_USER);
+  const password = normalizeText(env.SMTP_PASSWORD);
   const to = normalizeText(env.LEAD_NOTIFICATION_TO);
   const from = normalizeText(env.LEAD_NOTIFICATION_FROM);
-  if (!accountId || !token || !to || !from || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(to) || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(from)) return "not_configured";
-
-  const notification = buildLeadNotification({ lead: leadFromRow(row), context: contextFromRow(row), icp, createdAt: row.created_at });
-  try {
-    const response = await fetch(`https://api.cloudflare.com/client/v4/accounts/${encodeURIComponent(accountId)}/email/sending/send`, {
-      method: "POST",
-      headers: { authorization: `Bearer ${token}`, "content-type": "application/json" },
-      body: JSON.stringify({
-        to,
-        from,
-        subject: notification.subject,
-        text: notification.text,
-        html: notification.html,
-        headers: { "Reply-To": notification.replyTo },
-      }),
-    });
-    let payload: unknown = null;
-    try {
-      payload = await response.json();
-    } catch {
-      payload = null;
-    }
-    return notificationResult(response.status, payload, to);
-  } catch {
-    return "network";
-  }
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!host || !Number.isInteger(port) || port < 1 || port > 65535 || !password || !emailPattern.test(user) || !emailPattern.test(to) || !emailPattern.test(from)) return "not_configured";
+  return sendSmtp({ host, port, user, password }, { ...message, to, from });
 }
 
 function queueNotification(context: LeadRequestContext, row: StoredLead, retry: boolean) {
@@ -340,7 +315,14 @@ function queueNotification(context: LeadRequestContext, row: StoredLead, retry: 
     let failure: string | null = null;
     try {
       const icp = JSON.parse(row.icp_snapshot) as IcpMatchResult;
-      failure = await sendNotification(context.env, row, icp);
+      const notification = buildLeadNotification({ lead: leadFromRow(row), context: contextFromRow(row), icp, createdAt: row.created_at });
+      failure = await (context.notificationSender || sendNotification)(context.env, {
+        from: normalizeText(context.env.LEAD_NOTIFICATION_FROM),
+        to: normalizeText(context.env.LEAD_NOTIFICATION_TO),
+        replyTo: notification.replyTo,
+        subject: notification.subject,
+        text: notification.text,
+      });
     } catch {
       failure = "invalid_snapshot";
     }
