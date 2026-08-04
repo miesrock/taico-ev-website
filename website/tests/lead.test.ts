@@ -103,6 +103,8 @@ class FakeDatabase {
         first: async <T>() => query.startsWith("SELECT") ? this.row as T | null : null,
         run: async () => {
           if (query.startsWith("INSERT")) {
+            const [, columns = "", valuesSql = ""] = query.match(/leads\s*\(([\s\S]+?)\)\s*VALUES\s*\(([\s\S]+?)\)/) || [];
+            assert.equal(valuesSql.split(",").length, columns.split(",").length, "INSERT column/value count mismatch");
             if (this.failInsert) throw new Error("d1 unavailable");
             if (this.row) return { meta: { changes: 0 } };
             this.insertCount += 1;
