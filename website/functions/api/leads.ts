@@ -471,8 +471,8 @@ export async function onRequest(context: LeadRequestContext): Promise<Response> 
     if (!existingBefore && stored.id === id) queueNotification(context, stored, false);
     else if (stored.notification_status === "failed" && Number(stored.notification_attempts) < 2) queueNotification(context, stored, true);
     return successResponse(context);
-  } catch {
-    console.error("lead.persistence_failed", { category: "d1" });
+  } catch (error) {
+    console.error("lead.persistence_failed", { category: "d1", error: String(error) });
     return errorResponse(context, 503, "DATABASE_ERROR");
   }
 }
