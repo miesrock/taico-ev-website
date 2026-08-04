@@ -20,6 +20,7 @@ const relatedSolutions = solutions.filter((solution) => product.solutionSlugs.in
 const relatedProducts = getPublishedProducts().filter(
   (item) => item.category === product.category && item.slug !== product.slug,
 );
+const category = productCategories.find((item) => item.slug === product.category);
 const productContact = contactHref({ source: "product-detail", product: product.slug, page: Astro.url.pathname });
 ---
 
@@ -31,7 +32,7 @@ const productContact = contactHref({ source: "product-detail", product: product.
       <a href="/products/" class="font-mono text-xs uppercase tracking-[0.18em] text-faint transition hover:text-wave-cyan">← All products</a>
       <div class="mt-8 grid items-center gap-10 lg:grid-cols-2">
         <div>
-          <p class="label-tech">{productCategories.find((category) => category.slug === product.category)?.title}</p>
+          {category && <a href={`/products/category/${category.slug}/`} class="label-tech transition hover:text-wave-cyan">{category.title} →</a>}
           <p class="mt-4 font-mono text-sm text-wave-violet">{product.model}</p>
           <h1 class="font-display mt-2 text-3xl font-semibold tracking-wide text-ink sm:text-4xl"><span class="text-gradient">{product.productType}</span></h1>
           <p class="mt-4 max-w-xl text-muted leading-relaxed">{product.summary}</p>

@@ -30,7 +30,7 @@ const groups = productCategories.map((category) => ({
       <section class="section-pad !pt-0">
         <div class="flex flex-wrap items-end justify-between gap-4">
           <div>
-            <p class="label-tech">{group.title}</p>
+            <a href={`/products/category/${group.slug}/`} class="label-tech transition hover:text-wave-cyan">{group.title} →</a>
             <h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink">{group.description}</h2>
           </div>
         </div>

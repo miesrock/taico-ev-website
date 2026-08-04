@@ -122,10 +122,11 @@ const featuredProduct = getProduct("tkmc-800");
           {
             productGroups.map((group) => (
               <div>
-                <div class="mb-3 flex items-center gap-3">
+                <a href={`/products/category/${group.slug}/`} class="group mb-3 flex items-center gap-3 rounded-xl transition hover:text-wave-cyan">
                   {group.products[0] && <img src={group.products[0].hero} alt="" class="h-12 w-12 rounded-xl object-contain" loading="lazy" />}
-                  <h2 class="text-sm font-semibold text-ink">{group.title}</h2>
-                </div>
+                  <h2 class="text-sm font-semibold text-ink transition group-hover:text-wave-cyan">{group.title}</h2>
+                  <span class="ml-auto text-wave-cyan" aria-hidden="true">→</span>
+                </a>
                 <ul class="space-y-2 border-l border-line pl-3 text-sm">
                   {
                     group.products.map((product) => (
