@@ -7,13 +7,23 @@ import { site } from "../data/site";
 interface Props {
   title?: string;
   description?: string;
+  canonicalPath?: string;
+  robots?: string;
 }
 
 const {
   title = "TAICO EV | Mobile Energy Solutions Beyond the Grid",
   description = "Mobile and stationary energy storage charging systems for roadside EV rescue, on-demand charging, AC output, engineering power supply, and PV-storage charging applications.",
+  canonicalPath = Astro.url.pathname,
+  robots = "index, follow",
 } = Astro.props;
 const siteUrl = new URL("/", `https://${site.domain}`).href;
+const canonicalUrl = new URL(canonicalPath, siteUrl);
+canonicalUrl.search = "";
+canonicalUrl.hash = "";
+if (canonicalUrl.pathname !== "/" && !canonicalUrl.pathname.endsWith("/")) {
+  canonicalUrl.pathname += "/";
+}
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -42,7 +52,10 @@ const structuredData = {
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
+    <meta name="robots" content={robots} />
     <meta name="theme-color" content="#04060c" />
+    <link rel="canonical" href={canonicalUrl.href} />
+    <link rel="sitemap" href="/sitemap-index.xml" />
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <slot name="head" />
     <script is:inline>

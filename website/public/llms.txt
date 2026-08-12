@@ -9,7 +9,6 @@ Product facts on this site are limited to TAICO MC 2026 Catalog v1.3, pages 4–
 ## Important public routes
 
 - https://taicoev.com/ — overview
-- https://taicoev.com/solutions/ — deployment solutions
 - https://taicoev.com/products/ — TKMC product range
 - https://taicoev.com/applications/ — catalog-supported applications
 - https://taicoev.com/resources/ — catalog resources

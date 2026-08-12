@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://taicoev.com/sitemap-index.xml
