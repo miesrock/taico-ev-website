@@ -56,6 +56,46 @@ const structuredData = {
     <meta name="theme-color" content="#04060c" />
     <link rel="canonical" href={canonicalUrl.href} />
     <link rel="sitemap" href="/sitemap-index.xml" />
+    <script is:inline>
+      (() => {
+        window.dataLayer = window.dataLayer || [];
+        window.gtag = window.gtag || function gtag() {
+          window.dataLayer.push(arguments);
+        };
+        window.gtag("consent", "default", {
+          ad_storage: "denied",
+          analytics_storage: "denied",
+          ad_user_data: "denied",
+          ad_personalization: "denied",
+          wait_for_update: 500,
+        });
+        const measurementId = "G-N59WDV8670";
+        const loadGoogleTag = () => {
+          if (window.__taicoGoogleTagLoaded) return;
+          window.__taicoGoogleTagLoaded = true;
+          const script = document.createElement("script");
+          script.async = true;
+          script.src = `https://www.googletagmanager.com/gtag/js?id=${measurementId}`;
+          document.head.appendChild(script);
+          window.gtag("js", new Date());
+          window.gtag("config", measurementId);
+        };
+        window.__taicoLoadGoogleTag = loadGoogleTag;
+        window.__taicoAnalyticsConsent = "denied";
+        try {
+          if (window.localStorage.getItem("taico-analytics-consent") === "granted") {
+            window.__taicoAnalyticsConsent = "granted";
+            window.gtag("consent", "update", {
+              ad_storage: "denied",
+              analytics_storage: "granted",
+              ad_user_data: "denied",
+              ad_personalization: "denied",
+            });
+            loadGoogleTag();
+          }
+        } catch {}
+      })();
+    </script>
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
     <slot name="head" />
     <script is:inline>
@@ -90,5 +130,54 @@ const structuredData = {
       <slot />
     </main>
     <Footer />
+    <aside
+      data-analytics-consent
+      role="region"
+      aria-labelledby="analytics-consent-title"
+      aria-describedby="analytics-consent-description"
+      class="glass fixed inset-x-4 bottom-4 z-50 mx-auto max-w-2xl rounded-2xl p-5 shadow-2xl sm:inset-x-auto sm:right-6 sm:left-6"
+      hidden
+    >
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+        <div>
+          <h2 id="analytics-consent-title" class="font-semibold text-ink">Help us improve TAICO EV</h2>
+          <p id="analytics-consent-description" class="mt-2 max-w-xl text-sm leading-relaxed text-muted">
+            Allow analytics so we can understand which pages are useful. You can decline and still use the site.
+            <a class="text-wave-cyan hover:underline" href="https://policies.google.com/technologies/partner-sites">How Google uses data</a>.
+          </p>
+        </div>
+        <div class="flex shrink-0 flex-wrap gap-3">
+          <button type="button" data-analytics-consent-decline class="btn-ghost text-xs">Decline</button>
+          <button type="button" data-analytics-consent-accept class="btn-primary text-xs">Allow analytics</button>
+        </div>
+      </div>
+    </aside>
+    <script is:inline>
+      (() => {
+        const banner = document.querySelector("[data-analytics-consent]");
+        const accept = banner?.querySelector("[data-analytics-consent-accept]");
+        const decline = banner?.querySelector("[data-analytics-consent-decline]");
+        const settings = document.querySelector("[data-analytics-consent-settings]");
+        const consentKey = "taico-analytics-consent";
+        const updateConsent = (analyticsStorage) => {
+          try { window.localStorage.setItem(consentKey, analyticsStorage); } catch {}
+          window.__taicoAnalyticsConsent = analyticsStorage;
+          window.gtag("consent", "update", {
+            ad_storage: "denied",
+            analytics_storage: analyticsStorage,
+            ad_user_data: "denied",
+            ad_personalization: "denied",
+          });
+          if (analyticsStorage === "granted") window.__taicoLoadGoogleTag?.();
+          if (banner) banner.hidden = true;
+        };
+        let savedConsent = "";
+        try { savedConsent = window.localStorage.getItem(consentKey) || ""; } catch {}
+        if (savedConsent !== "granted" && savedConsent !== "denied" && banner) banner.hidden = false;
+        accept?.addEventListener("click", () => updateConsent("granted"));
+        decline?.addEventListener("click", () => updateConsent("denied"));
+        settings?.addEventListener("click", () => { if (banner) banner.hidden = false; });
+      })();
+    </script>
   </body>
 </html>

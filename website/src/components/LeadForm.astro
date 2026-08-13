@@ -142,6 +142,39 @@ const {
   const keyInput = form?.querySelector<HTMLInputElement>("[data-submission-key]");
   const referrerInput = form?.querySelector<HTMLInputElement>("[data-referrer]");
   const contextSummary = form?.querySelector<HTMLElement>("[data-context-summary]");
+  let leadEventSent = false;
+
+  const sendLeadEvent = (onComplete: () => void) => {
+    if (leadEventSent || !form) return false;
+    const fieldValue = (name: string) => (form.elements.namedItem(name) as HTMLInputElement | null)?.value || "";
+    const context = {
+      source: fieldValue("source"),
+      product: fieldValue("product"),
+      solution: fieldValue("solution"),
+      application: fieldValue("application_context"),
+      page_path: window.location.pathname,
+    };
+    const analyticsWindow = window as Window & {
+      __taicoAnalyticsConsent?: string;
+      gtag?: (command: string, eventName: string, parameters: Record<string, unknown>) => void;
+    };
+    if (analyticsWindow.__taicoAnalyticsConsent !== "granted" || !analyticsWindow.gtag) return false;
+    leadEventSent = true;
+    let completed = false;
+    const finish = () => {
+      if (completed) return;
+      completed = true;
+      onComplete();
+    };
+    // ponytail: one-second fallback prevents analytics or blockers from trapping a successful lead on this page.
+    window.setTimeout(finish, 1000);
+    analyticsWindow.gtag("event", "generate_lead", {
+      ...context,
+      event_callback: finish,
+      event_timeout: 900,
+    });
+    return true;
+  };
 
   if (form && keyInput) {
     keyInput.value ||= crypto.randomUUID();
@@ -197,7 +230,8 @@ const {
         });
         const payload = await response.json() as { ok?: boolean; code?: string; fields?: Record<string, string> };
         if (response.ok && payload.ok) {
-          window.location.assign("/thank-you/");
+          const redirect = () => window.location.assign("/thank-you/");
+          if (!sendLeadEvent(redirect)) redirect();
           return;
         }
         const fields = payload.fields || {};
