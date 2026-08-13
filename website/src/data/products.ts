@@ -388,26 +388,9 @@ export function getProductSeo(product: Product): ProductSeo {
 
 export function getProductStructuredData(product: Product, site: URL | string): JsonLd[] {
   const productUrl = new URL(`/products/${product.slug}/`, site).href;
-  const category = productCategories.find((item) => item.slug === product.category)?.title;
 
+  // ponytail: Re-add Product rich-result markup only after verified price or review data exists.
   return [
-    {
-      "@context": "https://schema.org",
-      "@type": "Product",
-      "@id": `${productUrl}#product`,
-      name: product.model,
-      description: product.summary,
-      url: productUrl,
-      image: new URL(product.hero, site).href,
-      model: product.model,
-      brand: { "@type": "Brand", name: "TAICO EV" },
-      ...(category && { category }),
-      additionalProperty: getProductSpecs(product).map(({ label, value }) => ({
-        "@type": "PropertyValue",
-        name: label,
-        value,
-      })),
-    },
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",

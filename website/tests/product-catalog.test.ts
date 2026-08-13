@@ -133,11 +133,10 @@ test("matches the frozen TAICO MC v1.3 catalog facts", () => {
       description: product.summary,
     });
 
-    const [productSchema, breadcrumbSchema] = getProductStructuredData(product, "https://taicoev.com");
-    assert.equal(productSchema["@type"], "Product");
-    assert.equal(productSchema.url, `https://taicoev.com/products/${product.slug}/`);
-    assert.equal(productSchema.image, `https://taicoev.com${product.hero}`);
-    assert.equal(productSchema.model, product.model);
+    const structuredData = getProductStructuredData(product, "https://taicoev.com");
+    assert.equal(structuredData.length, 1);
+    assert.equal(structuredData.find((schema) => schema["@type"] === "Product"), undefined);
+    const [breadcrumbSchema] = structuredData;
     assert.equal(breadcrumbSchema["@type"], "BreadcrumbList");
     assert.deepEqual(breadcrumbSchema.itemListElement, [
       { "@type": "ListItem", position: 1, name: "Home", item: "https://taicoev.com/" },
