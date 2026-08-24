@@ -105,3 +105,35 @@ test("resource articles use one validated Markdown collection and real public ro
   assert.match(llms, /\/resources\/articles\/kw-vs-kwh-mobile-ev-charging\//);
   assert.match(llms, /\/resources\/articles\/roadside-ev-rescue-charging-workflow\//);
 });
+
+test("resource articles expose generated navigation, quick answers, visible FAQs, and specific CTAs", () => {
+  const config = read("src/content.config.ts");
+  const detailPage = read("src/pages/resources/articles/[slug].astro");
+  const articleFiles = [
+    "src/content/articles/mobile-ev-charging-guide.md",
+    "src/content/articles/kw-vs-kwh-mobile-ev-charging.md",
+    "src/content/articles/roadside-ev-rescue-charging-workflow.md",
+  ];
+
+  assert.match(config, /quickAnswer: z\.string\(\)\.optional\(\)/);
+  assert.match(config, /cta: z\.object\(\{ title: z\.string\(\), body: z\.string\(\) \}\)\.optional\(\)/);
+  assert.match(config, /faq: z\.array\(z\.object\(\{ question: z\.string\(\), answer: z\.string\(\) \}\)\)\.default\(\[\]\)/);
+  assert.match(detailPage, /const \{ Content, headings \} = await render\(article\)/);
+  assert.match(detailPage, /headings\.filter\(\(heading\) => heading\.depth === 2\)/);
+  assert.match(detailPage, /aria-label="On this page"/);
+  assert.match(detailPage, /lg:sticky lg:top-24/);
+  assert.match(detailPage, /id="quick-answer"/);
+  assert.match(detailPage, /id="faq"/);
+  assert.match(detailPage, /"@type": "FAQPage"/);
+  assert.match(detailPage, /mainEntity: article\.data\.faq\.map/);
+  assert.match(detailPage, /article\.data\.faq\.map\(\(item\) => <details/);
+  assert.match(detailPage, /title=\{ctaTitle\} body=\{ctaBody\}/);
+
+  for (const articleFile of articleFiles) {
+    const article = read(articleFile);
+    assert.match(article, /^quickAnswer:/m, articleFile);
+    assert.match(article, /^cta:/m, articleFile);
+    assert.match(article, /^faq:/m, articleFile);
+    assert.doesNotMatch(article, /15 minutes adds approximately 50 km of range/);
+  }
+});

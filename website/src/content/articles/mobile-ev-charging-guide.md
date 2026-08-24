@@ -1,9 +1,18 @@
 ---
-title: "How to Choose a Mobile EV Charging Solution"
+title: "Mobile EV Charger Buyer’s Guide: How to Choose a System"
 description: "A practical buyer's guide to mobile EV charging formats, energy and power requirements, connectors, deployment conditions, and project qualification."
 eyebrow: "Buyer guide"
 publishedAt: 2026-08-24
 order: 1
+quickAnswer: "Start with the operating scenario, service pattern, vehicle and connector mix, recharge source, and deployment constraints. Then use published product data to create a shortlist and request a project-specific configuration review."
+cta:
+  title: "Share your mobile charging requirements"
+  body: "Tell TAICO EV the service scenario, vehicles, connectors, energy needs, and deployment conditions to start a project-specific shortlist."
+faq:
+  - question: "Should I choose the highest-capacity mobile charger first?"
+    answer: "No. Start with the expected service pattern, required energy handoff, recharge schedule, transport, connectors, and operating conditions. Use the published catalog data to compare the models that fit those requirements."
+  - question: "Does a connector list prove universal compatibility?"
+    answer: "No. Connector support depends on the selected product and configuration. Confirm the target vehicle, connector standard, voltage range, cable reach, and project operating procedure before quotation."
 relatedProductSlugs:
   - tkmc-800
   - tkmc-1500
@@ -16,7 +25,7 @@ Mobile EV charging is not a single equipment category. It can describe a transpo
 
 The right starting point is therefore not “Which model is biggest?” It is “What operating job must the system complete?” This guide turns that question into a practical qualification process for roadside assistance providers, charging-service operators, fleets, parking operators, and field-power teams.
 
-## Start with the operating scenario
+## Which operating scenario must the system support?
 
 A useful equipment discussion begins with the location and workflow in which charging will happen.
 
@@ -26,7 +35,7 @@ For on-demand charging in a depot or parking environment, movement inside the si
 
 For field deployment, EV charging may be only one part of the power requirement. If AC output or engineering power is also required, define those loads separately before choosing a system.
 
-## Distinguish energy capacity from charging power
+## Do you need more stored energy, more output power, or both?
 
 Battery capacity, expressed in kilowatt-hours (kWh), describes stored energy. Output power, expressed in kilowatts (kW), describes the rate at which the charging system can deliver energy under the configured operating conditions.
 
@@ -38,7 +47,7 @@ Both matter, but they answer different questions:
 
 Do not turn a published kW figure into a universal charging-time or driving-range promise. Those outcomes depend on the receiving vehicle and operating conditions. See [kW vs. kWh in mobile EV charging](/resources/articles/kw-vs-kwh-mobile-ev-charging/) for a more detailed explanation.
 
-## Define the daily service requirement
+## What service pattern should you qualify before choosing a model?
 
 Before comparing products, document the expected service pattern:
 
@@ -50,13 +59,13 @@ Before comparing products, document the expected service pattern:
 
 These questions are more useful than selecting a capacity from a catalog without an operating model. A higher-capacity system can support a different service pattern, but it also changes transport, packaging, weight, recharge, and integration requirements.
 
-## Confirm connector requirements by market and vehicle mix
+## Which connectors and vehicles must the configuration serve?
 
 Connector support must be checked against the target vehicles and the selected product configuration. Do not treat a list of available connector standards as a claim that every configuration supports every vehicle.
 
 Create a simple vehicle-and-connector matrix for the intended market. Include the connector standard, expected vehicle voltage range, cable reach, and any operational constraints. Confirm the final combination during project review.
 
-## Choose the deployment format
+## Which mobile charging format fits the deployment?
 
 The catalog separates several useful formats:
 
@@ -76,7 +85,14 @@ Larger mobile systems can combine mobile charging with AC-output or engineering-
 
 Stationary systems belong to a different decision path. They can support PV-storage charging and grid-complementary deployments, but they do not solve the same movement problem as mobile equipment.
 
-## Review physical and operating constraints
+### Format comparison at a glance
+
+- **Changing roadside response location:** start with a transported mobile charging system and confirm vehicle, connector, access, and recharge requirements.
+- **Movement within a depot or parking site:** evaluate a self-propelled charging robot alongside travel paths, turning space, grades, and clearance.
+- **Charging plus AC output or engineering power:** review a mobile power system and define each output requirement separately.
+- **PV-storage charging at a planned site:** evaluate a stationary energy-storage charging system and the available grid or solar input.
+
+## What site and operating constraints could change the shortlist?
 
 The final equipment choice has to fit the real deployment, not just a specification table. Review:
 
@@ -90,10 +106,30 @@ The final equipment choice has to fit the real deployment, not just a specificat
 
 Some of these items are project engineering questions rather than published product claims. Record them early so the quotation and configuration review can address them explicitly.
 
-## Build a shortlist, then request configuration review
+## How should you turn the requirements into a shortlist?
 
 Use the [TKMC product comparison](/resources/product-comparison/) to compare published capacity, output power, product format, and catalog applications. Then reduce the list based on the operating scenario rather than capacity alone.
 
 For roadside deployment, begin with the [Mobile EV Charger for Roadside Rescue solution](/solutions/mobile-ev-charger-roadside-rescue/) and the models whose catalog applications include roadside EV rescue. For site-based on-demand service, review the charging-robot format. For combined charging and field power, review the relevant mobile-power systems.
 
-A useful configuration request should include the country, vehicle types, connector requirements, expected service volume, deployment location, available recharge source, and any AC-output requirement. That information gives the project team a defensible starting point without relying on unsupported performance assumptions.
+## Common mistakes when choosing mobile charging
+
+- Choosing by capacity or output power alone without defining the service workflow.
+- Treating a published connector list as universal compatibility with every EV.
+- Ignoring transport, access, recharge, and operating-space requirements until after the shortlist is made.
+- Turning catalog figures into unverified charging-time, range, safety, or commercial outcome claims.
+
+## What should be included in a configuration request?
+
+Prepare the following project inputs before requesting a quotation or configuration review:
+
+- Country or target market
+- Operating scenario and service territory
+- Target vehicle types and connector standards
+- Expected responses or charging sessions per operating period
+- Intended energy handoff or service outcome
+- Available recharge source and turnaround time
+- Transport, mounting, access, and operating-space requirements
+- Any AC-output or field-power requirement
+
+These inputs help the project team review the published catalog options without turning a specification into an unsupported operating promise.
