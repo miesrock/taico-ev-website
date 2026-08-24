@@ -288,6 +288,20 @@ test("sync Worker stores one partial same-date snapshot when inspection or sitem
   assert.equal(database.snapshots.get("2026-08-22")?.status, "partial");
   assert.equal(database.indexes.get("2026-08-22")?.length, 1);
   assert.equal(database.sitemaps.has("2026-08-22"), false);
+
+  const originalFetch = globalThis.fetch;
+  let globalFetchCalls = 0;
+  globalThis.fetch = async (input, init) => {
+    globalFetchCalls += 1;
+    return fetcher(input, init);
+  };
+  try {
+    const defaultFetcherRun = await syncOnce(env, undefined, Date.parse("2026-08-25T01:00:00Z"));
+    assert.equal(defaultFetcherRun.status, "partial");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+  assert.ok(globalFetchCalls > 0);
 });
 
 test("SEO data endpoint is read-only, Access-gated, and never cacheable", async () => {

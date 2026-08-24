@@ -31,6 +31,8 @@ type WorkerEnv = {
 type WorkerContext = { waitUntil(promise: Promise<unknown>): void };
 type Fetcher = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
 
+const defaultFetcher: Fetcher = (input, init) => globalThis.fetch(input, init);
+
 const GOOGLE_SCOPE = "https://www.googleapis.com/auth/webmasters.readonly";
 const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const SEARCH_ANALYTICS_URL = "https://www.googleapis.com/webmasters/v3/sites";
@@ -311,7 +313,7 @@ export async function persistSnapshot(
   )`).bind(SNAPSHOT_RETENTION).run();
 }
 
-export async function syncOnce(env: WorkerEnv, fetcher: Fetcher = fetch, now = Date.now()) {
+export async function syncOnce(env: WorkerEnv, fetcher: Fetcher = defaultFetcher, now = Date.now()) {
   if (activeRun) return { status: "busy" as const };
   activeRun = true;
   try {
