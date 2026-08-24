@@ -31,6 +31,10 @@ test("Layout emits canonical, robots, and sitemap metadata without dropping site
   assert.match(layout, /robots\?/);
   assert.match(layout, /rel="canonical"/);
   assert.match(layout, /name="robots"/);
+  assert.match(layout, /property="og:title"/);
+  assert.match(layout, /property="og:description"/);
+  assert.match(layout, /property="og:url"/);
+  assert.match(layout, /property="og:type"/);
   assert.match(layout, /rel="sitemap" href="\/sitemap-index\.xml"/);
   assert.match(layout, /"@type": "Organization"/);
   assert.match(layout, /"@type": "WebSite"/);
@@ -52,5 +56,52 @@ test("non-indexable pages opt out explicitly and the 404 page is real", () => {
 });
 
 test("llms.txt lists only real solution routes", () => {
-  assert.doesNotMatch(read("public/llms.txt"), /^- https:\/\/taicoev\.com\/solutions\/ —/m);
+  const llms = read("public/llms.txt");
+  assert.match(llms, /https:\/\/taicoev\.com\/solutions\/mobile-ev-charger-roadside-rescue\//);
+  assert.doesNotMatch(llms, /https:\/\/taicoev\.com\/solutions\/emergency-ev-charging\//);
+});
+
+test("roadside rescue solution owns one canonical route and redirects the legacy slug", () => {
+  const page = read("src/pages/solutions/[slug].astro");
+  const redirects = read("public/_redirects");
+  const solutions = read("src/data/solutions.ts");
+
+  assert.match(page, /canonicalPath={`\/solutions\/\$\{solution\.slug\}\/`}/);
+  assert.match(page, /getSolutionStructuredData\(solution, Astro\.site \?\? "https:\/\/taicoev\.com", faq\)/);
+  assert.match(page, /aria-label="Breadcrumb"/);
+  assert.match(page, /id="recommended-configurations"/);
+  assert.match(page, /Request System Configuration/);
+  assert.match(page, /Explore TKMC Systems/);
+  assert.match(page, /details class=/);
+  assert.match(solutions, /slug: "mobile-ev-charger-roadside-rescue"/);
+  assert.doesNotMatch(solutions, /slug: "emergency-ev-charging"/);
+  assert.match(redirects, /\/solutions\/emergency-ev-charging\/ \/solutions\/mobile-ev-charger-roadside-rescue\/ 301/);
+});
+
+test("resource articles use one validated Markdown collection and real public routes", () => {
+  const config = read("src/content.config.ts");
+  const indexPage = read("src/pages/resources/articles/index.astro");
+  const detailPage = read("src/pages/resources/articles/[slug].astro");
+  const navigation = read("src/data/navigation.ts");
+  const llms = read("public/llms.txt");
+  const articleFiles = [
+    "src/content/articles/mobile-ev-charging-guide.md",
+    "src/content/articles/kw-vs-kwh-mobile-ev-charging.md",
+    "src/content/articles/roadside-ev-rescue-charging-workflow.md",
+  ];
+
+  assert.match(config, /defineCollection/);
+  assert.match(config, /glob\(\{ pattern: "\*\*\/\*\.md", base: "\.\/src\/content\/articles" \}\)/);
+  assert.match(indexPage, /getCollection\("articles"\)/);
+  assert.match(detailPage, /render\(article\)/);
+  assert.match(detailPage, /"@type": "Article"/);
+  assert.match(detailPage, /getProduct\(slug\)/);
+  assert.match(navigation, /href: "\/resources\/articles\/"/);
+
+  for (const articleFile of articleFiles) {
+    assert.equal(existsSync(join(websiteRoot, articleFile)), true, articleFile);
+  }
+  assert.match(llms, /\/resources\/articles\/mobile-ev-charging-guide\//);
+  assert.match(llms, /\/resources\/articles\/kw-vs-kwh-mobile-ev-charging\//);
+  assert.match(llms, /\/resources\/articles\/roadside-ev-rescue-charging-workflow\//);
 });

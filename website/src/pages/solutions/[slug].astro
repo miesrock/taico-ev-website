@@ -2,9 +2,9 @@
 import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
-import { getProductsForSolution } from "../../data/products";
+import { getFeaturedProductsForSolution, getProductsForSolution, resolveSolutionFaq } from "../../data/products";
 import { contactHref } from "../../data/site";
-import { getSolution, solutions } from "../../data/solutions";
+import { getSolution, getSolutionStructuredData, solutions } from "../../data/solutions";
 
 export function getStaticPaths() {
   return solutions.map((solution) => ({ params: { slug: solution.slug } }));
@@ -13,39 +13,115 @@ export function getStaticPaths() {
 const solution = getSolution(Astro.params.slug!);
 if (!solution) throw new Error(`Unknown solution: ${Astro.params.slug}`);
 
+const isSeoLandingPage = Boolean(solution.seo);
 const products = getProductsForSolution(solution.slug);
+const featuredProducts = getFeaturedProductsForSolution(solution.slug, solution.featuredProductSlugs);
+const faq = resolveSolutionFaq(solution.faq, featuredProducts);
 const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
 const solutionContact = contactHref({ source: "solution-detail", solution: solution.slug, page: Astro.url.pathname });
+const seoTitle = solution.seo?.title ?? `${solution.title} | TAICO EV`;
+const seoDescription = solution.seo?.description ?? solution.summary;
+const structuredData = getSolutionStructuredData(solution, Astro.site ?? "https://taicoev.com", faq);
 ---
 
-<Layout title={`${solution.title} | TAICO EV`} description={solution.summary}>
+<Layout title={seoTitle} description={seoDescription} canonicalPath={`/solutions/${solution.slug}/`}>
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
   <section class="relative overflow-hidden">
     <WaveField intensity="mid" />
-    <div class="section-pad relative z-10 !pt-20 !pb-16">
-      <a href="/#solutions" class="font-mono text-xs uppercase tracking-[0.18em] text-faint transition hover:text-wave-cyan">← All solutions</a>
-      <p class="label-tech mt-6">{solution.eyebrow}</p>
-      <h1 class="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.title}</span></h1>
-      <p class="mt-4 max-w-2xl text-xl text-ink/90">{solution.headline}</p>
-      <p class="mt-4 max-w-2xl text-muted leading-relaxed">{solution.summary}</p>
-      <div class="mt-8 flex flex-wrap gap-3"><a class="btn-primary" href={solutionContact}>Discuss this scenario</a><a class="btn-ghost" href="/products/">View products</a></div>
+    <div class="section-pad relative z-10 !pt-12 !pb-16 sm:!pt-16">
+      <nav aria-label="Breadcrumb">
+        <ol class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-faint">
+          <li><a href="/" class="transition hover:text-wave-cyan">Home</a></li>
+          <li aria-hidden="true">/</li>
+          <li><a href="/#solutions" class="transition hover:text-wave-cyan">Solutions</a></li>
+          <li aria-hidden="true">/</li>
+          <li class="text-wave-cyan" aria-current="page">{solution.title}</li>
+        </ol>
+      </nav>
+      <p class="label-tech mt-8">{solution.eyebrow}</p>
+      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? solution.title}</span></h1>
+      <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ink/90">{solution.headline}</p>
+      <p class="mt-4 max-w-3xl text-muted leading-relaxed">{solution.intro ?? solution.summary}</p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        {isSeoLandingPage ? <>
+          <a class="btn-primary" href={solutionContact}>Request System Configuration</a>
+          <a class="btn-ghost" href="#recommended-configurations">Explore TKMC Systems</a>
+        </> : <>
+          <a class="btn-primary" href={solutionContact}>Discuss this scenario</a>
+          <a class="btn-ghost" href="/products/">View products</a>
+        </>}
+      </div>
     </div>
   </section>
 
-  <section class="section-pad !py-12">
-    <div class="grid gap-6 lg:grid-cols-2">
+  <section id={isSeoLandingPage ? "why-mobile-charging" : undefined} class="section-pad !py-12">
+    {isSeoLandingPage ? <>
+      <div class="max-w-3xl">
+        <p class="label-tech">Why mobile charging?</p>
+        <h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Bring charging capability to the response location.</h2>
+        <p class="mt-4 text-sm leading-relaxed text-muted">Roadside rescue operations need a deployment format that follows the vehicle and the service call. These operating constraints shape the initial system configuration.</p>
+      </div>
+      <div class="mt-7 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {solution.pains.map((pain, index) => <article class="glass rounded-3xl p-5"><p class="font-mono text-xs text-wave-violet">{String(index + 1).padStart(2, "0")}</p><h3 class="mt-4 text-base font-semibold leading-snug text-ink">{pain}</h3></article>)}
+      </div>
+    </> : <div class="grid gap-6 lg:grid-cols-2">
       <div class="glass rounded-3xl p-6"><p class="label-tech">Operating constraints</p><ul class="mt-5 space-y-3">{solution.pains.map((pain) => <li class="flex gap-3 text-sm text-muted"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-wave-pink"></span>{pain}</li>)}</ul></div>
       <div class="glass rounded-3xl p-6"><p class="label-tech">Configuration path</p><ol class="mt-5 space-y-4">{solution.approach.map((step, index) => <li class="flex gap-4 text-sm text-muted"><span class="font-mono text-wave-violet">{String(index + 1).padStart(2, "0")}</span>{step}</li>)}</ol></div>
-    </div>
+    </div>}
   </section>
 
-  <section class="section-pad !pt-0">
-    <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Initial product match</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink">Catalog-supported starting points</h2></div><p class="max-w-xl text-sm text-muted">Initial match only. Final configuration depends on vehicles, daily energy demand, site supply, and deployment requirements.</p></div>
-    <div class="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-      {products.map((product) => <a href={`/products/${product.slug}/`} class="glass glass-hover group overflow-hidden rounded-3xl"><div class="aspect-[16/10] bg-void-2 p-3"><img src={product.hero} alt={`${product.model} product`} class="h-full w-full object-contain" loading="lazy" /></div><div class="p-5"><p class="font-mono text-xs text-wave-cyan">{product.model}</p><h3 class="mt-2 font-semibold text-ink group-hover:text-wave-cyan">{product.productType}</h3><p class="mt-3 text-sm text-muted">{product.capacityKwh} kWh · {product.outputPowerKw} kW</p></div></a>)}
-    </div>
+  <section id="recommended-configurations" class="scroll-mt-24 section-pad !pt-0">
+    {isSeoLandingPage ? <>
+      <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Recommended TKMC configurations</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Published starting points for roadside rescue.</h2></div><p class="max-w-xl text-sm leading-relaxed text-muted">Product facts below are read from the published catalog data. Final configuration depends on vehicles, connectors, site supply, and deployment requirements.</p></div>
+      <div class="mt-7 grid gap-5 md:grid-cols-3">
+        {featuredProducts.map((product) => <article class="glass glass-hover overflow-hidden rounded-3xl">
+          <div class="aspect-[16/10] bg-void-2 p-3"><img src={product.hero} alt={`${product.model} mobile energy storage charging system`} class="h-full w-full object-contain" loading="lazy" /></div>
+          <div class="p-5">
+            <p class="font-mono text-xs text-wave-cyan">{product.model}</p>
+            <h3 class="mt-2 text-lg font-semibold text-ink">{product.productType}</h3>
+            <dl class="mt-5 divide-y divide-line text-sm">
+              <div class="flex items-start justify-between gap-4 py-3"><dt class="text-muted">Capacity</dt><dd class="text-right font-medium text-ink">{product.capacityKwh} kWh</dd></div>
+              <div class="flex items-start justify-between gap-4 py-3"><dt class="text-muted">DC output</dt><dd class="text-right font-medium text-ink">{product.outputPowerKw} kW</dd></div>
+              <div class="flex items-start justify-between gap-4 py-3"><dt class="text-muted">Primary use</dt><dd class="max-w-[60%] text-right font-medium text-ink">{product.catalogApplications.join(" · ")}</dd></div>
+              <div class="flex items-start justify-between gap-4 py-3"><dt class="text-muted">Connector</dt><dd class="max-w-[60%] text-right font-medium text-ink">{product.chargingGun}</dd></div>
+            </dl>
+            {product.slug === "tkmc-2000p" && <p class="mt-4 rounded-2xl border border-line px-3 py-3 text-xs leading-relaxed text-muted">Broader mobile power / field deployment option; it is not listed as Roadside EV Rescue in the catalog.</p>}
+            <a href={`/products/${product.slug}/`} class="btn-ghost mt-5 w-full text-xs">View Product →</a>
+          </div>
+        </article>)}
+      </div>
+    </> : <>
+      <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Initial product match</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink">Catalog-supported starting points</h2></div><p class="max-w-xl text-sm text-muted">Initial match only. Final configuration depends on vehicles, daily energy demand, site supply, and deployment requirements.</p></div>
+      <div class="mt-7 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+        {products.map((product) => <a href={`/products/${product.slug}/`} class="glass glass-hover group overflow-hidden rounded-3xl"><div class="aspect-[16/10] bg-void-2 p-3"><img src={product.hero} alt={`${product.model} product`} class="h-full w-full object-contain" loading="lazy" /></div><div class="p-5"><p class="font-mono text-xs text-wave-cyan">{product.model}</p><h3 class="mt-2 font-semibold text-ink group-hover:text-wave-cyan">{product.productType}</h3><p class="mt-3 text-sm text-muted">{product.capacityKwh} kWh · {product.outputPowerKw} kW</p></div></a>)}
+      </div>
+    </>}
   </section>
+
+  {solution.useCase && <section class="section-pad !pt-0">
+    <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+      <div><p class="label-tech">Roadside rescue use case</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">{solution.useCase.title}</h2><p class="mt-4 text-sm leading-relaxed text-muted">{solution.useCase.description}</p></div>
+      {solution.useCase.steps && <ol class="grid gap-3 sm:grid-cols-2">{solution.useCase.steps.map((step, index) => <li class="glass flex gap-4 rounded-2xl p-4"><span class="font-mono text-sm text-wave-violet">{String(index + 1).padStart(2, "0")}</span><span class="text-sm leading-relaxed text-ink">{step}</span></li>)}</ol>}
+    </div>
+  </section>}
+
+  {solution.capabilities && <section class="section-pad !pt-0">
+    <div class="max-w-3xl"><p class="label-tech">System capabilities</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Configure around the operating context.</h2></div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2">{solution.capabilities.map((capability) => <div class="glass rounded-2xl p-5"><p class="flex gap-3 text-sm leading-relaxed text-muted"><span class="font-mono text-wave-mint">+</span>{capability}</p></div>)}</div>
+  </section>}
+
+  {faq.length > 0 && <section id="faq" class="scroll-mt-24 section-pad !pt-0">
+    <div class="max-w-3xl"><p class="label-tech">FAQ</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Roadside rescue charging questions.</h2></div>
+    <div class="mt-6 max-w-4xl space-y-3">{faq.map((item) => <details class="glass rounded-2xl px-5 py-4"><summary class="cursor-pointer list-none pr-6 font-semibold text-ink marker:hidden">{item.question}</summary><p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">{item.answer}</p></details>)}</div>
+  </section>}
+
+  {solution.relatedLinks && <section class="section-pad !pt-0">
+    <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Related products and resources</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Continue with the catalog.</h2></div><a href={solutionContact} class="btn-ghost text-xs">Request a configuration</a></div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{solution.relatedLinks.map((link) => <a href={link.href} class="glass glass-hover rounded-2xl p-5"><h3 class="font-semibold text-ink">{link.label} <span aria-hidden="true">→</span></h3>{link.description && <p class="mt-2 text-sm leading-relaxed text-muted">{link.description}</p>}</a>)}</div>
+  </section>}
 
   <section class="section-pad !pt-0"><p class="label-tech">Other solutions</p><div class="mt-5 grid gap-4 md:grid-cols-3">{otherSolutions.map((item) => <a href={`/solutions/${item.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.title}</h2><p class="mt-2 text-sm text-muted">{item.headline}</p></a>)}</div></section>
 
-  <div id="contact"><CtaBand source="solution-detail" solution={solution.slug} pagePath={Astro.url.pathname} title={`Discuss ${solution.title}`} /></div>
+  <div id="contact"><CtaBand source="solution-detail" solution={solution.slug} pagePath={Astro.url.pathname} title={isSeoLandingPage ? "Request a roadside rescue system configuration" : `Discuss ${solution.title}`} /></div>
 </Layout>

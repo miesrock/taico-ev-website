@@ -1,0 +1,55 @@
+---
+import { getCollection } from "astro:content";
+import CtaBand from "../../../components/CtaBand.astro";
+import WaveField from "../../../components/WaveField.astro";
+import Layout from "../../../layouts/Layout.astro";
+
+const articles = (await getCollection("articles")).sort((a, b) => a.data.order - b.data.order);
+---
+
+<Layout
+  title="Mobile EV Charging Articles | TAICO EV"
+  description="Practical guides to mobile EV charging selection, kW and kWh, and roadside rescue charging workflows."
+>
+  <section class="relative overflow-hidden">
+    <WaveField intensity="low" />
+    <div class="section-pad relative z-10 !pb-14">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs uppercase tracking-[0.14em] text-faint">
+        <a href="/" class="transition hover:text-wave-cyan">Home</a>
+        <span aria-hidden="true" class="mx-2">/</span>
+        <a href="/resources/" class="transition hover:text-wave-cyan">Resources</a>
+        <span aria-hidden="true" class="mx-2">/</span>
+        <span aria-current="page" class="text-wave-cyan">Articles</span>
+      </nav>
+      <p class="label-tech mt-8">Mobile charging knowledge</p>
+      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl">
+        <span class="text-gradient">Practical guides for mobile EV charging projects.</span>
+      </h1>
+      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-muted">
+        Understand equipment formats, qualification inputs, and operating workflows before requesting a project configuration.
+      </p>
+    </div>
+  </section>
+
+  <section class="section-pad !pt-0">
+    <div class="grid gap-5 lg:grid-cols-3">
+      {articles.map((article) => (
+        <article class="glass glass-hover flex flex-col rounded-3xl p-6">
+          <p class="label-tech">{article.data.eyebrow}</p>
+          <h2 class="mt-4 text-xl font-semibold leading-snug text-ink">
+            <a href={`/resources/articles/${article.id}/`} class="transition hover:text-wave-cyan">{article.data.title}</a>
+          </h2>
+          <p class="mt-4 flex-1 text-sm leading-relaxed text-muted">{article.data.description}</p>
+          <div class="mt-6 flex items-center justify-between gap-3 border-t border-line pt-4">
+            <time datetime={article.data.publishedAt.toISOString()} class="font-mono text-[11px] text-faint">
+              {article.data.publishedAt.toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
+            </time>
+            <a href={`/resources/articles/${article.id}/`} class="text-sm font-semibold text-wave-cyan">Read guide →</a>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <CtaBand source="articles-index" pagePath="/resources/articles/" title="Need a project-specific configuration?" />
+</Layout>

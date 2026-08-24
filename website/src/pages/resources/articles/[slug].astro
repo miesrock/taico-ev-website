@@ -1,0 +1,149 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection, render } from "astro:content";
+import CtaBand from "../../../components/CtaBand.astro";
+import Layout from "../../../layouts/Layout.astro";
+import { getProduct } from "../../../data/products";
+import { getSolution } from "../../../data/solutions";
+import { site } from "../../../data/site";
+
+export async function getStaticPaths() {
+  const articles = await getCollection("articles");
+  return articles.map((article) => ({ params: { slug: article.id }, props: { article } }));
+}
+
+const { article } = Astro.props as { article: CollectionEntry<"articles"> };
+const { Content } = await render(article);
+const relatedProducts = article.data.relatedProductSlugs.map((slug) => {
+  const product = getProduct(slug);
+  if (!product) throw new Error(`Unknown article product: ${slug}`);
+  return product;
+});
+const relatedSolution = article.data.relatedSolutionSlug ? getSolution(article.data.relatedSolutionSlug) : undefined;
+if (article.data.relatedSolutionSlug && !relatedSolution) {
+  throw new Error(`Unknown article solution: ${article.data.relatedSolutionSlug}`);
+}
+
+const articlePath = `/resources/articles/${article.id}/`;
+const siteUrl = `https://${site.domain}`;
+const articleUrl = new URL(articlePath, siteUrl).href;
+const structuredData = [
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: article.data.title,
+    description: article.data.description,
+    datePublished: article.data.publishedAt.toISOString(),
+    dateModified: article.data.publishedAt.toISOString(),
+    mainEntityOfPage: articleUrl,
+    author: { "@id": `${siteUrl}/#organization` },
+    publisher: { "@id": `${siteUrl}/#organization` },
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: `${siteUrl}/` },
+      { "@type": "ListItem", position: 2, name: "Resources", item: `${siteUrl}/resources/` },
+      { "@type": "ListItem", position: 3, name: "Articles", item: `${siteUrl}/resources/articles/` },
+      { "@type": "ListItem", position: 4, name: article.data.title, item: articleUrl },
+    ],
+  },
+];
+---
+
+<Layout title={`${article.data.title} | TAICO EV`} description={article.data.description} canonicalPath={articlePath} ogType="article">
+  <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
+
+  <article>
+    <header class="section-pad !pb-12">
+      <nav aria-label="Breadcrumb" class="font-mono text-xs uppercase tracking-[0.14em] text-faint">
+        <a href="/" class="transition hover:text-wave-cyan">Home</a>
+        <span aria-hidden="true" class="mx-2">/</span>
+        <a href="/resources/" class="transition hover:text-wave-cyan">Resources</a>
+        <span aria-hidden="true" class="mx-2">/</span>
+        <a href="/resources/articles/" class="transition hover:text-wave-cyan">Articles</a>
+      </nav>
+      <p class="label-tech mt-8">{article.data.eyebrow}</p>
+      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold leading-tight tracking-wide text-ink sm:text-5xl">
+        <span class="text-gradient">{article.data.title}</span>
+      </h1>
+      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-muted">{article.data.description}</p>
+      <time datetime={article.data.publishedAt.toISOString()} class="mt-5 block font-mono text-xs text-faint">
+        Published {article.data.publishedAt.toLocaleDateString("en", { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" })}
+      </time>
+    </header>
+
+    <div class="section-pad grid gap-8 !pt-0 lg:grid-cols-[minmax(0,1fr)_19rem] lg:items-start">
+      <div class="article-body glass min-w-0 rounded-3xl p-6 sm:p-9">
+        <Content />
+      </div>
+
+      <aside class="space-y-5 lg:sticky lg:top-24">
+        {relatedSolution && (
+          <a href={`/solutions/${relatedSolution.slug}/`} class="glass glass-hover block rounded-2xl p-5">
+            <p class="label-tech">Related solution</p>
+            <h2 class="mt-3 font-semibold text-ink">{relatedSolution.title}</h2>
+            <p class="mt-2 text-sm leading-relaxed text-muted">{relatedSolution.headline}</p>
+          </a>
+        )}
+        {relatedProducts.length > 0 && (
+          <div class="glass rounded-2xl p-5">
+            <p class="label-tech">Published starting points</p>
+            <div class="mt-4 space-y-4">
+              {relatedProducts.map((product) => (
+                <a href={`/products/${product.slug}/`} class="block border-t border-line pt-4 first:border-0 first:pt-0">
+                  <p class="font-mono text-xs text-wave-cyan">{product.model}</p>
+                  <p class="mt-1 text-sm font-semibold text-ink">{product.capacityKwh} kWh · {product.outputPowerKw} kW</p>
+                  <p class="mt-1 text-xs leading-relaxed text-muted">{product.catalogApplications.join(" · ")}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+        <a href="/resources/product-comparison/" class="btn-ghost w-full text-xs">Compare all TKMC products</a>
+      </aside>
+    </div>
+  </article>
+
+  <CtaBand source="resource-article" pagePath={articlePath} title="Turn the guide into a project configuration" />
+</Layout>
+
+<style>
+  :global(.article-body > :first-child) { margin-top: 0; }
+  :global(.article-body h2) {
+    margin-top: 2.5rem;
+    font-family: var(--font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-ink);
+  }
+  :global(.article-body h3) {
+    margin-top: 1.8rem;
+    font-size: 1.08rem;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  :global(.article-body p),
+  :global(.article-body li) {
+    color: var(--color-muted);
+    font-size: 0.98rem;
+    line-height: 1.85;
+  }
+  :global(.article-body p) { margin-top: 1.15rem; }
+  :global(.article-body ul),
+  :global(.article-body ol) {
+    margin-top: 1rem;
+    padding-left: 1.4rem;
+  }
+  :global(.article-body ul) { list-style: disc; }
+  :global(.article-body ol) { list-style: decimal; }
+  :global(.article-body li + li) { margin-top: 0.45rem; }
+  :global(.article-body a) {
+    color: var(--color-wave-cyan);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  :global(.article-body strong) { color: var(--color-ink); }
+</style>

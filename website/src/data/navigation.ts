@@ -7,6 +7,11 @@ export const primaryNavigation = [
 
 export const resourceLinks = [
   {
+    label: "Guides & Articles",
+    description: "Practical guidance for mobile charging selection, energy and power, and roadside workflows.",
+    href: "/resources/articles/",
+  },
+  {
     label: "Product Comparison",
     description: "Compare catalog capacity and output power across the TKMC range.",
     href: "/resources/product-comparison/",

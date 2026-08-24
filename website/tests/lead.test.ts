@@ -188,7 +188,7 @@ const validRequest = {
   submission_key: "11111111-1111-4111-8111-111111111111",
   source: "product-detail",
   product: "tkmc-800",
-  solution: "emergency-ev-charging",
+  solution: "mobile-ev-charger-roadside-rescue",
   application_context: "roadside-ev-rescue",
   page_path: "/products/tkmc-800/",
   "cf-turnstile-response": "turnstile-token",

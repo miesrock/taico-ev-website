@@ -2,14 +2,16 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   getProductsForApplication,
+  getFeaturedProductsForSolution,
   getProductsForSolution,
   getProductSeo,
   getProductStructuredData,
   getPublishedProducts,
+  resolveSolutionFaq,
   productCategories,
 } from "../src/data/products.ts";
 import { applications } from "../src/data/applications.ts";
-import { solutions } from "../src/data/solutions.ts";
+import { getSolutionStructuredData, solutions } from "../src/data/solutions.ts";
 
 const expectedCatalogProducts = {
   "TKMC-800": {
@@ -19,7 +21,7 @@ const expectedCatalogProducts = {
     chargingGun: "GB/T / CCS1 / CCS2 / CHAdeMO",
     specs: [{ label: "Recharge mode 1", value: "EV DC Charger" }, { label: "Recharge mode 2", value: "AC 3-phase / 20 kW" }],
     dimensions: "1580 × 925 × 1050 mm", weight: "≈900 kg", protectionLevel: "IP54",
-    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"], solutionSlugs: ["emergency-ev-charging"], applicationSlugs: ["roadside-ev-rescue"],
+    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"], solutionSlugs: ["mobile-ev-charger-roadside-rescue"], applicationSlugs: ["roadside-ev-rescue"],
   },
   "TKMC-1500": {
     catalogSource: { version: "1.3", page: 5 }, capacityKwh: 140, outputPowerKw: 120,
@@ -28,7 +30,7 @@ const expectedCatalogProducts = {
     chargingGun: "GB/T / CCS1 / CCS2 / CHAdeMO",
     specs: [{ label: "Recharge mode 1", value: "EV DC Charger" }, { label: "Recharge mode 2", value: "AC 3-phase / 40 kW" }],
     dimensions: "2300 × 1200 × 1000 mm", weight: "≈1682 kg", protectionLevel: "IP54",
-    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"], solutionSlugs: ["emergency-ev-charging"], applicationSlugs: ["roadside-ev-rescue"],
+    catalogApplications: ["Mobile Charger", "Roadside EV Rescue"], solutionSlugs: ["mobile-ev-charger-roadside-rescue"], applicationSlugs: ["roadside-ev-rescue"],
   },
   "TKMC-1000": {
     catalogSource: { version: "1.3", page: 6 }, capacityKwh: 100, outputPowerKw: 90,
@@ -156,7 +158,7 @@ test("maps every catalog product to the exact public solution and application", 
   assert.deepEqual(
     Object.fromEntries(solutions.map(({ slug }) => [slug, getProductsForSolution(slug).map((product) => product.model)])),
     {
-      "emergency-ev-charging": ["TKMC-800", "TKMC-1500"],
+      "mobile-ev-charger-roadside-rescue": ["TKMC-800", "TKMC-1500"],
       "charge-on-demand": ["TKMC-1000"],
       "ac-output-e-generator": ["TKMC-2000P", "TKMC-4000", "TKMC-10000"],
       "temporary-engineering-power": ["TKMC-4000"],
@@ -174,5 +176,35 @@ test("maps every catalog product to the exact public solution and application", 
       "pv-storage-charger": ["TKMC-10000"],
       "pv-ess-charging-station": ["TKMC-2000", "TKMC-2600"],
     },
+  );
+});
+
+test("keeps the roadside shortlist ordered and resolves FAQ facts from published products", () => {
+  const solution = solutions.find((item) => item.slug === "mobile-ev-charger-roadside-rescue");
+  assert.ok(solution);
+  const featured = getFeaturedProductsForSolution(solution.slug, solution.featuredProductSlugs);
+
+  assert.deepEqual(featured.map((product) => product.model), ["TKMC-800", "TKMC-1500", "TKMC-2000P"]);
+  assert.throws(
+    () => getFeaturedProductsForSolution(solution.slug, ["missing-product"]),
+    /Unknown or unpublished featured product/,
+  );
+
+  const faq = resolveSolutionFaq(solution.faq, featured);
+  assert.match(faq[0]?.answer || "", /60 kW/);
+  assert.match(faq[0]?.answer || "", /75 kWh/);
+  assert.match(faq[1]?.answer || "", /GB\/T \/ CCS1 \/ CCS2 \/ CHAdeMO/);
+  assert.match(faq[1]?.answer || "", /TKMC-1500 lists GB\/T \/ CCS1 \/ CCS2 \/ CHAdeMO/);
+  assert.doesNotMatch(faq.map((item) => item.answer).join(" "), /\{\{/);
+
+  const structuredData = getSolutionStructuredData(solution, "https://taicoev.com", faq);
+  const faqSchema = structuredData.find((schema) => schema["@type"] === "FAQPage");
+  assert.deepEqual(
+    faqSchema?.mainEntity,
+    faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
+    })),
   );
 });

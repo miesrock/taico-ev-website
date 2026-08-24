@@ -13,7 +13,7 @@ export const applications = [
     eyebrow: "Application 01 · Catalog use",
     title: "Roadside EV Rescue",
     summary: "Mobile charging systems for roadside EV rescue applications.",
-    solutionSlug: "emergency-ev-charging",
+    solutionSlug: "mobile-ev-charger-roadside-rescue",
   },
   {
     slug: "on-demand-charging",

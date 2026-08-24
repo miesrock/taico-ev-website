@@ -1,5 +1,5 @@
 import type { ApplicationSlug } from "./applications";
-import type { SolutionSlug } from "./solutions";
+import type { SolutionFaq, SolutionSlug } from "./solutions";
 
 export type SpecRow = { label: string; value: string };
 
@@ -107,7 +107,7 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
     catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
-    solutionSlugs: ["emergency-ev-charging"],
+    solutionSlugs: ["mobile-ev-charger-roadside-rescue"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-800-hero.webp",
     applicationImage: "/products/tkmc-800-application.webp",
@@ -138,7 +138,7 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
     catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
-    solutionSlugs: ["emergency-ev-charging"],
+    solutionSlugs: ["mobile-ev-charger-roadside-rescue"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-1500-hero.webp",
     applicationImage: "/products/tkmc-1500-application.webp",
@@ -355,6 +355,36 @@ export function getProduct(slug: string) {
 
 export function getProductsForSolution(slug: string) {
   return getPublishedProducts().filter((product) => product.solutionSlugs.includes(slug));
+}
+
+/** Resolve an explicitly ordered landing-page shortlist without duplicating product facts. */
+export function getFeaturedProductsForSolution(slug: string, featuredProductSlugs?: readonly string[]) {
+  if (!featuredProductSlugs?.length) return getProductsForSolution(slug);
+
+  const publishedBySlug = new Map(getPublishedProducts().map((product) => [product.slug, product]));
+  return featuredProductSlugs.map((productSlug) => {
+    const product = publishedBySlug.get(productSlug);
+    if (!product) {
+      throw new Error(`Unknown or unpublished featured product "${productSlug}" for solution "${slug}"`);
+    }
+    return product;
+  });
+}
+
+/** Resolve product-backed FAQ tokens from the same published facts used by the page cards. */
+export function resolveSolutionFaq(faq: readonly SolutionFaq[] | undefined, featuredProducts: readonly Product[]) {
+  if (!faq?.length) return [];
+
+  const productBySlug = new Map(featuredProducts.map((product) => [product.slug, product]));
+  const tokenPattern = /\{\{([a-z0-9-]+)\.(capacityKwh|outputPowerKw|chargingGun|model)\}\}/g;
+  return faq.map((item) => ({
+    ...item,
+    answer: item.answer.replace(tokenPattern, (_token, slug: string, field: "capacityKwh" | "outputPowerKw" | "chargingGun" | "model") => {
+      const product = productBySlug.get(slug);
+      if (!product) throw new Error(`Unknown FAQ product "${slug}"`);
+      return String(product[field]);
+    }),
+  }));
 }
 
 export function getProductsForApplication(slug: string) {

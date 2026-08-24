@@ -6,3 +6,6 @@
 # Previous scenario-only case pages are replaced by catalog-supported applications.
 /cases/ /applications/ 301
 /cases/* /applications/ 301
+
+# Canonical Solution route.
+/solutions/emergency-ev-charging/ /solutions/mobile-ev-charger-roadside-rescue/ 301
