@@ -160,3 +160,15 @@ test("resource articles expose generated navigation, quick answers, visible FAQs
     assert.equal(existsSync(join(websiteRoot, assetPath)), true, assetPath);
   }
 });
+
+test("SEO preview reports deterministic keyword coverage and stays out of the index", async () => {
+  const config = read("astro.config.mjs");
+  const previewPage = read("src/pages/preview/seo.astro");
+  const { scoreKeywordCoverage } = await import("../src/data/seo-preview.ts");
+
+  assert.match(config, /!page\.includes\('\/preview\/'\)/);
+  assert.match(previewPage, /robots="noindex, nofollow"/);
+  assert.equal(scoreKeywordCoverage("portable DC fast charger", "Portable DC fast charger buyer guide").status, "exact");
+  assert.equal(scoreKeywordCoverage("mobile EV charger power vs capacity", "Compare mobile EV charger power and stored capacity").status, "strong");
+  assert.equal(scoreKeywordCoverage("portable DC fast charger", "Roadside workflow and connector checks").status, "gap");
+});

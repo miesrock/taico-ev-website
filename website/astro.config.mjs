@@ -10,7 +10,7 @@ export default defineConfig({
   trailingSlash: 'always',
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/thank-you/') && !page.includes('/404/'),
+      filter: (page) => !page.includes('/thank-you/') && !page.includes('/404/') && !page.includes('/preview/'),
     }),
   ],
   vite: {
