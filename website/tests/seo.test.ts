@@ -168,6 +168,8 @@ test("SEO preview reports deterministic keyword coverage and stays out of the in
 
   assert.match(config, /!page\.includes\('\/preview\/'\)/);
   assert.match(previewPage, /robots="noindex, nofollow"/);
+  assert.match(previewPage, /section class="mt-12 grid min-w-0 gap-6 lg:grid-cols-\[1\.15fr_\.85fr\]"/);
+  assert.equal((previewPage.match(/class="glass min-w-0 rounded-3xl p-6 sm:p-8"/g) ?? []).length, 2);
   assert.equal(scoreKeywordCoverage("portable DC fast charger", "Portable DC fast charger buyer guide").status, "exact");
   assert.equal(scoreKeywordCoverage("mobile EV charger power vs capacity", "Compare mobile EV charger power and stored capacity").status, "strong");
   assert.equal(scoreKeywordCoverage("portable DC fast charger", "Roadside workflow and connector checks").status, "gap");

@@ -12,7 +12,9 @@
     "LEAD_RETENTION_DAYS": "180",
     "SMTP_HOST": "smtp.exmail.qq.com",
     "SMTP_PORT": "465",
-    "SMTP_USER": "sales12@taicopower.com"
+    "SMTP_USER": "sales12@taicopower.com",
+    "ACCESS_TEAM_DOMAIN": "https://polished-voice-6653.cloudflareaccess.com",
+    "ACCESS_AUD": "47afae681af98728381c53663aea11bdd726b13d5004e439729463eee00a882a"
   },
   "d1_databases": [
     {
@@ -20,6 +22,12 @@
       "database_name": "taico-ev-leads",
       "database_id": "52fdc34b-c3e7-4738-9e02-e7c4a323385f",
       "migrations_dir": "./migrations"
+    },
+    {
+      "binding": "SEO_DB",
+      "database_name": "taico-ev-seo",
+      "database_id": "4b6cd678-ac2c-4aba-bd48-032987a64069",
+      "migrations_dir": "./seo-migrations"
     }
   ]
 }

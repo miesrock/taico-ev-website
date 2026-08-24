@@ -34,8 +34,6 @@ const coverageCounts = Object.fromEntries(["exact", "strong", "partial", "gap"].
   allTargets.filter((target) => target.coverage.status === status).length,
 ])) as Record<"exact" | "strong" | "partial" | "gap", number>;
 const supportedCount = coverageCounts.exact + coverageCounts.strong;
-const totalWords = articleStats.reduce((sum, article) => sum + article.words, 0);
-
 const statusClass = {
   exact: "border-wave-cyan/40 bg-wave-cyan/10 text-wave-cyan",
   strong: "border-emerald-400/40 bg-emerald-400/10 text-emerald-300",
@@ -45,82 +43,120 @@ const statusClass = {
 ---
 
 <Layout
-  title="SEO coverage preview | TAICO EV"
-  description="Internal preview of article structure and long-tail keyword coverage."
+  title="TAICO SEO CONTROL ROOM"
+  description="Internal SEO control room for content coverage, Search Console performance, indexing, and deterministic opportunities."
   robots="noindex, nofollow"
 >
   <section class="section-pad">
-    <div class="mx-auto max-w-6xl">
-      <p class="label-tech">Internal preview · noindex</p>
-      <h1 class="mt-5 max-w-4xl font-display text-4xl font-semibold tracking-wide text-ink sm:text-5xl">Article SEO coverage</h1>
-      <p class="mt-5 max-w-3xl text-lg leading-relaxed text-muted">This page measures content structure and target-query wording. It does not report Google impressions, positions, indexing, or traffic; those require live Search Console data after deployment.</p>
-
-      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <div class="glass rounded-2xl p-5"><p class="label-tech">Articles</p><p class="mt-3 text-3xl font-semibold text-ink">{articleStats.length}</p></div>
-        <div class="glass rounded-2xl p-5"><p class="label-tech">Body words</p><p class="mt-3 text-3xl font-semibold text-ink">{totalWords.toLocaleString("en-US")}</p></div>
-        <div class="glass rounded-2xl p-5"><p class="label-tech">Target queries</p><p class="mt-3 text-3xl font-semibold text-ink">{allTargets.length}</p></div>
-        <div class="glass rounded-2xl p-5"><p class="label-tech">Article support</p><p class="mt-3 text-3xl font-semibold text-ink">{supportedCount}<span class="text-base text-muted"> / {allTargets.length}</span></p></div>
+    <div class="mx-auto max-w-7xl" data-seo-live>
+      <div class="flex flex-wrap items-end justify-between gap-5">
+        <div>
+          <p class="label-tech">Internal control room · noindex</p>
+          <h1 class="mt-5 max-w-4xl font-display text-4xl font-semibold tracking-wide text-ink sm:text-5xl">TAICO SEO CONTROL ROOM</h1>
+          <p class="mt-5 max-w-3xl text-lg leading-relaxed text-muted">Content coverage is available at build time. Search Console, indexing, sitemap, and opportunity data load only for an authenticated team member.</p>
+        </div>
+        <div class="glass rounded-xl px-4 py-3 text-sm text-muted" data-sync-status role="status" aria-live="polite">Waiting for Search Console sync</div>
       </div>
 
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="glass rounded-2xl p-5"><p class="label-tech">Content</p><p class="mt-3 text-3xl font-semibold text-ink">{supportedCount} <span class="text-base text-muted">/ {allTargets.length} keywords</span></p><p class="mt-2 text-xs text-muted">Exact or strong coverage</p></div>
+        <div class="glass rounded-2xl p-5"><p class="label-tech">Indexing</p><p class="mt-3 text-3xl font-semibold text-ink" data-indexing-card>— <span class="text-base text-muted">/ 8 pages</span></p><p class="mt-2 text-xs text-muted" data-indexing-note>Awaiting authenticated data</p></div>
+        <div class="glass rounded-2xl p-5"><p class="label-tech">Search</p><p class="mt-3 text-3xl font-semibold text-ink" data-search-impressions>—</p><p class="mt-2 text-xs text-muted" data-search-note>28-day impressions</p></div>
+        <div class="glass rounded-2xl p-5"><p class="label-tech">Opportunities</p><p class="mt-3 text-3xl font-semibold text-ink" data-opportunity-card>—</p><p class="mt-2 text-xs text-muted">Deterministic recommendations</p></div>
+      </div>
+
+      <section class="mt-12 grid min-w-0 gap-6 lg:grid-cols-[1.15fr_.85fr]" aria-label="Search Console overview">
+        <article class="glass min-w-0 rounded-3xl p-6 sm:p-8">
+          <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="label-tech">Search</p><h2 class="mt-3 font-display text-2xl font-semibold text-ink">Search performance</h2></div><p class="text-sm text-muted" data-data-through>Awaiting first Search Console sync</p></div>
+          <dl class="mt-7 grid gap-5 sm:grid-cols-4">
+            <div><dt class="text-xs uppercase tracking-wide text-faint">Impressions</dt><dd class="mt-2 text-2xl font-semibold text-ink" data-search-impressions-detail>—</dd><dd class="mt-1 text-xs text-muted" data-search-impressions-delta></dd></div>
+            <div><dt class="text-xs uppercase tracking-wide text-faint">Clicks</dt><dd class="mt-2 text-2xl font-semibold text-ink" data-search-clicks>—</dd><dd class="mt-1 text-xs text-muted" data-search-clicks-delta></dd></div>
+            <div><dt class="text-xs uppercase tracking-wide text-faint">CTR</dt><dd class="mt-2 text-2xl font-semibold text-ink" data-search-ctr>—</dd><dd class="mt-1 text-xs text-muted" data-search-ctr-delta></dd></div>
+            <div><dt class="text-xs uppercase tracking-wide text-faint">Avg position</dt><dd class="mt-2 text-2xl font-semibold text-ink" data-search-position>—</dd><dd class="mt-1 text-xs text-muted" data-search-position-delta></dd></div>
+          </dl>
+          <p class="mt-7 text-sm leading-relaxed text-muted">Search Console data is normally delayed by several days. Position changes are current period minus previous period; a negative position delta is an improvement.</p>
+        </article>
+        <article class="glass min-w-0 rounded-3xl p-6 sm:p-8">
+          <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="label-tech">Indexing</p><h2 class="mt-3 font-display text-2xl font-semibold text-ink">Priority page status</h2></div><p class="text-sm text-muted" data-sitemap-note>Sitemap status pending</p></div>
+          <div class="mt-6 overflow-x-auto"><table class="w-full min-w-[520px] text-left text-sm"><thead class="text-xs uppercase tracking-wide text-faint"><tr><th class="pb-3 pr-4">Page</th><th class="pb-3 pr-4">Verdict</th><th class="pb-3">Last crawl</th></tr></thead><tbody data-indexing-table><tr><td colspan="3" class="py-4 text-muted">Sign in to load URL Inspection results.</td></tr></tbody></table></div>
+        </article>
+      </section>
+
+      <section class="mt-12" aria-labelledby="opportunity-heading">
+        <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="label-tech">Opportunities</p><h2 id="opportunity-heading" class="mt-3 font-display text-2xl font-semibold text-ink">What to do next</h2></div><p class="text-sm text-muted">Rules use non-brand queries with at least 20 impressions.</p></div>
+        <div class="mt-6 grid gap-4 lg:grid-cols-2" data-opportunities><article class="glass rounded-2xl p-6 text-sm text-muted">Awaiting authenticated Search Console data.</article></div>
+      </section>
+
+      <section class="mt-12" aria-labelledby="query-page-heading">
+        <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="label-tech">Query / page</p><h2 id="query-page-heading" class="mt-3 font-display text-2xl font-semibold text-ink">Demand by page</h2></div><p class="text-sm text-muted">Top 100 stored query-page rows by impressions.</p></div>
+        <div class="mt-6 overflow-x-auto rounded-2xl border border-line"><table class="w-full min-w-[760px] text-left text-sm"><thead class="bg-surface/50 text-xs uppercase tracking-wide text-faint"><tr><th class="px-5 py-4">Query</th><th class="px-5 py-4">Page</th><th class="px-5 py-4">Impressions</th><th class="px-5 py-4">Clicks</th><th class="px-5 py-4">CTR</th><th class="px-5 py-4">Position</th></tr></thead><tbody data-query-table><tr><td colspan="6" class="px-5 py-5 text-muted">Sign in to load query-page metrics.</td></tr></tbody></table></div>
+      </section>
+
       <section class="mt-12" aria-labelledby="article-health">
-        <div class="flex flex-wrap items-end justify-between gap-3">
-          <div><p class="label-tech">Structure</p><h2 id="article-health" class="mt-3 font-display text-2xl font-semibold text-ink">Article health</h2></div>
-          <p class="text-sm text-muted">Counts come directly from the Markdown collection.</p>
-        </div>
+        <div class="flex flex-wrap items-end justify-between gap-3"><div><p class="label-tech">Content</p><h2 id="article-health" class="mt-3 font-display text-2xl font-semibold text-ink">Article health</h2></div><p class="text-sm text-muted">Counts come directly from the Markdown collection.</p></div>
         <div class="mt-6 grid gap-5 lg:grid-cols-3">
           {articleStats.map((article) => <article class="glass rounded-2xl p-6">
             <h3 class="text-lg font-semibold leading-snug text-ink">{article.title}</h3>
             <a class="mt-2 block break-all text-xs text-wave-cyan hover:underline" href={`/resources/articles/${article.slug}/`}>/resources/articles/{article.slug}/</a>
-            <dl class="mt-6 grid grid-cols-2 gap-4 text-sm">
-              <div><dt class="text-faint">Words</dt><dd class="mt-1 font-semibold text-ink">{article.words}</dd></div>
-              <div><dt class="text-faint">H2 sections</dt><dd class="mt-1 font-semibold text-ink">{article.h2s}</dd></div>
-              <div><dt class="text-faint">Internal links</dt><dd class="mt-1 font-semibold text-ink">{article.internalLinks}</dd></div>
-              <div><dt class="text-faint">FAQ / figures</dt><dd class="mt-1 font-semibold text-ink">{article.faqs} / {article.figures}</dd></div>
-            </dl>
+            <dl class="mt-6 grid grid-cols-2 gap-4 text-sm"><div><dt class="text-faint">Words</dt><dd class="mt-1 font-semibold text-ink">{article.words}</dd></div><div><dt class="text-faint">H2 sections</dt><dd class="mt-1 font-semibold text-ink">{article.h2s}</dd></div><div><dt class="text-faint">Internal links</dt><dd class="mt-1 font-semibold text-ink">{article.internalLinks}</dd></div><div><dt class="text-faint">FAQ / figures</dt><dd class="mt-1 font-semibold text-ink">{article.faqs} / {article.figures}</dd></div></dl>
           </article>)}
         </div>
       </section>
 
       <section class="mt-12" aria-labelledby="keyword-coverage">
-        <p class="label-tech">Query map</p>
-        <h2 id="keyword-coverage" class="mt-3 font-display text-2xl font-semibold text-ink">Long-tail coverage preview</h2>
-        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">Exact means the normalized phrase appears in its supporting article. Strong and partial are token-overlap checks, not ranking predictions or proof that Google considers two phrases semantically equivalent. Commercial product queries remain owned by product or solution pages to avoid cannibalization.</p>
-        <div class="mt-6 space-y-3">
-          {allTargets.map((target) => <article class="glass grid gap-3 rounded-2xl p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
-            <div class="min-w-0">
-              <h3 class="font-semibold text-ink">{target.query}</h3>
-              <p class="mt-1 break-all text-xs text-faint">Target owner: {target.ownerPath} · supporting article: {target.supportingArticleSlug}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class={`rounded-full border px-3 py-1 font-mono text-xs uppercase tracking-wide ${statusClass[target.coverage.status]}`}>{target.coverage.status}</span>
-              <span class="w-14 text-right font-mono text-xs text-muted">{Math.round(target.coverage.ratio * 100)}%</span>
-            </div>
-          </article>)}
-        </div>
+        <p class="label-tech">Query map</p><h2 id="keyword-coverage" class="mt-3 font-display text-2xl font-semibold text-ink">Long-tail coverage preview</h2>
+        <p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">Exact means the normalized phrase appears in its supporting article. Strong and partial are token-overlap checks, not ranking predictions. Commercial product queries remain owned by product or solution pages to avoid cannibalization.</p>
+        <div class="mt-6 space-y-3">{allTargets.map((target) => <article class="glass grid gap-3 rounded-2xl p-5 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"><div class="min-w-0"><h3 class="font-semibold text-ink">{target.query}</h3><p class="mt-1 break-all text-xs text-faint">Target owner: {target.ownerPath} · supporting article: {target.supportingArticleSlug}</p></div><div class="flex items-center gap-3"><span class={`rounded-full border px-3 py-1 font-mono text-xs uppercase tracking-wide ${statusClass[target.coverage.status]}`}>{target.coverage.status}</span><span class="w-14 text-right font-mono text-xs text-muted">{Math.round(target.coverage.ratio * 100)}%</span></div></article>)}</div>
       </section>
 
       <section class="mt-12 glass rounded-3xl p-6 sm:p-8" aria-labelledby="benchmark-gap">
-        <p class="label-tech">Competitor snapshot · 2026-08-24</p>
-        <h2 id="benchmark-gap" class="mt-3 font-display text-2xl font-semibold text-ink">What the GSL sample does differently</h2>
-        <div class="mt-6 grid gap-6 md:grid-cols-2">
-          <div>
-            <h3 class="font-semibold text-ink">TAICO already has</h3>
-            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
-              <li>One clear query owner per article</li>
-              <li>Quick answers, generated contents navigation, FAQ schema, figures, captions, and specific CTAs</li>
-              <li>Catalog-backed claims and safer qualification language</li>
-            </ul>
-          </div>
-          <div>
-            <h3 class="font-semibold text-ink">Largest remaining gaps</h3>
-            <ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted">
-              <li>GSL's sampled guides are materially broader: roughly 1,500–3,900 extracted words versus 749–1,081 here</li>
-              <li>TAICO still lacks proof-led manufacturer, fleet, cost, procurement, and project-evidence clusters</li>
-              <li>The new routes must be deployed, submitted, crawled, and measured before ranking claims are possible</li>
-            </ul>
-          </div>
-        </div>
+        <p class="label-tech">Operating notes</p><h2 id="benchmark-gap" class="mt-3 font-display text-2xl font-semibold text-ink">How to read this room</h2>
+        <div class="mt-6 grid gap-6 md:grid-cols-2"><div><h3 class="font-semibold text-ink">Content is deterministic</h3><ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted"><li>Build-time counts cover article structure and declared long-tail ownership.</li><li>Search Console rows are delayed and are never treated as ranking guarantees.</li><li>FAQ, query, and page tables are evidence for review, not automatic publishing instructions.</li></ul></div><div><h3 class="font-semibold text-ink">Actions stay human-controlled</h3><ul class="mt-3 list-disc space-y-2 pl-5 text-sm leading-relaxed text-muted"><li>Opportunity labels are deterministic BUILD, IMPROVE, ARTICLE, or REVIEW suggestions.</li><li>No page, article, task, sitemap submission, or indexing request is created automatically.</li><li>URL Inspection reports Google's indexed version; it is not a live test.</li></ul></div></div>
       </section>
     </div>
   </section>
+
+  <script is:inline>
+    (() => {
+      const root = document.querySelector("[data-seo-live]");
+      if (!root) return;
+      const text = (selector, value) => { const element = root.querySelector(selector); if (element) element.textContent = value; };
+      const number = (value) => Number(value || 0).toLocaleString("en-US", { maximumFractionDigits: 1 });
+      const percent = (value) => `${(Number(value || 0) * 100).toFixed(1)}%`;
+      const position = (value) => Number(value || 0) > 0 ? Number(value).toFixed(1) : "—";
+      const delta = (value, suffix = "") => `${Number(value || 0) > 0 ? "+" : ""}${number(value)}${suffix} vs previous 28 days`;
+      const load = async () => {
+        try {
+          const response = await fetch("/api/seo/control-room", { headers: { accept: "application/json" }, credentials: "same-origin" });
+          if (response.status === 401 || response.status === 403) { text("[data-sync-status]", "Cloudflare Access sign-in required for live data"); return; }
+          if (!response.ok) throw new Error("unavailable");
+          const data = await response.json();
+          if (data.status === "empty") { text("[data-sync-status]", "Authenticated · awaiting first Search Console sync"); return; }
+          text("[data-sync-status]", `${data.status === "partial" ? "Partial" : "Synced"} · ${data.lastSync ? new Date(data.lastSync).toLocaleString("en-US") : ""}${data.stale ? " · stale" : ""}`);
+          text("[data-data-through]", `Data through ${data.dataThrough || "—"}`);
+          text("[data-indexing-card]", `${data.indexing.indexed} / 8`);
+          text("[data-indexing-note]", `${data.indexing.checked} checked${data.status === "partial" ? " · partial snapshot" : ""}`);
+          text("[data-search-impressions]", number(data.search?.current.impressions));
+          text("[data-search-impressions-detail]", number(data.search?.current.impressions));
+          text("[data-search-clicks]", number(data.search?.current.clicks));
+          text("[data-search-ctr]", percent(data.search?.current.ctr));
+          text("[data-search-position]", position(data.search?.current.position));
+          text("[data-search-note]", `28-day impressions · ${percent(data.search?.current.ctr)} CTR`);
+          text("[data-search-impressions-delta]", delta(data.search?.delta.impressions));
+          text("[data-search-clicks-delta]", delta(data.search?.delta.clicks));
+          text("[data-search-ctr-delta]", delta((data.search?.delta.ctr || 0) * 100, " pp"));
+          text("[data-search-position-delta]", delta(data.search?.delta.position));
+          text("[data-opportunity-card]", number(data.opportunities?.length));
+          const indexingTable = root.querySelector("[data-indexing-table]");
+          if (indexingTable) { indexingTable.replaceChildren(); (data.indexing.pages || []).forEach((page) => { const row = document.createElement("tr"); row.className = "border-t border-line"; [page.url, page.indexed ? "Indexed" : (page.verdict || "Unknown"), page.lastCrawlTime ? new Date(page.lastCrawlTime).toLocaleDateString("en-US") : "Not crawled"].forEach((value, index) => { const cell = document.createElement("td"); cell.className = "py-3 pr-4 text-muted"; if (index === 0) cell.className += " max-w-[280px] break-all text-ink"; cell.textContent = value; row.appendChild(cell); }); indexingTable.appendChild(row); }); if (!data.indexing.pages?.length) { const row = document.createElement("tr"); const cell = document.createElement("td"); cell.colSpan = 3; cell.className = "py-4 text-muted"; cell.textContent = "No URL Inspection results yet."; row.appendChild(cell); indexingTable.appendChild(row); } }
+          text("[data-sitemap-note]", data.sitemap ? `${data.sitemap.errors || 0} errors · ${data.sitemap.warnings || 0} warnings` : "Sitemap check unavailable");
+          const opportunities = root.querySelector("[data-opportunities]");
+          if (opportunities) { opportunities.replaceChildren(); (data.opportunities || []).forEach((item) => { const card = document.createElement("article"); card.className = "glass rounded-2xl p-6"; const title = document.createElement("div"); title.className = "flex flex-wrap items-center justify-between gap-3"; const query = document.createElement("h3"); query.className = "font-semibold text-ink"; query.textContent = item.query; const action = document.createElement("span"); action.className = "rounded-full border border-wave-cyan/40 bg-wave-cyan/10 px-3 py-1 font-mono text-xs uppercase tracking-wide text-wave-cyan"; action.textContent = item.action; title.append(query, action); const stats = document.createElement("p"); stats.className = "mt-3 text-sm text-muted"; stats.textContent = `Position ${position(item.position)} · ${number(item.impressions)} impressions · ${percent(item.ctr)} CTR`; const reason = document.createElement("p"); reason.className = "mt-3 text-sm leading-relaxed text-muted"; reason.textContent = item.reason; const target = document.createElement("a"); target.className = "mt-4 block break-all text-xs text-wave-cyan hover:underline"; target.href = String(item.targetPath || "/"); target.textContent = `→ ${item.targetPath}`; card.append(title, stats, reason, target); opportunities.appendChild(card); }); if (!data.opportunities?.length) { const empty = document.createElement("article"); empty.className = "glass rounded-2xl p-6 text-sm text-muted"; empty.textContent = "No qualified opportunities in the current 28-day window."; opportunities.appendChild(empty); } }
+          const queryTable = root.querySelector("[data-query-table]");
+          if (queryTable) { queryTable.replaceChildren(); (data.metrics || []).forEach((item) => { const row = document.createElement("tr"); row.className = "border-t border-line"; [item.query, item.page, number(item.impressions), number(item.clicks), percent(item.ctr), position(item.position)].forEach((value, index) => { const cell = document.createElement("td"); cell.className = "px-5 py-4 text-muted"; if (index < 2) cell.className += " max-w-[280px] break-all text-ink"; cell.textContent = value; row.appendChild(cell); }); queryTable.appendChild(row); }); if (!data.metrics?.length) { const row = document.createElement("tr"); const cell = document.createElement("td"); cell.colSpan = 6; cell.className = "px-5 py-5 text-muted"; cell.textContent = "No query-page rows in the current window."; row.appendChild(cell); queryTable.appendChild(row); } }
+        } catch { text("[data-sync-status]", "Live data unavailable · content coverage remains available"); }
+      };
+      load();
+    })();
+  </script>
 </Layout>

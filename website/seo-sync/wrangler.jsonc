@@ -1,0 +1,21 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "taico-ev-seo-sync",
+  "main": "./src/index.ts",
+  "compatibility_date": "2026-07-15",
+  "compatibility_flags": ["nodejs_compat"],
+  "triggers": { "crons": ["0 1 * * mon"] },
+  "vars": {
+    "GSC_PROPERTY": "sc-domain:taicoev.com",
+    "SITE_ORIGIN": "https://taicoev.com",
+    "SITEMAP_URL": "https://taicoev.com/sitemap-index.xml"
+  },
+  "d1_databases": [
+    {
+      "binding": "SEO_DB",
+      "database_name": "taico-ev-seo",
+      "database_id": "4b6cd678-ac2c-4aba-bd48-032987a64069",
+      "migrations_dir": "../seo-migrations"
+    }
+  ]
+}
