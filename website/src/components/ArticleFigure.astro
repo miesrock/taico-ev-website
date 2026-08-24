@@ -1,0 +1,23 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  priority?: boolean;
+}
+
+const { src, alt, caption, priority = false } = Astro.props;
+---
+
+<figure class="overflow-hidden rounded-3xl border border-line bg-void/20">
+  <img
+    src={src}
+    alt={alt}
+    width="1600"
+    height="900"
+    loading={priority ? "eager" : "lazy"}
+    decoding="async"
+    class="block aspect-video h-auto w-full object-cover"
+  />
+  {caption && <figcaption class="border-t border-line px-5 py-3 text-sm leading-relaxed text-muted">{caption}</figcaption>}
+</figure>

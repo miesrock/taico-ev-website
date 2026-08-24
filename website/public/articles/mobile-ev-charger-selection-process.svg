@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Mobile EV charger selection process</title>
+  <desc id="desc">Six steps from defining the operating scenario to creating a catalog-backed equipment shortlist.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#071426"/>
+      <stop offset="1" stop-color="#10233d"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop stop-color="#27d7d2"/>
+      <stop offset="1" stop-color="#8f7cff"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="14" stdDeviation="18" flood-color="#000" flood-opacity=".25"/>
+    </filter>
+  </defs>
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <text x="100" y="112" fill="#eaf4ff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">From requirement to shortlist</text>
+  <text x="100" y="165" fill="#9fb4ca" font-family="Arial, Helvetica, sans-serif" font-size="25">A practical qualification sequence for mobile EV charging projects</text>
+  <path d="M220 420H1380" stroke="url(#accent)" stroke-width="8" stroke-linecap="round" opacity=".72"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle" filter="url(#shadow)">
+    <g transform="translate(220 420)">
+      <circle r="74" fill="#102c43" stroke="#27d7d2" stroke-width="5"/>
+      <text y="14" fill="#27d7d2" font-size="42" font-weight="700">01</text>
+      <text y="130" fill="#eaf4ff" font-size="26" font-weight="700">Operating</text><text y="163" fill="#eaf4ff" font-size="26" font-weight="700">scenario</text>
+    </g>
+    <g transform="translate(452 420)">
+      <circle r="74" fill="#15283e" stroke="#3ac9dc" stroke-width="5"/>
+      <text y="14" fill="#3ac9dc" font-size="42" font-weight="700">02</text>
+      <text y="130" fill="#eaf4ff" font-size="26" font-weight="700">Vehicle &amp;</text><text y="163" fill="#eaf4ff" font-size="26" font-weight="700">connector</text>
+    </g>
+    <g transform="translate(684 420)">
+      <circle r="74" fill="#18263e" stroke="#52b8e7" stroke-width="5"/>
+      <text y="14" fill="#52b8e7" font-size="42" font-weight="700">03</text>
+      <text y="130" fill="#eaf4ff" font-size="26" font-weight="700">Power kW &amp;</text><text y="163" fill="#eaf4ff" font-size="26" font-weight="700">energy kWh</text>
+    </g>
+    <g transform="translate(916 420)">
+      <circle r="74" fill="#1c2540" stroke="#6aa6ef" stroke-width="5"/>
+      <text y="14" fill="#6aa6ef" font-size="42" font-weight="700">04</text>
+      <text y="130" fill="#eaf4ff" font-size="26" font-weight="700">Deployment</text><text y="163" fill="#eaf4ff" font-size="26" font-weight="700">format</text>
+    </g>
+    <g transform="translate(1148 420)">
+      <circle r="74" fill="#222440" stroke="#7d91f7" stroke-width="5"/>
+      <text y="14" fill="#7d91f7" font-size="42" font-weight="700">05</text>
+      <text y="130" fill="#eaf4ff" font-size="26" font-weight="700">Reset &amp;</text><text y="163" fill="#eaf4ff" font-size="26" font-weight="700">recharge plan</text>
+    </g>
+    <g transform="translate(1380 420)">
+      <circle r="84" fill="#292447" stroke="#8f7cff" stroke-width="6"/>
+      <text y="14" fill="#a99cff" font-size="42" font-weight="700">06</text>
+      <text y="140" fill="#eaf4ff" font-size="26" font-weight="700">Equipment</text><text y="173" fill="#eaf4ff" font-size="26" font-weight="700">shortlist</text>
+    </g>
+  </g>
+  <rect x="100" y="688" width="1400" height="112" rx="24" fill="#12283f" stroke="#294965"/>
+  <circle cx="158" cy="744" r="24" fill="#27d7d2"/>
+  <text x="158" y="754" fill="#071426" font-family="Arial, Helvetica, sans-serif" font-size="30" font-weight="700" text-anchor="middle">i</text>
+  <text x="205" y="735" fill="#dceafb" font-family="Arial, Helvetica, sans-serif" font-size="25" font-weight="700">Published specifications are the starting point.</text>
+  <text x="205" y="772" fill="#9fb4ca" font-family="Arial, Helvetica, sans-serif" font-size="23">Final configuration depends on the project, vehicle, connector, site and operating plan.</text>
+</svg>

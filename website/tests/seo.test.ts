@@ -108,6 +108,7 @@ test("resource articles use one validated Markdown collection and real public ro
 
 test("resource articles expose generated navigation, quick answers, visible FAQs, and specific CTAs", () => {
   const config = read("src/content.config.ts");
+  const figure = read("src/components/ArticleFigure.astro");
   const detailPage = read("src/pages/resources/articles/[slug].astro");
   const articleFiles = [
     "src/content/articles/mobile-ev-charging-guide.md",
@@ -116,9 +117,18 @@ test("resource articles expose generated navigation, quick answers, visible FAQs
   ];
 
   assert.match(config, /quickAnswer: z\.string\(\)\.optional\(\)/);
+  assert.match(config, /hero: articleFigure\.optional\(\)/);
+  assert.match(config, /figure: articleFigure\.optional\(\)/);
+  assert.match(figure, /alt=\{alt\}/);
+  assert.match(figure, /width="1600"/);
+  assert.match(figure, /height="900"/);
+  assert.match(figure, /figcaption/);
   assert.match(config, /cta: z\.object\(\{ title: z\.string\(\), body: z\.string\(\) \}\)\.optional\(\)/);
   assert.match(config, /faq: z\.array\(z\.object\(\{ question: z\.string\(\), answer: z\.string\(\) \}\)\)\.default\(\[\]\)/);
   assert.match(detailPage, /const \{ Content, headings \} = await render\(article\)/);
+  assert.match(detailPage, /import ArticleFigure from ["']\.\.\/\.\.\/\.\.\/components\/ArticleFigure\.astro["']/);
+  assert.match(detailPage, /article\.data\.hero/);
+  assert.match(detailPage, /article\.data\.figure/);
   assert.match(detailPage, /headings\.filter\(\(heading\) => heading\.depth === 2\)/);
   assert.match(detailPage, /aria-label="On this page"/);
   assert.match(detailPage, /lg:sticky lg:top-24/);
@@ -134,6 +144,19 @@ test("resource articles expose generated navigation, quick answers, visible FAQs
     assert.match(article, /^quickAnswer:/m, articleFile);
     assert.match(article, /^cta:/m, articleFile);
     assert.match(article, /^faq:/m, articleFile);
+    assert.match(article, /^hero:\n\s+src: \/articles\/[^\n]+/m, articleFile);
+    assert.match(article, /^figure:\n\s+src: \/articles\/[^\n]+/m, articleFile);
     assert.doesNotMatch(article, /15 minutes adds approximately 50 km of range/);
+  }
+
+  for (const assetPath of [
+    "public/articles/mobile-ev-charger-buyers-guide-hero.webp",
+    "public/articles/mobile-ev-charger-selection-process.svg",
+    "public/articles/kw-vs-kwh-mobile-ev-charging-hero.webp",
+    "public/articles/kw-vs-kwh-explainer.svg",
+    "public/articles/roadside-ev-rescue-workflow-hero.webp",
+    "public/articles/roadside-rescue-five-step-workflow.svg",
+  ]) {
+    assert.equal(existsSync(join(websiteRoot, assetPath)), true, assetPath);
   }
 });

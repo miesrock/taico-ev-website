@@ -4,6 +4,14 @@ description: "A five-stage operating framework for dispatching a mobile charging
 eyebrow: "Operating workflow"
 publishedAt: 2026-08-24
 order: 3
+hero:
+  src: /articles/roadside-ev-rescue-workflow-hero.webp
+  alt: "Published catalog application views of TKMC-800 and TKMC-1500 mobile charging systems."
+  caption: "Published catalog application imagery for TKMC-800 and TKMC-1500. These images show application context and are not customer case studies."
+figure:
+  src: /articles/roadside-rescue-five-step-workflow.svg
+  alt: "Five-step roadside EV rescue planning workflow from request qualification to reset and recharge."
+  caption: "Use this as a planning framework and approve procedures for the selected equipment, vehicles, market, and site conditions."
 quickAnswer: "A roadside EV rescue workflow should qualify the request, dispatch a configured system, confirm the connection, deliver a defined energy handoff, and reset or recharge the unit. This is a planning framework, not a universal operating or safety procedure."
 cta:
   title: "Review a roadside rescue configuration"

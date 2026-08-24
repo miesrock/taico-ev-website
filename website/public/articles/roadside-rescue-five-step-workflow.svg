@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Five-step roadside EV rescue planning workflow</title>
+  <desc id="desc">A planning framework from qualifying a request through dispatch, site confirmation, energy handoff, and system reset.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071426"/><stop offset="1" stop-color="#10233d"/></linearGradient>
+    <linearGradient id="route" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#27d7d2"/><stop offset=".55" stop-color="#4abbe5"/><stop offset="1" stop-color="#8f7cff"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <text x="100" y="112" fill="#eaf4ff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">Roadside rescue: a repeatable planning loop</text>
+  <text x="100" y="165" fill="#9fb4ca" font-family="Arial, Helvetica, sans-serif" font-size="25">Five stages to define before deploying a mobile charging service</text>
+  <path d="M190 445 C350 280 490 610 650 445 S950 280 1110 445 S1370 610 1450 445" fill="none" stroke="#253e58" stroke-width="34" stroke-linecap="round"/>
+  <path d="M190 445 C350 280 490 610 650 445 S950 280 1110 445 S1370 610 1450 445" fill="none" stroke="url(#route)" stroke-width="8" stroke-linecap="round" stroke-dasharray="18 18"/>
+  <g font-family="Arial, Helvetica, sans-serif" text-anchor="middle">
+    <g transform="translate(190 445)"><circle r="78" fill="#102d43" stroke="#27d7d2" stroke-width="6"/><text y="13" fill="#27d7d2" font-size="42" font-weight="700">01</text><text y="130" fill="#eaf4ff" font-size="25" font-weight="700">Qualify</text><text y="162" fill="#eaf4ff" font-size="25" font-weight="700">request</text></g>
+    <g transform="translate(505 445)"><circle r="78" fill="#152b43" stroke="#39cadc" stroke-width="6"/><text y="13" fill="#39cadc" font-size="42" font-weight="700">02</text><text y="-125" fill="#eaf4ff" font-size="25" font-weight="700">Dispatch configured</text><text y="-93" fill="#eaf4ff" font-size="25" font-weight="700">system</text></g>
+    <g transform="translate(800 445)"><circle r="86" fill="#182841" stroke="#52b8e7" stroke-width="6"/><text y="13" fill="#52b8e7" font-size="42" font-weight="700">03</text><text y="142" fill="#eaf4ff" font-size="25" font-weight="700">Confirm connection</text><text y="174" fill="#eaf4ff" font-size="25" font-weight="700">and site</text></g>
+    <g transform="translate(1095 445)"><circle r="78" fill="#202541" stroke="#718ff2" stroke-width="6"/><text y="13" fill="#718ff2" font-size="42" font-weight="700">04</text><text y="-125" fill="#eaf4ff" font-size="25" font-weight="700">Defined energy</text><text y="-93" fill="#eaf4ff" font-size="25" font-weight="700">handoff</text></g>
+    <g transform="translate(1410 445)"><circle r="78" fill="#292447" stroke="#8f7cff" stroke-width="6"/><text y="13" fill="#a99cff" font-size="42" font-weight="700">05</text><text y="130" fill="#eaf4ff" font-size="25" font-weight="700">Reset and</text><text y="162" fill="#eaf4ff" font-size="25" font-weight="700">recharge</text></g>
+  </g>
+  <rect x="100" y="722" width="1400" height="88" rx="22" fill="#12283f" stroke="#294965"/>
+  <text x="800" y="777" text-anchor="middle" fill="#b7c9da" font-family="Arial, Helvetica, sans-serif" font-size="23">Planning framework only — not a universal operating or safety procedure.</text>
+</svg>

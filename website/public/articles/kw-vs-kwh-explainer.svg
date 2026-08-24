@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">The difference between kilowatts and kilowatt-hours</title>
+  <desc id="desc">Kilowatts describe power, the rate of energy delivery. Kilowatt-hours describe stored energy.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#071426"/><stop offset="1" stop-color="#10233d"/></linearGradient>
+    <linearGradient id="left" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#12394b"/><stop offset="1" stop-color="#112b44"/></linearGradient>
+    <linearGradient id="right" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#27264c"/><stop offset="1" stop-color="#192b49"/></linearGradient>
+  </defs>
+  <rect width="1600" height="900" rx="40" fill="url(#bg)"/>
+  <text x="800" y="108" text-anchor="middle" fill="#eaf4ff" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700">kW and kWh answer different questions</text>
+  <text x="800" y="158" text-anchor="middle" fill="#9fb4ca" font-family="Arial, Helvetica, sans-serif" font-size="25">Use both when qualifying a mobile EV charging system</text>
+  <g font-family="Arial, Helvetica, sans-serif">
+    <rect x="100" y="225" width="610" height="470" rx="34" fill="url(#left)" stroke="#27d7d2" stroke-width="3"/>
+    <text x="155" y="330" fill="#27d7d2" font-size="88" font-weight="800">kW</text>
+    <text x="155" y="390" fill="#eaf4ff" font-size="34" font-weight="700">POWER</text>
+    <text x="155" y="445" fill="#c5d8e9" font-size="27">Rate of energy delivery</text>
+    <line x1="155" y1="488" x2="655" y2="488" stroke="#376377"/>
+    <circle cx="169" cy="541" r="7" fill="#27d7d2"/><text x="194" y="550" fill="#eaf4ff" font-size="24">Helps qualify output class</text>
+    <circle cx="169" cy="596" r="7" fill="#27d7d2"/><text x="194" y="605" fill="#eaf4ff" font-size="24">Not a guaranteed EV acceptance rate</text>
+    <rect x="890" y="225" width="610" height="470" rx="34" fill="url(#right)" stroke="#8f7cff" stroke-width="3"/>
+    <text x="945" y="330" fill="#a99cff" font-size="88" font-weight="800">kWh</text>
+    <text x="945" y="390" fill="#eaf4ff" font-size="34" font-weight="700">ENERGY</text>
+    <text x="945" y="445" fill="#c5d8e9" font-size="27">Stored energy</text>
+    <line x1="945" y1="488" x2="1445" y2="488" stroke="#4f527e"/>
+    <circle cx="959" cy="541" r="7" fill="#a99cff"/><text x="984" y="550" fill="#eaf4ff" font-size="24">Helps frame the operating window</text>
+    <circle cx="959" cy="596" r="7" fill="#a99cff"/><text x="984" y="605" fill="#eaf4ff" font-size="24">Not energy delivered in every deployment</text>
+    <rect x="100" y="730" width="1400" height="104" rx="22" fill="#12283f" stroke="#294965"/>
+    <text x="800" y="773" text-anchor="middle" fill="#5fe0dc" font-size="27" font-weight="700">Energy = Power × Time</text>
+    <text x="800" y="810" text-anchor="middle" fill="#b7c9da" font-size="21">Real results vary with the vehicle, system configuration, conditions and operating limits.</text>
+  </g>
+</svg>

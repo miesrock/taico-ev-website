@@ -4,6 +4,14 @@ description: "Understand the difference between charging power and stored energy
 eyebrow: "Technical explainer"
 publishedAt: 2026-08-24
 order: 2
+hero:
+  src: /articles/kw-vs-kwh-mobile-ev-charging-hero.webp
+  alt: "Published product views of the TKMC-800 and TKMC-1500 mobile EV charging systems."
+  caption: "Published product imagery of TKMC-800 and TKMC-1500. Product specifications remain the source of truth."
+figure:
+  src: /articles/kw-vs-kwh-explainer.svg
+  alt: "Diagram comparing kW as power rate with kWh as stored energy."
+  caption: "kW and kWh answer different qualification questions; neither value alone defines a charging-session outcome."
 quickAnswer: "kW describes the rate of power delivery; kWh describes stored energy. Use both to qualify a mobile charging service, but confirm the target EV and operating plan before promising a charging outcome."
 cta:
   title: "Map kW and kWh to your operating plan"
