@@ -1,4 +1,5 @@
 ---
+import { getCollection } from "astro:content";
 import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
@@ -22,6 +23,9 @@ const solutionContact = contactHref({ source: "solution-detail", solution: solut
 const seoTitle = solution.seo?.title ?? `${solution.title} | TAICO EV`;
 const seoDescription = solution.seo?.description ?? solution.summary;
 const structuredData = getSolutionStructuredData(solution, Astro.site ?? "https://taicoev.com", faq);
+const relatedArticles = (await getCollection("articles"))
+  .filter((article) => article.data.relatedSolutionSlug === solution.slug)
+  .sort((a, b) => a.data.order - b.data.order);
 ---
 
 <Layout title={seoTitle} description={seoDescription} canonicalPath={`/solutions/${solution.slug}/`}>
@@ -114,6 +118,16 @@ const structuredData = getSolutionStructuredData(solution, Astro.site ?? "https:
   {faq.length > 0 && <section id="faq" class="scroll-mt-24 section-pad !pt-0">
     <div class="max-w-3xl"><p class="label-tech">FAQ</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Roadside rescue charging questions.</h2></div>
     <div class="mt-6 max-w-4xl space-y-3">{faq.map((item) => <details class="glass rounded-2xl px-5 py-4"><summary class="cursor-pointer list-none pr-6 font-semibold text-ink marker:hidden">{item.question}</summary><p class="mt-3 max-w-3xl text-sm leading-relaxed text-muted">{item.answer}</p></details>)}</div>
+  </section>}
+  {relatedArticles.length > 0 && <section class="section-pad !pt-0">
+    <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Related reading</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Understand the decision first.</h2></div><a href="/resources/articles/" class="btn-ghost text-xs">All articles</a></div>
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{relatedArticles.map((article) => (
+      <article class="glass glass-hover rounded-2xl p-5">
+        <p class="label-tech">{article.data.eyebrow}</p>
+        <h3 class="mt-3 font-semibold text-ink"><a href={`/resources/articles/${article.id}/`} class="transition hover:text-wave-cyan">{article.data.title}</a></h3>
+        <p class="mt-2 text-sm leading-relaxed text-muted">{article.data.description}</p>
+      </article>
+    ))}</div>
   </section>}
 
   {solution.relatedLinks && <section class="section-pad !pt-0">
