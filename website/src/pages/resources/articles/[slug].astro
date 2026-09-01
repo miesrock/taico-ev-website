@@ -4,11 +4,8 @@ import { getCollection, render } from "astro:content";
 import ArticleFigure from "../../../components/ArticleFigure.astro";
 import CtaBand from "../../../components/CtaBand.astro";
 import Layout from "../../../layouts/Layout.astro";
-import { getApplication } from "../../../data/applications";
-import { getProductFamily } from "../../../data/families";
-import { getProduct } from "../../../data/products";
 import { getSolution } from "../../../data/solutions";
-import { getApplicationHref, getFamilyHref } from "../../../lib/content";
+import { getApplicationHref, getFamilyHref, getKnowledgeCommercialEntities } from "../../../lib/content";
 import { site } from "../../../data/site";
 
 export async function getStaticPaths() {
@@ -23,19 +20,10 @@ const tocItems = [
   ...headings.filter((heading) => heading.depth === 2),
   ...(article.data.faq.length ? [{ depth: 2, slug: "faq", text: "Frequently asked questions" }] : []),
 ];
-const relatedProducts = article.data.relatedProducts.map((slug) => {
-  const product = getProduct(slug);
-  if (!product) throw new Error(`Unknown article product: ${slug}`);
-  return product;
-});
-const relatedFamilies = article.data.relatedFamilies.map((slug) => {
-  const family = getProductFamily(slug);
-  if (!family) throw new Error(`Unknown article family: ${slug}`);
-  return family;
-});
-const relatedApplications = article.data.relatedApplications.map((slug) => {
-  const application = getApplication(slug);
-  if (!application) throw new Error(`Unknown article application: ${slug}`);
+const related = getKnowledgeCommercialEntities(article.data);
+const relatedProducts = related.products;
+const relatedFamilies = related.families;
+const relatedApplications = related.applications.map((application) => {
   const solution = getSolution(application.solutionSlug);
   if (!solution) throw new Error(`Unknown article solution: ${application.solutionSlug}`);
   return { application, solution };
@@ -171,7 +159,7 @@ const ctaBody = article.data.cta?.body;
             {relatedApplications.map(({ application, solution }) => (
               <a href={getApplicationHref(application)} class="glass glass-hover block rounded-2xl p-5">
                 <p class="label-tech">Related solution</p>
-                <h2 class="mt-3 font-semibold text-ink">{solution.title}</h2>
+                <h2 class="mt-3 font-semibold text-ink">{application.title}</h2>
                 <p class="mt-2 text-sm leading-relaxed text-muted">{solution.headline}</p>
               </a>
             ))}
@@ -179,7 +167,7 @@ const ctaBody = article.data.cta?.body;
         )}
         {relatedProducts.length > 0 && (
           <div class="glass rounded-2xl p-5">
-            <p class="label-tech">Published starting points</p>
+            <p class="label-tech">Related products</p>
             <div class="mt-4 space-y-4">
               {relatedProducts.map((product) => (
                 <a href={`/products/${product.slug}/`} class="block border-t border-line pt-4 first:border-0 first:pt-0">

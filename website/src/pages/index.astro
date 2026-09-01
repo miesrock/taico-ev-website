@@ -4,7 +4,12 @@ import WaveField from "../components/WaveField.astro";
 import Layout from "../layouts/Layout.astro";
 import { getPublishedFamilies } from "../data/families";
 import { getPublishedProducts, type Product } from "../data/products";
-import { solutions } from "../data/solutions";
+import { getApplicationForSolution, solutions } from "../data/solutions";
+
+const solutionEntries = solutions.map((presentation) => ({
+  presentation,
+  application: getApplicationForSolution(presentation),
+}));
 
 const featuredProducts = getPublishedFamilies()
   .map((family) => getPublishedProducts().find((product) => product.category === family.slug))
@@ -20,7 +25,7 @@ const featuredProducts = getPublishedFamilies()
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">TAICO EV provides mobile and stationary energy storage charging systems for emergency EV charging, on-demand service, engineering power, and PV-ESS charging applications.</p>
       <div class="mt-10 flex flex-wrap gap-3"><a class="btn-primary" href="#solutions">Find your solution</a><a class="btn-ghost" href="/contact/">Talk to a specialist</a></div>
       <div class="mt-14 grid max-w-4xl gap-3 sm:grid-cols-4">
-        {solutions.map((solution, index) => <a href={`/solutions/${solution.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p><p class="mt-1 text-sm font-medium text-ink">{solution.title}</p></a>)}
+        {solutionEntries.map((item, index) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p><p class="mt-1 text-sm font-medium text-ink">{item.application.title}</p></a>)}
       </div>
     </div>
   </section>
@@ -39,7 +44,7 @@ const featuredProducts = getPublishedFamilies()
     <h2 class="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-wide text-ink">Start with the operating challenge.</h2>
     <p class="mt-3 max-w-2xl text-muted">Choose the scenario closest to your deployment. We will show the catalog-supported product starting points, then confirm the final configuration with you.</p>
     <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      {solutions.map((solution) => <a href={`/solutions/${solution.slug}/`} class="glass glass-hover group flex min-h-64 flex-col rounded-3xl p-6"><p class="font-mono text-[11px] uppercase tracking-[0.16em] text-wave-violet">{solution.eyebrow}</p><h3 class="mt-4 text-xl font-semibold text-ink group-hover:text-wave-cyan">{solution.title}</h3><p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{solution.summary}</p><span class="mt-6 text-sm font-semibold text-wave-cyan">Explore solution →</span></a>)}
+      {solutionEntries.map((item) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover group flex min-h-64 flex-col rounded-3xl p-6"><p class="font-mono text-[11px] uppercase tracking-[0.16em] text-wave-violet">{item.presentation.eyebrow}</p><h3 class="mt-4 text-xl font-semibold text-ink group-hover:text-wave-cyan">{item.application.title}</h3><p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{item.application.summary}</p><span class="mt-6 text-sm font-semibold text-wave-cyan">Explore solution →</span></a>)}
     </div>
   </section>
 

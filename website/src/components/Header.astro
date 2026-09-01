@@ -2,7 +2,12 @@
 import { resourceLinks, primaryNavigation } from "../data/navigation";
 import { getPublishedFamilies } from "../data/families";
 import { getProduct, getPublishedProducts } from "../data/products";
-import { solutions } from "../data/solutions";
+import { getApplicationForSolution, solutions } from "../data/solutions";
+
+const solutionEntries = solutions.map((presentation) => ({
+  presentation,
+  application: getApplicationForSolution(presentation),
+}));
 
 const products = getPublishedProducts();
 const productGroups = getPublishedFamilies().map((family) => ({
@@ -83,11 +88,11 @@ const featuredProduct = getProduct("tkmc-800");
         </div>
         <div class="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_1.15fr]">
           {
-            solutions.map((solution) => (
-              <a href={`/solutions/${solution.slug}/`} class="nav-panel-card rounded-2xl p-4">
-                <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-wave-violet">{solution.eyebrow}</p>
-                <h2 class="mt-2 text-sm font-semibold text-ink">{solution.title}</h2>
-                <p class="mt-2 text-xs leading-relaxed text-muted">{solution.headline}</p>
+            solutionEntries.map((item) => (
+              <a href={`/solutions/${item.presentation.slug}/`} class="nav-panel-card rounded-2xl p-4">
+                <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-wave-violet">{item.presentation.eyebrow}</p>
+                <h2 class="mt-2 text-sm font-semibold text-ink">{item.application.title}</h2>
+                <p class="mt-2 text-xs leading-relaxed text-muted">{item.presentation.headline}</p>
               </a>
             ))
           }
@@ -177,7 +182,7 @@ const featuredProduct = getProduct("tkmc-800");
     <details open>
       <summary>Solutions</summary>
       <ul>
-        {solutions.map((solution) => <li><a href={`/solutions/${solution.slug}/`}>{solution.title}</a></li>)}
+        {solutionEntries.map((item) => <li><a href={`/solutions/${item.presentation.slug}/`}>{item.application.title}</a></li>)}
       </ul>
     </details>
     <details>

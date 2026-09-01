@@ -95,7 +95,7 @@ test("resource articles use one validated Markdown collection and real public ro
   assert.match(indexPage, /getCollection\("articles"\)/);
   assert.match(detailPage, /render\(article\)/);
   assert.match(detailPage, /"@type": "Article"/);
-  assert.match(detailPage, /getProduct\(slug\)/);
+  assert.match(detailPage, /getKnowledgeCommercialEntities\(article\.data\)/);
   assert.match(navigation, /href: "\/resources\/articles\//);
 
   for (const articleFile of articleFiles) {

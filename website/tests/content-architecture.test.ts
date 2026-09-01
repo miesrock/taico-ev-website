@@ -7,7 +7,7 @@ import { applications } from "../src/data/applications.ts";
 import { getPublishedFamilies, productFamilies } from "../src/data/families.ts";
 import { primaryNavigation } from "../src/data/navigation.ts";
 import { getPublishedProducts, getProductsForApplication, getProductsForSolution } from "../src/data/products.ts";
-import { solutions } from "../src/data/solutions.ts";
+import { getApplicationForSolution, getSolution, solutions } from "../src/data/solutions.ts";
 import {
   getApplicationsForProduct,
   getContentRelationIssues,
@@ -17,6 +17,10 @@ import {
   getSiblingProducts,
   getSolutionsForProduct,
   knowledgeHasCommercialRelation,
+  knowledgeRelatesToApplication,
+  knowledgeRelatesToFamily,
+  knowledgeRelatesToProduct,
+  knowledgeRelatesToSolution,
 } from "../src/lib/content.ts";
 
 const websiteRoot = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -136,6 +140,55 @@ test("public navigation and routes keep Applications off the primary IA", () => 
   }
   assert.doesNotMatch(header, /data-menu-panel="applications"/);
   assert.doesNotMatch(footer, /href=\{`\/applications\//);
-  assert.doesNotMatch(familyPage, /tkmc-800|TKMC-800|Roadside EV rescue/);
+  assert.doesNotMatch(familyPage, /tkmc-800|TKMC-800|Roadside EV Rescue|Roadside EV rescue/);
   assert.equal(solutions.length, applications.length);
+});
+
+test("products keep a single canonical application relation", () => {
+  const productsSource = read("src/data/products.ts");
+  assert.doesNotMatch(productsSource, /^\s+solutionSlugs:/m);
+  assert.doesNotMatch(productsSource, /relatedSolutionSlugs/);
+  for (const product of getPublishedProducts()) {
+    assert.equal("solutionSlugs" in product, false);
+    assert.ok(product.applicationSlugs.length > 0, product.slug);
+    assert.doesNotThrow(() => getFamilyForProduct(product));
+  }
+});
+
+test("each application has one matching solution presentation and public route", () => {
+  const presentationSlugs = solutions.map((solution) => solution.slug);
+  assert.equal(new Set(presentationSlugs).size, solutions.length);
+  assert.equal(new Set(applications.map((application) => application.slug)).size, applications.length);
+  assert.equal(applications.length, solutions.length);
+
+  for (const application of applications) {
+    const presentation = getSolution(application.solutionSlug);
+    assert.ok(presentation, application.slug);
+    assert.equal(presentation?.applicationSlug, application.slug);
+    assert.equal(existsSync(join(websiteRoot, "src/pages/solutions/[slug].astro")), true);
+  }
+
+  for (const presentation of solutions) {
+    const application = getApplicationForSolution(presentation);
+    assert.equal(application.solutionSlug, presentation.slug);
+    assert.equal("title" in presentation, false);
+    assert.equal("summary" in presentation, false);
+  }
+
+  const solutionsSource = read("src/data/solutions.ts");
+  assert.match(solutionsSource, /applicationSlug: ApplicationSlug/);
+  assert.doesNotMatch(solutionsSource, /export type Solution = \{[^}]*\btitle:/);
+});
+
+test("knowledge product relations propagate to family, application, and solution only", () => {
+  const article = { relatedProducts: ["tkmc-800"], relatedFamilies: [], relatedApplications: [] };
+
+  assert.equal(knowledgeRelatesToProduct(article, "tkmc-800"), true);
+  assert.equal(knowledgeRelatesToProduct(article, "tkmc-1500"), false);
+  assert.equal(knowledgeRelatesToFamily(article, "mobile-charging"), true);
+  assert.equal(knowledgeRelatesToFamily(article, "stationary-charging"), false);
+  assert.equal(knowledgeRelatesToApplication(article, "roadside-ev-rescue"), true);
+  assert.equal(knowledgeRelatesToApplication(article, "on-demand-charging"), false);
+  assert.equal(knowledgeRelatesToSolution(article, "mobile-ev-charger-roadside-rescue"), true);
+  assert.equal(knowledgeRelatesToSolution(article, "charge-on-demand"), false);
 });

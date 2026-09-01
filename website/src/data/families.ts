@@ -19,6 +19,10 @@ export type FamilyRanges = {
   connector?: string;
 };
 
+/**
+ * Editorial scenarios used by the Family Page selector.
+ * This is not the canonical Product → Application relation.
+ */
 export type FamilyUseCase = {
   title: string;
   description: string;
@@ -55,6 +59,7 @@ export type ProductFamily = {
   seo: FamilySeo;
   overview: FamilyOverview;
   ranges?: FamilyRanges;
+  /** Family Page selector scenarios, not Product ↔ Application membership. */
   useCases: FamilyUseCase[];
   selectionGuide: FamilySelectionGuide[];
   comparisonFields: FamilyComparisonField[];

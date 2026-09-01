@@ -4,6 +4,7 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getProduct, getProductSeo, getProductSpecs, getProductStructuredData, getPublishedProducts } from "../../data/products";
+import { getApplicationForSolution } from "../../data/solutions";
 import {
   getApplicationHref,
   getApplicationsForProduct,
@@ -25,7 +26,10 @@ const specifications = getProductSpecs(product);
 const seo = getProductSeo(product);
 const structuredData = getProductStructuredData(product, Astro.site ?? "https://taicoev.com");
 const family = getFamilyForProduct(product);
-const relatedSolutions = getSolutionsForProduct(product);
+const relatedSolutions = getSolutionsForProduct(product).map((presentation) => ({
+  presentation,
+  application: getApplicationForSolution(presentation),
+}));
 const relatedApplications = getApplicationsForProduct(product);
 const relatedProducts = getSiblingProducts(product);
 const compatibility = getProductCompatibility(product);
@@ -168,7 +172,7 @@ const relatedKnowledge = (await getCollection("articles"))
       <section class="section-pad !pt-0">
         <p class="label-tech">Explore by challenge</p>
         <div class="mt-5 grid gap-4 md:grid-cols-2">
-          {relatedSolutions.map((solution) => <a href={`/solutions/${solution.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{solution.title}</h2><p class="mt-2 text-sm text-muted">{solution.headline}</p></a>)}
+          {relatedSolutions.map((item) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.application.title}</h2><p class="mt-2 text-sm text-muted">{item.presentation.headline}</p></a>)}
         </div>
       </section>
     )

@@ -151,11 +151,17 @@ export function getProductCompatibility(product: Product): SpecRow[] {
 }
 
 export function knowledgeRelatesToFamily(data: KnowledgeRelations, familySlug: string) {
-  return (data.relatedFamilies ?? []).includes(familySlug);
+  if ((data.relatedFamilies ?? []).includes(familySlug)) return true;
+  const relatedProducts = new Set(data.relatedProducts ?? []);
+  return getPublishedProducts().some((product) => relatedProducts.has(product.slug) && product.category === familySlug);
 }
 
 export function knowledgeRelatesToApplication(data: KnowledgeRelations, applicationSlug: string) {
-  return (data.relatedApplications ?? []).includes(applicationSlug);
+  if ((data.relatedApplications ?? []).includes(applicationSlug)) return true;
+  const relatedProducts = new Set(data.relatedProducts ?? []);
+  return getPublishedProducts().some(
+    (product) => relatedProducts.has(product.slug) && (product.applicationSlugs as readonly string[]).includes(applicationSlug),
+  );
 }
 
 export function knowledgeRelatesToProduct(data: KnowledgeRelations, productSlug: string) {
@@ -163,7 +169,32 @@ export function knowledgeRelatesToProduct(data: KnowledgeRelations, productSlug:
 }
 
 export function knowledgeRelatesToSolution(data: KnowledgeRelations, solutionSlug: string) {
-  return (data.relatedApplications ?? []).some((slug) => getApplication(slug)?.solutionSlug === solutionSlug);
+  const application = getApplicationBySolutionSlug(solutionSlug);
+  return application ? knowledgeRelatesToApplication(data, application.slug) : false;
+}
+
+export function getKnowledgeCommercialEntities(data: KnowledgeRelations) {
+  const products = [...new Set(data.relatedProducts ?? [])].map((slug) => {
+    const product = getPublishedProducts().find((item) => item.slug === slug);
+    if (!product) throw new Error(`Unknown knowledge product "${slug}"`);
+    return product;
+  });
+  const familySlugs = unique([...(data.relatedFamilies ?? []), ...products.map((product) => product.category)]);
+  const families = familySlugs.map((slug) => {
+    const family = getProductFamily(slug);
+    if (!family) throw new Error(`Unknown knowledge family "${slug}"`);
+    return family;
+  });
+  const applicationSlugs = unique([
+    ...(data.relatedApplications ?? []),
+    ...products.flatMap((product) => product.applicationSlugs),
+  ]);
+  const relatedApplications = applicationSlugs.map((slug) => {
+    const application = getApplication(slug);
+    if (!application) throw new Error(`Unknown knowledge application "${slug}"`);
+    return application;
+  });
+  return { products, families, applications: relatedApplications };
 }
 
 export function knowledgeHasCommercialRelation(data: KnowledgeRelations) {
@@ -251,8 +282,25 @@ export function getContentRelationIssues() {
     }
   }
 
+  if (applications.length !== solutions.length) issues.push("Application and Solution presentation counts differ");
+
   for (const application of applications) {
-    if (!solutionSlugs.has(application.solutionSlug)) issues.push(`Unknown solution ${application.solutionSlug} on application ${application.slug}`);
+    const presentation = getSolution(application.solutionSlug);
+    if (!presentation) {
+      issues.push(`Unknown solution ${application.solutionSlug} on application ${application.slug}`);
+      continue;
+    }
+    if (presentation.applicationSlug !== application.slug) {
+      issues.push(`Solution ${presentation.slug} does not reference application ${application.slug}`);
+    }
+  }
+
+  for (const solution of solutions) {
+    const application = getApplication(solution.applicationSlug);
+    if (!application) issues.push(`Unknown application ${solution.applicationSlug} on solution ${solution.slug}`);
+    else if (application.solutionSlug !== solution.slug) {
+      issues.push(`Application ${application.slug} does not map to solution ${solution.slug}`);
+    }
   }
 
   return issues;

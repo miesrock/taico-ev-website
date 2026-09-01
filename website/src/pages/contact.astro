@@ -4,7 +4,7 @@ import WaveField from "../components/WaveField.astro";
 import { getApplication } from "../data/applications";
 import { getProduct } from "../data/products";
 import { site } from "../data/site";
-import { getSolution } from "../data/solutions";
+import { getApplicationForSolution, getSolution } from "../data/solutions";
 import Layout from "../layouts/Layout.astro";
 
 const query = Astro.url.searchParams;
@@ -15,6 +15,7 @@ const limited = (value: string | null, max: number) => {
 const safeSlug = (value: string | null) => /^[a-z0-9-]{1,80}$/.test(value || "") ? value! : "";
 const product = getProduct(safeSlug(query.get("product")));
 const solution = getSolution(safeSlug(query.get("solution")));
+const solutionApplication = solution ? getApplicationForSolution(solution) : undefined;
 const application = getApplication(safeSlug(query.get("application")));
 const source = /^[a-z0-9][a-z0-9_-]{0,79}$/.test(query.get("source") || "") ? query.get("source")! : "contact-page";
 const pagePath = /^\/[\x20-\x7e]{0,199}$/.test(query.get("page") || "") ? query.get("page")! : "/contact/";
@@ -27,7 +28,7 @@ const utm = {
 };
 const contextLabel = [
   product && `Product: ${product.model}`,
-  solution && `Solution: ${solution.title}`,
+  solutionApplication && `Solution: ${solutionApplication.title}`,
   application && `Application: ${application.title}`,
 ].filter(Boolean).join(" · ");
 const siteKey = import.meta.env.PUBLIC_TURNSTILE_SITE_KEY || "0x4AAAAAAEFOIsHPdorBLVaN";

@@ -4,7 +4,7 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getFeaturedProductsForSolution, getProductsForSolution, resolveSolutionFaq } from "../../data/products";
-import { getSolution, getSolutionStructuredData, solutions } from "../../data/solutions";
+import { getApplicationForSolution, getSolution, getSolutionStructuredData, solutions } from "../../data/solutions";
 import { knowledgeRelatesToSolution } from "../../lib/content";
 
 export function getStaticPaths() {
@@ -13,14 +13,18 @@ export function getStaticPaths() {
 
 const solution = getSolution(Astro.params.slug!);
 if (!solution) throw new Error(`Unknown solution: ${Astro.params.slug}`);
+const application = getApplicationForSolution(solution);
 
 const isSeoLandingPage = Boolean(solution.seo);
 const products = getProductsForSolution(solution.slug);
 const featuredProducts = getFeaturedProductsForSolution(solution.slug, solution.featuredProductSlugs);
 const faq = resolveSolutionFaq(solution.faq, featuredProducts);
-const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
-const seoTitle = solution.seo?.title ?? `${solution.title} | TAICO EV`;
-const seoDescription = solution.seo?.description ?? solution.summary;
+const otherSolutions = solutions.filter((item) => item.slug !== solution.slug).map((item) => ({
+  presentation: item,
+  application: getApplicationForSolution(item),
+}));
+const seoTitle = solution.seo?.title ?? `${application.title} | TAICO EV`;
+const seoDescription = solution.seo?.description ?? application.summary;
 const structuredData = getSolutionStructuredData(solution, Astro.site ?? "https://taicoev.com", faq);
 const relatedArticles = (await getCollection("articles"))
   .filter((article) => knowledgeRelatesToSolution(article.data, solution.slug))
@@ -39,13 +43,13 @@ const relatedArticles = (await getCollection("articles"))
           <li aria-hidden="true">/</li>
           <li><a href="/#solutions" class="transition hover:text-wave-cyan">Solutions</a></li>
           <li aria-hidden="true">/</li>
-          <li class="text-wave-cyan" aria-current="page">{solution.title}</li>
+          <li class="text-wave-cyan" aria-current="page">{application.title}</li>
         </ol>
       </nav>
       <p class="label-tech mt-8">{solution.eyebrow}</p>
-      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? solution.title}</span></h1>
+      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? application.title}</span></h1>
       <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ink/90">{solution.headline}</p>
-      <p class="mt-4 max-w-3xl text-muted leading-relaxed">{solution.intro ?? solution.summary}</p>
+      <p class="mt-4 max-w-3xl text-muted leading-relaxed">{solution.intro ?? application.summary}</p>
       <div class="mt-8 flex flex-wrap gap-3">
         {isSeoLandingPage ? <>
           <a class="btn-primary" href="/contact/">Request System Configuration</a>
@@ -134,7 +138,7 @@ const relatedArticles = (await getCollection("articles"))
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{solution.relatedLinks.map((link) => <a href={link.href} class="glass glass-hover rounded-2xl p-5"><h3 class="font-semibold text-ink">{link.label} <span aria-hidden="true">→</span></h3>{link.description && <p class="mt-2 text-sm leading-relaxed text-muted">{link.description}</p>}</a>)}</div>
   </section>}
 
-  <section class="section-pad !pt-0"><p class="label-tech">Other solutions</p><div class="mt-5 grid gap-4 md:grid-cols-3">{otherSolutions.map((item) => <a href={`/solutions/${item.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.title}</h2><p class="mt-2 text-sm text-muted">{item.headline}</p></a>)}</div></section>
+  <section class="section-pad !pt-0"><p class="label-tech">Other solutions</p><div class="mt-5 grid gap-4 md:grid-cols-3">{otherSolutions.map((item) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.application.title}</h2><p class="mt-2 text-sm text-muted">{item.presentation.headline}</p></a>)}</div></section>
 
-  <div id="contact"><CtaBand title={isSeoLandingPage ? "Request a roadside rescue system configuration" : `Discuss ${solution.title}`} /></div>
+  <div id="contact"><CtaBand title={isSeoLandingPage ? "Request a roadside rescue system configuration" : `Discuss ${application.title}`} /></div>
 </Layout>

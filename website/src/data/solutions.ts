@@ -1,3 +1,5 @@
+import { getApplication, type Application, type ApplicationSlug } from "./applications.ts";
+
 export type SolutionSeo = {
   title: string;
   description: string;
@@ -20,12 +22,12 @@ export type SolutionRelatedLink = {
   description?: string;
 };
 
+/** Landing-page copy for an Application. Not a second Application identity. */
 export type Solution = {
   slug: string;
+  applicationSlug: ApplicationSlug;
   eyebrow: string;
-  title: string;
   headline: string;
-  summary: string;
   pains: readonly string[];
   approach: readonly string[];
   seo?: SolutionSeo;
@@ -41,11 +43,9 @@ export type Solution = {
 export const solutions = [
   {
     slug: "mobile-ev-charger-roadside-rescue",
+    applicationSlug: "roadside-ev-rescue",
     eyebrow: "Solution 01 · Mobile response",
-    title: "Mobile EV Charger for Roadside Rescue",
     headline: "Bring charging capability to the vehicle when fixed charging infrastructure cannot reach it.",
-    summary:
-      "Off-grid mobile energy storage charging systems support emergency EV charging, roadside rescue, and field deployment workflows.",
     seo: {
       title: "Mobile EV Charger for Roadside Rescue | Emergency Charging System | TAICO EV",
       description:
@@ -112,11 +112,9 @@ export const solutions = [
   },
   {
     slug: "charge-on-demand",
+    applicationSlug: "on-demand-charging",
     eyebrow: "Solution 02 · Flexible service",
-    title: "Charge On Demand",
     headline: "Move charging capability to the vehicle instead of reserving a fixed bay.",
-    summary:
-      "A mobile energy storage charging robot supports on-demand EV charging where flexible positioning is required.",
     pains: [
       "Vehicles may not be parked beside a fixed charger",
       "Charging demand shifts between bays or operating periods",
@@ -130,11 +128,9 @@ export const solutions = [
   },
   {
     slug: "ac-output-e-generator",
+    applicationSlug: "ac-output-e-generator",
     eyebrow: "Solution 03 · Field deployment",
-    title: "AC Output / E-Generator",
     headline: "Combine mobile EV charging with AC output for E-Generator applications.",
-    summary:
-      "Mobile energy storage charging systems support mobile charging and AC output applications.",
     pains: [
       "Power demand moves with the operating location",
       "EV charging and AC output can be required at the same deployment",
@@ -148,10 +144,9 @@ export const solutions = [
   },
   {
     slug: "temporary-engineering-power",
+    applicationSlug: "engineering-power-supply",
     eyebrow: "Solution 04 · Field deployment",
-    title: "Engineering Power Supply",
     headline: "Use mobile energy storage charging for engineering power supply applications.",
-    summary: "Mobile energy storage charging systems support engineering power supply applications.",
     pains: [
       "Power demand moves with the engineering operation",
       "EV charging and site power can be required at the same deployment",
@@ -165,10 +160,9 @@ export const solutions = [
   },
   {
     slug: "pv-storage-charger",
+    applicationSlug: "pv-storage-charger",
     eyebrow: "Solution 05 · Mobile energy",
-    title: "PV Storage Charger",
     headline: "Use mobile energy storage charging for PV-storage charging applications.",
-    summary: "Mobile energy storage charging systems support PV-storage charging applications.",
     pains: [
       "Charging demand must be served at a changing operating location",
       "PV-storage charging is required for the deployment",
@@ -182,11 +176,9 @@ export const solutions = [
   },
   {
     slug: "pv-ess-charging",
+    applicationSlug: "pv-ess-charging-station",
     eyebrow: "Solution 06 · Stationary energy",
-    title: "PV-ESS Charging",
     headline: "Build charging capacity around energy storage, solar input, and the available grid connection.",
-    summary:
-      "Stationary energy storage charging systems support PV-storage charging stations and grid-complementary system applications.",
     pains: [
       "A charging site needs energy storage alongside DC charging",
       "Solar input may be part of the site energy design",
@@ -206,6 +198,21 @@ export function getSolution(slug: string) {
   return solutions.find((solution) => solution.slug === slug);
 }
 
+export function getApplicationForSolution(solution: Solution): Application {
+  const application = getApplication(solution.applicationSlug);
+  if (!application) {
+    throw new Error(`Unknown application "${solution.applicationSlug}" on solution "${solution.slug}"`);
+  }
+  if (application.solutionSlug !== solution.slug) {
+    throw new Error(`Application "${application.slug}" does not map to solution "${solution.slug}"`);
+  }
+  return application;
+}
+
+export function getSolutionByApplicationSlug(applicationSlug: string) {
+  return solutions.find((solution) => solution.applicationSlug === applicationSlug);
+}
+
 export type SolutionStructuredData = Record<string, unknown>;
 
 export function getSolutionStructuredData(
@@ -213,6 +220,7 @@ export function getSolutionStructuredData(
   site: URL | string,
   faq: readonly SolutionFaq[] | undefined = solution.faq,
 ): SolutionStructuredData[] {
+  const application = getApplicationForSolution(solution);
   const siteUrl = new URL("/", site).href;
   const solutionUrl = new URL(`/solutions/${solution.slug}/`, siteUrl).href;
   const breadcrumbId = `${solutionUrl}#breadcrumb`;
@@ -222,8 +230,8 @@ export function getSolutionStructuredData(
       "@type": "WebPage",
       "@id": `${solutionUrl}#webpage`,
       url: solutionUrl,
-      name: solution.h1 ?? solution.title,
-      description: solution.seo?.description ?? solution.summary,
+      name: solution.h1 ?? application.title,
+      description: solution.seo?.description ?? application.summary,
       inLanguage: "en",
       isPartOf: { "@id": `${siteUrl}#website` },
       breadcrumb: { "@id": breadcrumbId },
@@ -235,7 +243,7 @@ export function getSolutionStructuredData(
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
         { "@type": "ListItem", position: 2, name: "Solutions", item: `${siteUrl}#solutions` },
-        { "@type": "ListItem", position: 3, name: solution.title, item: solutionUrl },
+        { "@type": "ListItem", position: 3, name: application.title, item: solutionUrl },
       ],
     },
   ];

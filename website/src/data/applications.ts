@@ -1,11 +1,12 @@
 import type { SolutionSlug } from "./solutions.ts";
 
+/** Canonical application identity. Solution pages present this entity; they do not redefine it. */
 export type Application = {
   slug: string;
   eyebrow: string;
   title: string;
   summary: string;
-  /** Public Solution page that presents this Application entity. */
+  /** Public Solution route. May differ from the internal Application slug. */
   solutionSlug: SolutionSlug;
 };
 
