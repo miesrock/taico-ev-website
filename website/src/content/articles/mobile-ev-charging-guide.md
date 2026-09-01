@@ -21,12 +21,19 @@ faq:
     answer: "No. Start with the expected service pattern, required energy handoff, recharge schedule, transport, connectors, and operating conditions. Use the published catalog data to compare the models that fit those requirements."
   - question: "Does a connector list prove universal compatibility?"
     answer: "No. Connector support depends on the selected product and configuration. Confirm the target vehicle, connector standard, voltage range, cable reach, and project operating procedure before quotation."
-relatedProductSlugs:
+kind: buyer-guide
+relatedFamilies:
+  - mobile-charging
+  - charging-robot
+  - mobile-power
+relatedApplications:
+  - roadside-ev-rescue
+  - on-demand-charging
+relatedProducts:
   - tkmc-800
   - tkmc-1500
   - tkmc-1000
   - tkmc-2000p
-relatedSolutionSlug: mobile-ev-charger-roadside-rescue
 ---
 
 Mobile EV charging is not a single equipment category. It can describe a transported energy-storage charging system, a self-propelled charging robot, or a larger mobile power system that combines EV charging with other output requirements.

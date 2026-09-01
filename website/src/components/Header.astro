@@ -1,14 +1,13 @@
 ---
-import { applications } from "../data/applications";
 import { resourceLinks, primaryNavigation } from "../data/navigation";
-import { getProduct, getPublishedProducts, productCategories } from "../data/products";
-import { contactHref, site } from "../data/site";
+import { getPublishedFamilies } from "../data/families";
+import { getProduct, getPublishedProducts } from "../data/products";
 import { solutions } from "../data/solutions";
 
 const products = getPublishedProducts();
-const productGroups = productCategories.map((category) => ({
-  ...category,
-  products: products.filter((product) => product.category === category.slug),
+const productGroups = getPublishedFamilies().map((family) => ({
+  ...family,
+  products: products.filter((product) => product.category === family.slug),
 }));
 const featuredProduct = getProduct("tkmc-800");
 ---
@@ -57,7 +56,7 @@ const featuredProduct = getProduct("tkmc-800");
         </svg>
       </button>
 
-      <a href={contactHref({ source: "header" })} class="btn-primary hidden !px-4 !py-2 text-sm sm:inline-flex">Talk to a Specialist</a>
+      <a href="/contact/" class="btn-primary hidden !px-4 !py-2 text-sm sm:inline-flex">Talk to a Specialist</a>
       <button
         type="button"
         class="nav-menu-button inline-flex h-9 w-9 items-center justify-center rounded-full border border-line-strong text-wave-cyan lg:hidden"
@@ -145,26 +144,6 @@ const featuredProduct = getProduct("tkmc-800");
         </div>
       </section>
 
-      <section data-menu-panel="applications" hidden aria-label="Applications">
-        <div class="mb-6 flex items-end justify-between gap-4">
-          <div>
-            <p class="label-tech">Applications</p>
-            <p class="mt-2 text-sm text-muted">Catalog-supported operating scenarios for the TKMC range.</p>
-          </div>
-          <a href="/applications/" class="text-sm font-semibold text-wave-cyan">Browse applications →</a>
-        </div>
-        <div class="grid max-w-3xl gap-3 md:grid-cols-2">
-          {
-            applications.map((application) => (
-              <a href={`/applications/${application.slug}/`} class="nav-compact-link rounded-2xl p-4">
-                <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-wave-violet">{application.eyebrow}</p>
-                <div class="mt-2 flex items-center justify-between gap-4"><h2 class="text-sm font-semibold text-ink">{application.title}</h2><span aria-hidden="true">→</span></div>
-              </a>
-            ))
-          }
-        </div>
-      </section>
-
       <section data-menu-panel="resources" hidden aria-label="Resources">
         <div class="mb-6">
           <p class="label-tech">Resources</p>
@@ -208,18 +187,12 @@ const featuredProduct = getProduct("tkmc-800");
       </ul>
     </details>
     <details>
-      <summary>Applications</summary>
-      <ul>
-        {applications.map((application) => <li><a href={`/applications/${application.slug}/`}>{application.title}</a></li>)}
-      </ul>
-    </details>
-    <details>
       <summary>Resources</summary>
       <ul>
         {resourceLinks.map((resource) => <li><a href={resource.href}>{resource.label}</a></li>)}
       </ul>
     </details>
-    <a href={contactHref({ source: "mobile-header" })} class="btn-primary mt-5 w-full">Talk to a Specialist</a>
+    <a href="/contact/" class="btn-primary mt-5 w-full">Talk to a Specialist</a>
   </nav>
 </dialog>
 

@@ -1,8 +1,7 @@
 ---
-import { applications } from "../data/applications";
 import { resourceLinks } from "../data/navigation";
 import { getPublishedProducts } from "../data/products";
-import { contactHref, site } from "../data/site";
+import { site } from "../data/site";
 import { solutions } from "../data/solutions";
 
 const products = getPublishedProducts();
@@ -12,7 +11,7 @@ const year = new Date().getFullYear();
 <footer class="border-t border-line bg-void-2/80">
   <div class="wave-divider"></div>
   <div class="mx-auto max-w-6xl px-4 py-12 sm:px-6">
-    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-6">
+    <div class="grid gap-10 sm:grid-cols-2 lg:grid-cols-5">
       <div class="lg:col-span-1">
         <div class="flex items-center gap-3">
           <img src="/brand/taico-mark.png" alt="TAICO" class="h-6 w-auto rounded-sm" />
@@ -38,13 +37,6 @@ const year = new Date().getFullYear();
       </div>
 
       <div>
-        <p class="label-tech mb-4">Applications</p>
-        <ul class="space-y-2 text-sm text-muted">
-          {applications.map((application) => <li><a class="transition hover:text-wave-cyan" href={`/applications/${application.slug}/`}>{application.title}</a></li>)}
-        </ul>
-      </div>
-
-      <div>
         <p class="label-tech mb-4">Resources</p>
         <ul class="space-y-2 text-sm text-muted">
           {resourceLinks.map((resource) => <li><a class="transition hover:text-wave-cyan" href={resource.href}>{resource.label}</a></li>)}
@@ -55,7 +47,7 @@ const year = new Date().getFullYear();
       <div>
         <p class="label-tech mb-4">Company</p>
         <p class="text-sm leading-relaxed text-muted">TAICO EV</p>
-        <a class="mt-2 inline-block text-sm text-muted transition hover:text-wave-cyan" href={contactHref({ source: "footer" })}>Contact the team</a>
+        <a class="mt-2 inline-block text-sm text-muted transition hover:text-wave-cyan" href="/contact/">Contact the team</a>
       </div>
     </div>
 

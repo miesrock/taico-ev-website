@@ -21,11 +21,16 @@ faq:
     answer: "No. The receiving EV and the configured charging path determine the actual session. Vehicle limits, battery state, temperature, voltage, connector, and other operating conditions can change the available rate."
   - question: "Does higher kWh guarantee more usable service energy?"
     answer: "No. Published capacity describes stored energy in the system. Reserve policies, conversion, operating conditions, recharge planning, and project settings affect the energy available for a service workflow."
-relatedProductSlugs:
+kind: technical-knowledge
+relatedFamilies:
+  - mobile-charging
+  - mobile-power
+relatedApplications:
+  - roadside-ev-rescue
+relatedProducts:
   - tkmc-800
   - tkmc-1500
   - tkmc-2000p
-relatedSolutionSlug: mobile-ev-charger-roadside-rescue
 ---
 
 Two numbers appear repeatedly when comparing mobile EV charging systems: kilowatts and kilowatt-hours. They look similar, but they describe different parts of the system.

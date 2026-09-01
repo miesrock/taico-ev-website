@@ -1,5 +1,6 @@
-import type { ApplicationSlug } from "./applications";
-import type { SolutionFaq, SolutionSlug } from "./solutions";
+import { getApplication, type ApplicationSlug } from "./applications.ts";
+import { getProductFamily } from "./families.ts";
+import type { SolutionFaq, SolutionSlug } from "./solutions.ts";
 
 export type SpecRow = { label: string; value: string };
 
@@ -44,36 +45,13 @@ export type Product = {
   capabilities: string[];
   /** Exact wording from the catalog; not the site's application entity relation. */
   catalogApplications: string[];
-  solutionSlugs: SolutionSlug[];
+  /** Canonical commercial relation: Product used_for Application. */
   applicationSlugs: ApplicationSlug[];
   hero: string;
   applicationImage: string;
   catalogSource: CatalogSource;
   published: boolean;
 };
-
-export const productCategories: { slug: ProductCategory; title: string; description: string }[] = [
-  {
-    slug: "mobile-charging",
-    title: "Mobile Charging Systems",
-    description: "Battery-backed mobile charging for emergency and flexible deployment.",
-  },
-  {
-    slug: "charging-robot",
-    title: "Charging Robot",
-    description: "Self-propelled energy storage charging for on-demand service.",
-  },
-  {
-    slug: "mobile-power",
-    title: "Mobile Power Systems",
-    description: "Higher-capacity charging and temporary power deployment.",
-  },
-  {
-    slug: "stationary-charging",
-    title: "Stationary Charging Systems",
-    description: "PV-storage charging and grid-complementary deployment.",
-  },
-];
 
 /**
  * Public facts are transcribed from TAICO MC 2026 Catalog v1.3, pages 4–11.
@@ -107,7 +85,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
     catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
-    solutionSlugs: ["mobile-ev-charger-roadside-rescue"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-800-hero.webp",
     applicationImage: "/products/tkmc-800-application.webp",
@@ -138,7 +115,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging"],
     catalogApplications: ["Mobile Charger", "Roadside EV Rescue"],
-    solutionSlugs: ["mobile-ev-charger-roadside-rescue"],
     applicationSlugs: ["roadside-ev-rescue"],
     hero: "/products/tkmc-1500-hero.webp",
     applicationImage: "/products/tkmc-1500-application.webp",
@@ -181,7 +157,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Self-propelled mobile charging"],
     catalogApplications: ["Mobile EV Charger"],
-    solutionSlugs: ["charge-on-demand"],
     applicationSlugs: ["on-demand-charging"],
     hero: "/products/tkmc-1000-hero.webp",
     applicationImage: "/products/tkmc-1000-application.webp",
@@ -212,7 +187,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output"],
     catalogApplications: ["Mobile Charger", "AC Output"],
-    solutionSlugs: ["ac-output-e-generator"],
     applicationSlugs: ["ac-output-e-generator"],
     hero: "/products/tkmc-2000p-hero.webp",
     applicationImage: "/products/tkmc-2000p-application.webp",
@@ -243,7 +217,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "AC output", "Engineering power supply"],
     catalogApplications: ["Mobile Charger", "AC Output", "Engineering Power Supply"],
-    solutionSlugs: ["ac-output-e-generator", "temporary-engineering-power"],
     applicationSlugs: ["ac-output-e-generator", "engineering-power-supply"],
     hero: "/products/tkmc-4000-hero.webp",
     applicationImage: "/products/tkmc-4000-application.webp",
@@ -274,7 +247,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["Mobile charging", "PV-storage charging", "AC output"],
     catalogApplications: ["Mobile Charger", "PV Storage Charger", "AC Output"],
-    solutionSlugs: ["ac-output-e-generator", "pv-storage-charger"],
     applicationSlugs: ["ac-output-e-generator", "pv-storage-charger"],
     hero: "/products/tkmc-10000-hero.webp",
     applicationImage: "/products/tkmc-10000-application.webp",
@@ -305,7 +277,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["PV-storage charging", "Grid-complementary deployment"],
     catalogApplications: ["PV-Storage Charging Station", "Grid Complementary System"],
-    solutionSlugs: ["pv-ess-charging"],
     applicationSlugs: ["pv-ess-charging-station"],
     hero: "/products/tkmc-2000-hero.webp",
     applicationImage: "/products/tkmc-2000-application.webp",
@@ -336,7 +307,6 @@ export const products: Product[] = [
     protectionLevel: "IP54",
     capabilities: ["PV-storage charging", "Grid-complementary deployment"],
     catalogApplications: ["PV-Storage Charging Station", "Grid Complementary System"],
-    solutionSlugs: ["pv-ess-charging"],
     applicationSlugs: ["pv-ess-charging-station"],
     hero: "/products/tkmc-2600-hero.webp",
     applicationImage: "/products/tkmc-2600-application.webp",
@@ -353,8 +323,17 @@ export function getProduct(slug: string) {
   return getPublishedProducts().find((product) => product.slug === slug);
 }
 
+export function getSolutionSlugsForProduct(product: Product): SolutionSlug[] {
+  const slugs = product.applicationSlugs.map((slug) => {
+    const application = getApplication(slug);
+    if (!application) throw new Error(`Unknown application "${slug}" on product "${product.slug}"`);
+    return application.solutionSlug;
+  });
+  return [...new Set(slugs)];
+}
+
 export function getProductsForSolution(slug: string) {
-  return getPublishedProducts().filter((product) => product.solutionSlugs.includes(slug));
+  return getPublishedProducts().filter((product) => getSolutionSlugsForProduct(product).includes(slug as SolutionSlug));
 }
 
 /** Resolve an explicitly ordered landing-page shortlist without duplicating product facts. */
@@ -418,6 +397,10 @@ export function getProductSeo(product: Product): ProductSeo {
 
 export function getProductStructuredData(product: Product, site: URL | string): JsonLd[] {
   const productUrl = new URL(`/products/${product.slug}/`, site).href;
+  const family = getProductFamily(product.category);
+  const familyCrumb = family
+    ? [{ "@type": "ListItem", position: 3, name: family.title, item: new URL(`/products/category/${family.slug}/`, site).href }]
+    : [];
 
   // ponytail: Re-add Product rich-result markup only after verified price or review data exists.
   return [
@@ -427,7 +410,8 @@ export function getProductStructuredData(product: Product, site: URL | string): 
       itemListElement: [
         { "@type": "ListItem", position: 1, name: "Home", item: new URL("/", site).href },
         { "@type": "ListItem", position: 2, name: "Products", item: new URL("/products/", site).href },
-        { "@type": "ListItem", position: 3, name: product.model, item: productUrl },
+        ...familyCrumb,
+        { "@type": "ListItem", position: family ? 4 : 3, name: product.model, item: productUrl },
       ],
     },
   ];

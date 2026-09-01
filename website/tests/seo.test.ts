@@ -96,7 +96,7 @@ test("resource articles use one validated Markdown collection and real public ro
   assert.match(detailPage, /render\(article\)/);
   assert.match(detailPage, /"@type": "Article"/);
   assert.match(detailPage, /getProduct\(slug\)/);
-  assert.match(navigation, /href: "\/resources\/articles\/"/);
+  assert.match(navigation, /href: "\/resources\/articles\//);
 
   for (const articleFile of articleFiles) {
     assert.equal(existsSync(join(websiteRoot, articleFile)), true, articleFile);

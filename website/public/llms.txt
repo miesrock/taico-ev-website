@@ -10,16 +10,19 @@ Product facts on this site are limited to TAICO MC 2026 Catalog v1.3, pages 4–
 
 - https://taicoev.com/ — overview
 - https://taicoev.com/products/ — TKMC product range
-- https://taicoev.com/applications/ — catalog-supported applications
+- https://taicoev.com/products/category/mobile-charging/ — mobile charging systems family
+- https://taicoev.com/products/category/charging-robot/ — charging robot family
+- https://taicoev.com/products/category/mobile-power/ — mobile power systems family
+- https://taicoev.com/products/category/stationary-charging/ — stationary charging systems family
 - https://taicoev.com/resources/ — catalog resources
-- https://taicoev.com/resources/articles/ — mobile EV charging guides
+- https://taicoev.com/resources/articles/ — buyer guides and technical knowledge
 - https://taicoev.com/resources/product-comparison/ — product comparison
 
 Article routes: https://taicoev.com/resources/articles/mobile-ev-charging-guide/, https://taicoev.com/resources/articles/kw-vs-kwh-mobile-ev-charging/, https://taicoev.com/resources/articles/roadside-ev-rescue-charging-workflow/.
 
 Solution routes: https://taicoev.com/solutions/mobile-ev-charger-roadside-rescue/, https://taicoev.com/solutions/charge-on-demand/, https://taicoev.com/solutions/ac-output-e-generator/, https://taicoev.com/solutions/temporary-engineering-power/, https://taicoev.com/solutions/pv-storage-charger/, https://taicoev.com/solutions/pv-ess-charging/.
 
-Application routes: https://taicoev.com/applications/roadside-ev-rescue/, https://taicoev.com/applications/on-demand-charging/, https://taicoev.com/applications/ac-output-e-generator/, https://taicoev.com/applications/engineering-power-supply/, https://taicoev.com/applications/pv-storage-charger/, https://taicoev.com/applications/pv-ess-charging-station/.
+Application content is presented on the Solution routes above. Legacy /applications/ URLs redirect to the matching Solution page.
 
 ## Published catalog models
 

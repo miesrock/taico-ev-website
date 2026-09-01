@@ -4,8 +4,8 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getFeaturedProductsForSolution, getProductsForSolution, resolveSolutionFaq } from "../../data/products";
-import { contactHref } from "../../data/site";
 import { getSolution, getSolutionStructuredData, solutions } from "../../data/solutions";
+import { knowledgeRelatesToSolution } from "../../lib/content";
 
 export function getStaticPaths() {
   return solutions.map((solution) => ({ params: { slug: solution.slug } }));
@@ -19,12 +19,11 @@ const products = getProductsForSolution(solution.slug);
 const featuredProducts = getFeaturedProductsForSolution(solution.slug, solution.featuredProductSlugs);
 const faq = resolveSolutionFaq(solution.faq, featuredProducts);
 const otherSolutions = solutions.filter((item) => item.slug !== solution.slug);
-const solutionContact = contactHref({ source: "solution-detail", solution: solution.slug, page: Astro.url.pathname });
 const seoTitle = solution.seo?.title ?? `${solution.title} | TAICO EV`;
 const seoDescription = solution.seo?.description ?? solution.summary;
 const structuredData = getSolutionStructuredData(solution, Astro.site ?? "https://taicoev.com", faq);
 const relatedArticles = (await getCollection("articles"))
-  .filter((article) => article.data.relatedSolutionSlug === solution.slug)
+  .filter((article) => knowledgeRelatesToSolution(article.data, solution.slug))
   .sort((a, b) => a.data.order - b.data.order);
 ---
 
@@ -49,10 +48,10 @@ const relatedArticles = (await getCollection("articles"))
       <p class="mt-4 max-w-3xl text-muted leading-relaxed">{solution.intro ?? solution.summary}</p>
       <div class="mt-8 flex flex-wrap gap-3">
         {isSeoLandingPage ? <>
-          <a class="btn-primary" href={solutionContact}>Request System Configuration</a>
+          <a class="btn-primary" href="/contact/">Request System Configuration</a>
           <a class="btn-ghost" href="#recommended-configurations">Explore TKMC Systems</a>
         </> : <>
-          <a class="btn-primary" href={solutionContact}>Discuss this scenario</a>
+          <a class="btn-primary" href="/contact/">Discuss this scenario</a>
           <a class="btn-ghost" href="/products/">View products</a>
         </>}
       </div>
@@ -131,11 +130,11 @@ const relatedArticles = (await getCollection("articles"))
   </section>}
 
   {solution.relatedLinks && <section class="section-pad !pt-0">
-    <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Related products and resources</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Continue with the catalog.</h2></div><a href={solutionContact} class="btn-ghost text-xs">Request a configuration</a></div>
+        <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Related products and resources</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">Continue with the catalog.</h2></div><a href="/contact/" class="btn-ghost text-xs">Request a configuration</a></div>
     <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">{solution.relatedLinks.map((link) => <a href={link.href} class="glass glass-hover rounded-2xl p-5"><h3 class="font-semibold text-ink">{link.label} <span aria-hidden="true">→</span></h3>{link.description && <p class="mt-2 text-sm leading-relaxed text-muted">{link.description}</p>}</a>)}</div>
   </section>}
 
   <section class="section-pad !pt-0"><p class="label-tech">Other solutions</p><div class="mt-5 grid gap-4 md:grid-cols-3">{otherSolutions.map((item) => <a href={`/solutions/${item.slug}/`} class="glass glass-hover rounded-2xl p-5"><h2 class="font-semibold text-ink">{item.title}</h2><p class="mt-2 text-sm text-muted">{item.headline}</p></a>)}</div></section>
 
-  <div id="contact"><CtaBand source="solution-detail" solution={solution.slug} pagePath={Astro.url.pathname} title={isSeoLandingPage ? "Request a roadside rescue system configuration" : `Discuss ${solution.title}`} /></div>
+  <div id="contact"><CtaBand title={isSeoLandingPage ? "Request a roadside rescue system configuration" : `Discuss ${solution.title}`} /></div>
 </Layout>

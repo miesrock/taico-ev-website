@@ -4,8 +4,11 @@ import { getCollection, render } from "astro:content";
 import ArticleFigure from "../../../components/ArticleFigure.astro";
 import CtaBand from "../../../components/CtaBand.astro";
 import Layout from "../../../layouts/Layout.astro";
+import { getApplication } from "../../../data/applications";
+import { getProductFamily } from "../../../data/families";
 import { getProduct } from "../../../data/products";
 import { getSolution } from "../../../data/solutions";
+import { getApplicationHref, getFamilyHref } from "../../../lib/content";
 import { site } from "../../../data/site";
 
 export async function getStaticPaths() {
@@ -20,14 +23,25 @@ const tocItems = [
   ...headings.filter((heading) => heading.depth === 2),
   ...(article.data.faq.length ? [{ depth: 2, slug: "faq", text: "Frequently asked questions" }] : []),
 ];
-const relatedProducts = article.data.relatedProductSlugs.map((slug) => {
+const relatedProducts = article.data.relatedProducts.map((slug) => {
   const product = getProduct(slug);
   if (!product) throw new Error(`Unknown article product: ${slug}`);
   return product;
 });
-const relatedSolution = article.data.relatedSolutionSlug ? getSolution(article.data.relatedSolutionSlug) : undefined;
-if (article.data.relatedSolutionSlug && !relatedSolution) {
-  throw new Error(`Unknown article solution: ${article.data.relatedSolutionSlug}`);
+const relatedFamilies = article.data.relatedFamilies.map((slug) => {
+  const family = getProductFamily(slug);
+  if (!family) throw new Error(`Unknown article family: ${slug}`);
+  return family;
+});
+const relatedApplications = article.data.relatedApplications.map((slug) => {
+  const application = getApplication(slug);
+  if (!application) throw new Error(`Unknown article application: ${slug}`);
+  const solution = getSolution(application.solutionSlug);
+  if (!solution) throw new Error(`Unknown article solution: ${application.solutionSlug}`);
+  return { application, solution };
+});
+if (!relatedProducts.length && !relatedFamilies.length && !relatedApplications.length) {
+  throw new Error(`Article ${article.id} must relate to a product, family, or application`);
 }
 
 const articlePath = `/resources/articles/${article.id}/`;
@@ -142,12 +156,26 @@ const ctaBody = article.data.cta?.body;
             {tocItems.map((item) => <li><a href={`#${item.slug}`} class="text-muted transition hover:text-wave-cyan">{item.text}</a></li>)}
           </ol>
         </nav>}
-        {relatedSolution && (
-          <a href={`/solutions/${relatedSolution.slug}/`} class="glass glass-hover block rounded-2xl p-5">
-            <p class="label-tech">Related solution</p>
-            <h2 class="mt-3 font-semibold text-ink">{relatedSolution.title}</h2>
-            <p class="mt-2 text-sm leading-relaxed text-muted">{relatedSolution.headline}</p>
-          </a>
+        {relatedFamilies.length > 0 && (
+          <div class="glass rounded-2xl p-5">
+            <p class="label-tech">Related product families</p>
+            <div class="mt-4 space-y-3">
+              {relatedFamilies.map((family) => (
+                <a href={getFamilyHref(family.slug)} class="block text-sm font-semibold text-ink transition hover:text-wave-cyan">{family.title} →</a>
+              ))}
+            </div>
+          </div>
+        )}
+        {relatedApplications.length > 0 && (
+          <div class="space-y-3">
+            {relatedApplications.map(({ application, solution }) => (
+              <a href={getApplicationHref(application)} class="glass glass-hover block rounded-2xl p-5">
+                <p class="label-tech">Related solution</p>
+                <h2 class="mt-3 font-semibold text-ink">{solution.title}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-muted">{solution.headline}</p>
+              </a>
+            ))}
+          </div>
         )}
         {relatedProducts.length > 0 && (
           <div class="glass rounded-2xl p-5">
@@ -168,7 +196,7 @@ const ctaBody = article.data.cta?.body;
     </div>
   </article>
 
-  <CtaBand source="resource-article" pagePath={articlePath} title={ctaTitle} body={ctaBody} />
+  <CtaBand title={ctaTitle} body={ctaBody} />
 </Layout>
 
 <style>

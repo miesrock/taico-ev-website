@@ -2,12 +2,13 @@
 import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
-import { getPublishedProducts, productCategories } from "../../data/products";
+import { getPublishedFamilies } from "../../data/families";
+import { getPublishedProducts } from "../../data/products";
 
 const products = getPublishedProducts();
-const groups = productCategories.map((category) => ({
-  ...category,
-  products: products.filter((product) => product.category === category.slug),
+const groups = getPublishedFamilies().map((family) => ({
+  ...family,
+  products: products.filter((product) => product.category === family.slug),
 }));
 ---
 
@@ -56,5 +57,5 @@ const groups = productCategories.map((category) => ({
     ))
   }
 
-  <CtaBand source="products-index" pagePath="/products/" title="Need help comparing the TKMC range?" body="Share your operating scenario and required charging capacity. We will help identify a starting configuration." />
+  <CtaBand title="Need help comparing the TKMC range?" body="Share your operating scenario and required charging capacity. We will help identify a starting configuration." />
 </Layout>

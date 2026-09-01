@@ -1,9 +1,12 @@
+import type { SolutionSlug } from "./solutions.ts";
+
 export type Application = {
   slug: string;
   eyebrow: string;
   title: string;
   summary: string;
-  solutionSlug: string;
+  /** Public Solution page that presents this Application entity. */
+  solutionSlug: SolutionSlug;
 };
 
 /** Application wording is limited to the TAICO MC 2026 Catalog v1.3. */
@@ -56,4 +59,12 @@ export type ApplicationSlug = (typeof applications)[number]["slug"];
 
 export function getApplication(slug: string) {
   return applications.find((application) => application.slug === slug);
+}
+
+export function getApplicationBySolutionSlug(slug: string) {
+  return applications.find((application) => application.solutionSlug === slug);
+}
+
+export function getApplicationHref(application: Application) {
+  return `/solutions/${application.solutionSlug}/`;
 }

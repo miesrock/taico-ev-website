@@ -21,10 +21,14 @@ faq:
     answer: "No. The operator must verify the vehicle condition, connector, positioning, and ability to enter a charging session. If the vehicle cannot charge or cannot remain safely at the location, recovery equipment may be required."
   - question: "Can this workflow be used as a universal safety procedure?"
     answer: "No. Develop and approve the operating procedure for the selected equipment, vehicles, market, roadside conditions, and responsible operators. This article is a planning framework only."
-relatedProductSlugs:
+kind: technical-knowledge
+relatedFamilies:
+  - mobile-charging
+relatedApplications:
+  - roadside-ev-rescue
+relatedProducts:
   - tkmc-800
   - tkmc-1500
-relatedSolutionSlug: mobile-ev-charger-roadside-rescue
 ---
 
 A mobile charger does not create a roadside-rescue service by itself. The service also needs dispatch information, a compatible connection, a safe operating procedure, a clear charging objective, and a handoff plan.

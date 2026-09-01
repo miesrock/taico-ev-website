@@ -1,7 +1,8 @@
 ---
 import CtaBand from "../../components/CtaBand.astro";
 import Layout from "../../layouts/Layout.astro";
-import { getPublishedProducts, productCategories } from "../../data/products";
+import { getProductFamily } from "../../data/families";
+import { getPublishedProducts } from "../../data/products";
 
 const products = getPublishedProducts();
 ---
@@ -17,10 +18,10 @@ const products = getPublishedProducts();
     <div class="glass overflow-x-auto rounded-3xl">
       <table class="w-full min-w-[820px] text-left text-sm">
         <thead class="border-b border-line bg-void/30 text-muted"><tr><th class="px-6 py-4 font-medium">Model</th><th class="px-6 py-4 font-medium">Product type</th><th class="px-6 py-4 font-medium">Category</th><th class="px-6 py-4 font-medium">Capacity</th><th class="px-6 py-4 font-medium">Output</th><th class="px-6 py-4 font-medium">Catalog use cases</th></tr></thead>
-        <tbody>{products.map((product, index) => <tr class:list={[index % 2 === 0 ? "bg-void/20" : "bg-transparent"]}><td class="px-6 py-4 font-mono text-wave-cyan"><a href={`/products/${product.slug}/`} class="hover:underline">{product.model}</a></td><td class="px-6 py-4 text-ink">{product.productType}</td><td class="px-6 py-4 text-muted">{productCategories.find((category) => category.slug === product.category)?.title}</td><td class="px-6 py-4 text-ink">{product.capacityKwh} kWh</td><td class="px-6 py-4 text-ink">{product.outputPowerKw} kW</td><td class="px-6 py-4 text-muted">{product.catalogApplications.join(" · ")}</td></tr>)}</tbody>
+        <tbody>{products.map((product, index) => <tr class:list={[index % 2 === 0 ? "bg-void/20" : "bg-transparent"]}><td class="px-6 py-4 font-mono text-wave-cyan"><a href={`/products/${product.slug}/`} class="hover:underline">{product.model}</a></td><td class="px-6 py-4 text-ink">{product.productType}</td><td class="px-6 py-4 text-muted">{getProductFamily(product.category)?.title}</td><td class="px-6 py-4 text-ink">{product.capacityKwh} kWh</td><td class="px-6 py-4 text-ink">{product.outputPowerKw} kW</td><td class="px-6 py-4 text-muted">{product.catalogApplications.join(" · ")}</td></tr>)}</tbody>
       </table>
     </div>
   </section>
 
-  <CtaBand source="product-comparison" pagePath="/resources/product-comparison/" title="Need a project-specific comparison?" body="Share the operating scenario, vehicles, expected energy demand, and available site power." />
+  <CtaBand title="Need a project-specific comparison?" body="Share the operating scenario, vehicles, expected energy demand, and available site power." />
 </Layout>

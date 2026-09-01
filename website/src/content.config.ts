@@ -21,9 +21,14 @@ const articles = defineCollection({
     quickAnswer: z.string().optional(),
     cta: z.object({ title: z.string(), body: z.string() }).optional(),
     faq: z.array(z.object({ question: z.string(), answer: z.string() })).default([]),
-    relatedProductSlugs: z.array(z.string()).default([]),
-    relatedSolutionSlug: z.string().optional(),
-  }),
+    kind: z.enum(["buyer-guide", "technical-knowledge"]),
+    relatedFamilies: z.array(z.string()).default([]),
+    relatedApplications: z.array(z.string()).default([]),
+    relatedProducts: z.array(z.string()).default([]),
+  }).refine(
+    (data) => data.relatedFamilies.length > 0 || data.relatedApplications.length > 0 || data.relatedProducts.length > 0,
+    { message: "Published knowledge must relate to a product, family, or application" },
+  ),
 });
 
 export const collections = { articles };

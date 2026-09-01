@@ -2,15 +2,13 @@
 import CtaBand from "../components/CtaBand.astro";
 import WaveField from "../components/WaveField.astro";
 import Layout from "../layouts/Layout.astro";
-import { applications } from "../data/applications";
-import { getPublishedProducts, productCategories, type Product } from "../data/products";
-import { contactHref } from "../data/site";
+import { getPublishedFamilies } from "../data/families";
+import { getPublishedProducts, type Product } from "../data/products";
 import { solutions } from "../data/solutions";
 
-const featuredProducts = productCategories
-  .map((category) => getPublishedProducts().find((product) => product.category === category.slug))
+const featuredProducts = getPublishedFamilies()
+  .map((family) => getPublishedProducts().find((product) => product.category === family.slug))
   .filter((product): product is Product => Boolean(product));
-const homepageContact = contactHref({ source: "homepage-hero", page: "/" });
 ---
 
 <Layout>
@@ -20,7 +18,7 @@ const homepageContact = contactHref({ source: "homepage-hero", page: "/" });
       <p class="label-tech">TAICO EV · Mobile energy storage charging</p>
       <h1 class="font-display mt-6 max-w-4xl text-4xl font-semibold leading-tight tracking-wide sm:text-5xl lg:text-6xl"><span class="text-gradient">Power electric mobility</span><br />beyond the grid.</h1>
       <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">TAICO EV provides mobile and stationary energy storage charging systems for emergency EV charging, on-demand service, engineering power, and PV-ESS charging applications.</p>
-      <div class="mt-10 flex flex-wrap gap-3"><a class="btn-primary" href="#solutions">Find your solution</a><a class="btn-ghost" href={homepageContact}>Talk to a specialist</a></div>
+      <div class="mt-10 flex flex-wrap gap-3"><a class="btn-primary" href="#solutions">Find your solution</a><a class="btn-ghost" href="/contact/">Talk to a specialist</a></div>
       <div class="mt-14 grid max-w-4xl gap-3 sm:grid-cols-4">
         {solutions.map((solution, index) => <a href={`/solutions/${solution.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p><p class="mt-1 text-sm font-medium text-ink">{solution.title}</p></a>)}
       </div>
@@ -50,10 +48,5 @@ const homepageContact = contactHref({ source: "homepage-hero", page: "/" });
     <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">{featuredProducts.map((product) => <a href={`/products/${product.slug}/`} class="glass glass-hover group overflow-hidden rounded-3xl"><div class="aspect-[16/10] bg-void-2 p-3"><img src={product.hero} alt={`${product.model} product`} class="h-full w-full object-contain" loading="lazy" /></div><div class="p-5"><p class="font-mono text-xs text-wave-cyan">{product.model}</p><h3 class="mt-2 text-sm font-semibold text-ink group-hover:text-wave-cyan">{product.productType}</h3><p class="mt-3 text-sm text-muted">{product.capacityKwh} kWh · {product.outputPowerKw} kW</p></div></a>)}</div>
   </section>
 
-  <section class="section-pad !pt-0">
-    <div class="flex flex-wrap items-end justify-between gap-4"><div><p class="label-tech">Applications</p><h2 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink">See the product range in context.</h2></div><a href="/applications/" class="btn-ghost text-xs">All applications</a></div>
-    <div class="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">{applications.map((application) => <a href={`/applications/${application.slug}/`} class="glass glass-hover rounded-2xl p-5"><p class="font-mono text-[10px] uppercase tracking-[0.16em] text-wave-violet">{application.eyebrow}</p><h3 class="mt-3 font-semibold text-ink">{application.title}</h3><p class="mt-2 text-sm text-muted">{application.summary}</p></a>)}</div>
-  </section>
-
-  <div id="contact"><CtaBand source="homepage-cta" pagePath="/" /></div>
+  <div id="contact"><CtaBand /></div>
 </Layout>

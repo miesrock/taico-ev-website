@@ -1,15 +1,19 @@
 export const primaryNavigation = [
-  { key: "solutions", label: "Solutions" },
   { key: "products", label: "Products" },
-  { key: "applications", label: "Applications" },
+  { key: "solutions", label: "Solutions" },
   { key: "resources", label: "Resources" },
 ] as const;
 
 export const resourceLinks = [
   {
-    label: "Guides & Articles",
-    description: "Practical guidance for mobile charging selection, energy and power, and roadside workflows.",
-    href: "/resources/articles/",
+    label: "Buyer Guides",
+    description: "Qualify the operating scenario, energy, power, connectors, and deployment format.",
+    href: "/resources/articles/#buyer-guides",
+  },
+  {
+    label: "Technical Knowledge",
+    description: "Understand kW vs kWh, operating workflows, and catalog-backed selection inputs.",
+    href: "/resources/articles/#technical-knowledge",
   },
   {
     label: "Product Comparison",
@@ -17,7 +21,7 @@ export const resourceLinks = [
     href: "/resources/product-comparison/",
   },
   {
-    label: "Technical Documentation",
+    label: "Documentation",
     description: "Request the latest product documentation from the TAICO EV team.",
     href: "/resources/#technical-documentation",
   },
