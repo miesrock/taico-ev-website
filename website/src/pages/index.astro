@@ -1,6 +1,5 @@
 ---
 import CtaBand from "../components/CtaBand.astro";
-import WaveField from "../components/WaveField.astro";
 import Layout from "../layouts/Layout.astro";
 import { getPublishedFamilies } from "../data/families";
 import { getPublishedProducts, type Product } from "../data/products";
@@ -14,28 +13,160 @@ const solutionEntries = solutions.map((presentation) => ({
 const featuredProducts = getPublishedFamilies()
   .map((family) => getPublishedProducts().find((product) => product.category === family.slug))
   .filter((product): product is Product => Boolean(product));
+const heroSlides = [
+  {
+    src: "/home/taico-h01-homepage-main-hero.webp",
+    alt: "TAICO mobile energy storage charging system connected to an electric vehicle at a commercial site",
+    label: "Mobile charging",
+    href: "/products/category/mobile-charging/",
+    context: "Application context, not a customer project",
+  },
+  {
+    src: "/home/taico-tkmc-1000-robot-hero.webp",
+    alt: "TAICO TKMC-1000 charging robot connected to a parked electric vehicle",
+    label: "TKMC-1000",
+    href: "/products/tkmc-1000/",
+    context: "Application context, not a customer project",
+  },
+  {
+    src: "/home/taico-tkmc-2000-stationary-hero.webp",
+    alt: "TAICO TKMC-2000 stationary energy storage charging system at a solar charging bay",
+    label: "TKMC-2000",
+    href: "/products/tkmc-2000/",
+    context: "Application context, not a customer project",
+  },
+];
 ---
 
 <Layout>
-  <section class="relative overflow-hidden">
-    <WaveField intensity="high" />
-    <div class="section-pad relative z-10 !pt-24 !pb-28 sm:!pt-28 sm:!pb-32">
-      <p class="label-tech">TAICO EV · Mobile energy storage charging</p>
-      <h1 class="font-display mt-6 max-w-4xl text-4xl font-semibold leading-tight tracking-wide sm:text-5xl lg:text-6xl"><span class="text-gradient">Power electric mobility</span><br />beyond the grid.</h1>
-      <p class="mt-6 max-w-2xl text-lg leading-relaxed text-muted">TAICO EV provides mobile and stationary energy storage charging systems for emergency EV charging, on-demand service, engineering power, and PV-ESS charging applications.</p>
-      <div class="mt-10 flex flex-wrap gap-3"><a class="btn-primary" href="#solutions">Find your solution</a><a class="btn-ghost" href="/contact/">Talk to a specialist</a></div>
-      <div class="mt-14 grid max-w-4xl gap-3 sm:grid-cols-4">
-        {solutionEntries.map((item, index) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3"><p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p><p class="mt-1 text-sm font-medium text-ink">{item.application.title}</p></a>)}
+  <section class="relative isolate h-[calc(100svh-4.75rem)] min-h-[28rem] overflow-hidden" data-hero-carousel aria-roledescription="carousel" aria-label="TAICO catalog product scenes">
+    {
+      heroSlides.map((slide, index) => (
+        <img
+          src={slide.src}
+          alt={slide.alt}
+          width="1280"
+          height="720"
+          loading={index === 0 ? "eager" : "lazy"}
+          decoding="async"
+          fetchpriority={index === 0 ? "high" : "low"}
+          data-hero-slide
+          data-active={index === 0 ? "true" : "false"}
+          class:list={[
+            "absolute inset-0 h-full w-full object-cover object-[72%_30%] transition-opacity duration-700 lg:object-[80%_center]",
+            index === 0 ? "opacity-100" : "opacity-0",
+          ]}
+        />
+      ))
+    }
+    <div class="absolute inset-y-0 left-0 hidden w-[25%] bg-gradient-to-r from-[#04060c]/75 to-transparent lg:block" aria-hidden="true"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t from-[#04060c]/80 to-transparent lg:hidden" aria-hidden="true"></div>
+    <div class="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 px-4 pt-10 pb-16 sm:px-6 lg:grid-cols-4">
+      <div class="flex flex-col justify-end lg:col-span-1">
+        <p class="label-tech">TAICO EV · Mobile energy storage charging</p>
+        <h1 class="font-display mt-3 text-2xl font-semibold leading-tight tracking-wide text-white sm:text-3xl">Power electric mobility beyond the grid.</h1>
+        <p class="mt-3 hidden max-w-xs text-sm leading-relaxed text-white/70 lg:block">Mobile and stationary energy storage charging for emergency EV charging, on-demand service, engineering power, and PV-ESS applications.</p>
+        <div class="mt-5 flex flex-wrap gap-2">
+          <a class="btn-primary !px-4 !py-2 text-xs" href="#solutions">Find your solution</a>
+          <a class="btn-ghost !border-white/30 !bg-white/10 !px-4 !py-2 !text-white text-xs hover:!border-wave-cyan hover:!bg-wave-cyan/15" href="/contact/">Talk to a specialist</a>
+        </div>
+        <p class="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/50" data-hero-caption aria-live="polite" title={heroSlides[0].context}>
+          {heroSlides[0].label} · Catalog v1.3
+          {" "}
+          <a href={heroSlides[0].href} class="text-wave-cyan hover:underline">View product →</a>
+        </p>
+      </div>
+      <div class="hidden lg:col-span-3 lg:block" aria-hidden="true"></div>
+    </div>
+    <div class="absolute inset-x-0 bottom-4 z-10">
+      <div class="mx-auto flex max-w-6xl items-center gap-2 px-4 sm:px-6">
+        <button type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white" data-hero-prev aria-label="Previous hero image">‹</button>
+        <div class="flex items-center" data-hero-dots>
+          {heroSlides.map((slide, index) => (
+            <button
+              type="button"
+              class="inline-flex h-8 w-8 items-center justify-center"
+              data-hero-dot
+              aria-label={`Show ${slide.label}`}
+              aria-current={index === 0 ? "true" : "false"}
+            >
+              <span class:list={["h-2 w-2 rounded-full", index === 0 ? "bg-wave-cyan" : "bg-white/35"]} data-hero-dot-mark></span>
+            </button>
+          ))}
+        </div>
+        <button type="button" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-white/30 bg-black/30 text-white" data-hero-next aria-label="Next hero image">›</button>
       </div>
     </div>
+    <script define:vars={{ captions: heroSlides.map((slide) => ({ label: slide.label, href: slide.href, context: slide.context })) }}>
+      const root = document.querySelector("[data-hero-carousel]");
+      if (root) {
+        const slides = [...root.querySelectorAll("[data-hero-slide]")];
+        const dots = [...root.querySelectorAll("[data-hero-dot]")];
+        const caption = root.querySelector("[data-hero-caption]");
+        const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        let index = 0;
+        let timer = 0;
+        const show = (next) => {
+          index = (next + slides.length) % slides.length;
+          slides.forEach((slide, i) => {
+            slide.classList.toggle("opacity-100", i === index);
+            slide.classList.toggle("opacity-0", i !== index);
+            slide.dataset.active = i === index ? "true" : "false";
+          });
+          dots.forEach((dot, i) => {
+            const mark = dot.querySelector("[data-hero-dot-mark]");
+            mark?.classList.toggle("bg-wave-cyan", i === index);
+            mark?.classList.toggle("bg-white/35", i !== index);
+            dot.setAttribute("aria-current", i === index ? "true" : "false");
+          });
+          const item = captions[index];
+          if (caption && item) {
+            caption.innerHTML = `${item.label} · Catalog v1.3 <a href="${item.href}" class="text-wave-cyan hover:underline">View product →</a>`;
+            caption.setAttribute("title", item.context);
+          }
+        };
+        const play = () => {
+          if (reduceMotion) return;
+          window.clearInterval(timer);
+          timer = window.setInterval(() => show(index + 1), 6000);
+        };
+        root.querySelector("[data-hero-prev]")?.addEventListener("click", () => { show(index - 1); play(); });
+        root.querySelector("[data-hero-next]")?.addEventListener("click", () => { show(index + 1); play(); });
+        dots.forEach((dot, i) => dot.addEventListener("click", () => { show(i); play(); }));
+        root.addEventListener("pointerenter", () => window.clearInterval(timer));
+        root.addEventListener("pointerleave", play);
+        root.addEventListener("focusin", () => window.clearInterval(timer));
+        root.addEventListener("focusout", play);
+        play();
+      }
+    </script>
   </section>
 
   <div class="wave-divider"></div>
 
-  <section class="section-pad">
-    <div class="grid items-start gap-10 lg:grid-cols-2">
-      <div><p class="label-tech">Energy constraints</p><h2 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink">Deploy charging capacity where the operation needs it.</h2><p class="mt-4 text-muted leading-relaxed">The TKMC range combines energy storage, DC charging, and selected AC or PV-storage capabilities across mobile and stationary deployment formats.</p></div>
-      <ul class="grid gap-3 sm:grid-cols-2">{["Charging away from fixed bays", "Changing operating locations", "Temporary and engineering power", "PV-storage charging deployment"].map((item) => <li class="glass rounded-2xl px-4 py-5 text-sm text-ink">{item}</li>)}</ul>
+  <section class="section-pad !pb-8">
+    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {solutionEntries.map((item, index) => (
+        <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3">
+          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p>
+          <p class="mt-1 text-sm font-medium text-ink">{item.application.title}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section-pad !pt-8">
+    <div class="grid items-center gap-10 lg:grid-cols-2">
+      <div>
+        <p class="label-tech">Energy constraints</p>
+        <h2 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink">Deploy charging capacity where the operation needs it.</h2>
+        <p class="mt-4 text-muted leading-relaxed">The TKMC range combines energy storage, DC charging, and selected AC or PV-storage capabilities across mobile and stationary deployment formats.</p>
+        <ul class="mt-6 grid gap-3 sm:grid-cols-2">{["Charging away from fixed bays", "Changing operating locations", "Temporary and engineering power", "PV-storage charging deployment"].map((item) => <li class="glass rounded-2xl px-4 py-5 text-sm text-ink">{item}</li>)}</ul>
+      </div>
+      <figure class="glass overflow-hidden rounded-3xl">
+        <img src="/home/taico-h02-operating-constraint.webp" alt="Diagram showing a mobile charger bringing charging capacity to an electric vehicle away from a fixed grid point" width="1586" height="992" loading="lazy" decoding="async" class="aspect-[16/10] h-auto w-full object-cover" />
+        <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">Operating-constraint diagram. Editorial illustration, not a customer project.</figcaption>
+      </figure>
     </div>
   </section>
 
@@ -43,8 +174,28 @@ const featuredProducts = getPublishedFamilies()
     <p class="label-tech">Product exploration</p>
     <h2 class="font-display mt-4 max-w-3xl text-3xl font-semibold tracking-wide text-ink">Start with the operating challenge.</h2>
     <p class="mt-3 max-w-2xl text-muted">Choose the scenario closest to your deployment. We will show the catalog-supported product starting points, then confirm the final configuration with you.</p>
-    <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-      {solutionEntries.map((item) => <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover group flex min-h-64 flex-col rounded-3xl p-6"><p class="font-mono text-[11px] uppercase tracking-[0.16em] text-wave-violet">{item.presentation.eyebrow}</p><h3 class="mt-4 text-xl font-semibold text-ink group-hover:text-wave-cyan">{item.application.title}</h3><p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{item.application.summary}</p><span class="mt-6 text-sm font-semibold text-wave-cyan">Explore solution →</span></a>)}
+    <div class="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+      {solutionEntries.map((item) => (
+        <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover group flex min-h-64 flex-col overflow-hidden rounded-3xl">
+          {item.presentation.visual && (
+            <img
+              src={item.presentation.visual.src}
+              alt={item.presentation.visual.alt}
+              width="1280"
+              height="720"
+              loading="lazy"
+              decoding="async"
+              class="aspect-[16/10] h-auto w-full object-cover"
+            />
+          )}
+          <div class="flex flex-1 flex-col p-6">
+            <p class="font-mono text-[11px] uppercase tracking-[0.16em] text-wave-violet">{item.presentation.eyebrow}</p>
+            <h3 class="mt-4 text-xl font-semibold text-ink group-hover:text-wave-cyan">{item.application.title}</h3>
+            <p class="mt-3 flex-1 text-sm leading-relaxed text-muted">{item.application.summary}</p>
+            <span class="mt-6 text-sm font-semibold text-wave-cyan">Explore solution →</span>
+          </div>
+        </a>
+      ))}
     </div>
   </section>
 

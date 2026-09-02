@@ -152,8 +152,10 @@ test("resource articles expose generated navigation, quick answers, visible FAQs
   for (const assetPath of [
     "public/articles/mobile-ev-charger-buyers-guide-hero.webp",
     "public/articles/mobile-ev-charger-selection-process.svg",
+    "public/articles/mobile-ev-charger-selection-map.webp",
     "public/articles/kw-vs-kwh-mobile-ev-charging-hero.webp",
     "public/articles/kw-vs-kwh-explainer.svg",
+    "public/articles/kw-vs-kwh-practical-diagram.webp",
     "public/articles/roadside-ev-rescue-workflow-hero.webp",
     "public/articles/roadside-rescue-five-step-workflow.svg",
   ]) {

@@ -51,11 +51,18 @@ export type FamilyComparisonField =
   | "hmi"
   | "chargeMode";
 
+export type FamilyVisual = {
+  src: string;
+  alt: string;
+  caption: string;
+};
+
 export type ProductFamily = {
   slug: ProductCategory;
   title: string;
   shortTitle?: string;
   description: string;
+  visual?: FamilyVisual;
   seo: FamilySeo;
   overview: FamilyOverview;
   ranges?: FamilyRanges;
@@ -73,6 +80,11 @@ export const productFamilies: ProductFamily[] = [
     title: "Mobile Charging Systems",
     shortTitle: "Mobile charging",
     description: "Battery-backed mobile charging for emergency and flexible deployment.",
+    visual: {
+      src: "/products/family/mobile-charging-hero.webp",
+      alt: "TAICO mobile charging systems in a roadside and fleet-service charging context",
+      caption: "Mobile charging application context. Catalog product photography, not a customer project.",
+    },
     seo: {
       title: "Mobile Charging Systems | Mobile EV Chargers | TAICO EV",
       description:
@@ -135,6 +147,11 @@ export const productFamilies: ProductFamily[] = [
     title: "Charging Robot",
     shortTitle: "Charging robot",
     description: "Self-propelled energy storage charging for on-demand service.",
+    visual: {
+      src: "/products/family/charging-robot-hero.webp",
+      alt: "TAICO charging robot moving between parked electric vehicles in a commercial parking facility",
+      caption: "On-demand charging application context. Catalog product photography, not a customer project.",
+    },
     seo: {
       title: "Charging Robot | Self-Propelled Mobile EV Charger | TAICO EV",
       description:
@@ -191,6 +208,11 @@ export const productFamilies: ProductFamily[] = [
     title: "Mobile Power Systems",
     shortTitle: "Mobile power",
     description: "Higher-capacity charging and temporary power deployment.",
+    visual: {
+      src: "/products/family/mobile-power-hero.webp",
+      alt: "TAICO mobile power systems arranged by increasing energy-storage scale at a temporary-power site",
+      caption: "Field power application context. Catalog product photography, not a customer project.",
+    },
     seo: {
       title: "Mobile Power Systems | High-Capacity Mobile Charging | TAICO EV",
       description:
@@ -259,6 +281,11 @@ export const productFamilies: ProductFamily[] = [
     title: "Stationary Charging Systems",
     shortTitle: "Stationary charging",
     description: "PV-storage charging and grid-complementary deployment.",
+    visual: {
+      src: "/products/family/stationary-charging-hero.webp",
+      alt: "TAICO stationary energy storage charging systems at a commercial PV-storage charging site",
+      caption: "PV-storage charging application context. Catalog product photography, not a customer project.",
+    },
     seo: {
       title: "Stationary Charging Systems | PV-Storage Charging | TAICO EV",
       description:

@@ -46,18 +46,39 @@ const relatedArticles = (await getCollection("articles"))
           <li class="text-wave-cyan" aria-current="page">{application.title}</li>
         </ol>
       </nav>
-      <p class="label-tech mt-8">{solution.eyebrow}</p>
-      <h1 class="font-display mt-4 max-w-4xl text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? application.title}</span></h1>
-      <p class="mt-5 max-w-3xl text-xl leading-relaxed text-ink/90">{solution.headline}</p>
-      <p class="mt-4 max-w-3xl text-muted leading-relaxed">{solution.intro ?? application.summary}</p>
-      <div class="mt-8 flex flex-wrap gap-3">
-        {isSeoLandingPage ? <>
-          <a class="btn-primary" href="/contact/">Request System Configuration</a>
-          <a class="btn-ghost" href="#recommended-configurations">Explore TKMC Systems</a>
-        </> : <>
-          <a class="btn-primary" href="/contact/">Discuss this scenario</a>
-          <a class="btn-ghost" href="/products/">View products</a>
-        </>}
+      <div class="mt-8 grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
+        <div>
+          <p class="label-tech">{solution.eyebrow}</p>
+          <h1 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? application.title}</span></h1>
+          <p class="mt-5 text-xl leading-relaxed text-ink/90">{solution.headline}</p>
+          <p class="mt-4 text-muted leading-relaxed">{solution.intro ?? application.summary}</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            {isSeoLandingPage ? <>
+              <a class="btn-primary" href="/contact/">Request System Configuration</a>
+              <a class="btn-ghost" href="#recommended-configurations">Explore TKMC Systems</a>
+            </> : <>
+              <a class="btn-primary" href="/contact/">Discuss this scenario</a>
+              <a class="btn-ghost" href="/products/">View products</a>
+            </>}
+          </div>
+        </div>
+        {
+          solution.visual && (
+            <figure class="glass overflow-hidden rounded-3xl">
+              <img
+                src={solution.visual.src}
+                alt={solution.visual.alt}
+                width="1586"
+                height="992"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[8/5]"
+              />
+              <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{solution.visual.caption}</figcaption>
+            </figure>
+          )
+        }
       </div>
     </div>
   </section>
@@ -106,11 +127,21 @@ const relatedArticles = (await getCollection("articles"))
     </>}
   </section>
 
-  {solution.useCase && <section class="section-pad !pt-0">
+  {(solution.useCase || solution.diagram) && <section class="section-pad !pt-0">
     <div class="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-      <div><p class="label-tech">Roadside rescue use case</p><h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">{solution.useCase.title}</h2><p class="mt-4 text-sm leading-relaxed text-muted">{solution.useCase.description}</p></div>
-      {solution.useCase.steps && <ol class="grid gap-3 sm:grid-cols-2">{solution.useCase.steps.map((step, index) => <li class="glass flex gap-4 rounded-2xl p-4"><span class="font-mono text-sm text-wave-violet">{String(index + 1).padStart(2, "0")}</span><span class="text-sm leading-relaxed text-ink">{step}</span></li>)}</ol>}
+      <div>
+        <p class="label-tech">{solution.useCase ? "Operating workflow" : "System diagram"}</p>
+        <h2 class="font-display mt-3 text-2xl font-semibold tracking-wide text-ink sm:text-3xl">{solution.useCase?.title ?? application.title}</h2>
+        {solution.useCase && <p class="mt-4 text-sm leading-relaxed text-muted">{solution.useCase.description}</p>}
+      </div>
+      {solution.useCase?.steps && <ol class="grid gap-3 sm:grid-cols-2">{solution.useCase.steps.map((step, index) => <li class="glass flex gap-4 rounded-2xl p-4"><span class="font-mono text-sm text-wave-violet">{String(index + 1).padStart(2, "0")}</span><span class="text-sm leading-relaxed text-ink">{step}</span></li>)}</ol>}
     </div>
+    {solution.diagram && (
+      <figure class="glass mt-8 overflow-hidden rounded-3xl">
+        <img src={solution.diagram.src} alt={solution.diagram.alt} width="1600" height="1000" loading="lazy" decoding="async" class="aspect-[16/10] h-auto w-full object-contain bg-white" />
+        <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{solution.diagram.caption}</figcaption>
+      </figure>
+    )}
   </section>}
 
   {solution.capabilities && <section class="section-pad !pt-0">

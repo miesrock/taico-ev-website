@@ -41,7 +41,21 @@ const groups = [
         <p class="label-tech">{group.title}</p>
         <div class="mt-6 grid gap-5 lg:grid-cols-3">
           {group.articles.map((article) => (
-            <article class="glass glass-hover flex flex-col rounded-3xl p-6">
+            <article class="glass glass-hover flex flex-col overflow-hidden rounded-3xl">
+              {article.data.hero && (
+                <a href={`/resources/articles/${article.id}/`} class="block">
+                  <img
+                    src={article.data.hero.src}
+                    alt={article.data.hero.alt}
+                    width="1200"
+                    height="800"
+                    loading="lazy"
+                    decoding="async"
+                    class="aspect-[3/2] h-auto w-full object-cover"
+                  />
+                </a>
+              )}
+              <div class="flex flex-1 flex-col p-6">
               <p class="label-tech">{article.data.eyebrow}</p>
               <h2 class="mt-4 text-xl font-semibold leading-snug text-ink">
                 <a href={`/resources/articles/${article.id}/`} class="transition hover:text-wave-cyan">{article.data.title}</a>
@@ -52,6 +66,7 @@ const groups = [
                   {article.data.publishedAt.toLocaleDateString("en", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" })}
                 </time>
                 <a href={`/resources/articles/${article.id}/`} class="text-sm font-semibold text-wave-cyan">Read guide →</a>
+              </div>
               </div>
             </article>
           ))}

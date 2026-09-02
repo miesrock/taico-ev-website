@@ -51,7 +51,7 @@ const familyPath = getFamilyHref(family.slug);
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
   <section class="relative overflow-hidden">
-    <WaveField intensity="mid" />
+    <WaveField intensity="low" />
     <div class="section-pad relative z-10 !pt-12 !pb-12 sm:!pt-16">
       <nav aria-label="Breadcrumb">
         <ol class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-faint">
@@ -62,9 +62,30 @@ const familyPath = getFamilyHref(family.slug);
           <li class="text-wave-cyan" aria-current="page">{family.title}</li>
         </ol>
       </nav>
-      <p class="label-tech mt-8">Product family</p>
-      <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold tracking-wide text-ink">{family.title}</h1>
-      <p class="mt-4 max-w-2xl leading-relaxed text-muted">{family.description}</p>
+      <div class="mt-8 grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
+        <div>
+          <p class="label-tech">Product family</p>
+          <h1 class="font-display mt-4 text-4xl font-semibold tracking-wide text-ink">{family.title}</h1>
+          <p class="mt-4 max-w-xl leading-relaxed text-muted">{family.description}</p>
+        </div>
+        {
+          family.visual && (
+            <figure class="glass overflow-hidden rounded-3xl">
+              <img
+                src={family.visual.src}
+                alt={family.visual.alt}
+                width="1280"
+                height="720"
+                loading="eager"
+                decoding="async"
+                fetchpriority="high"
+                class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[16/9]"
+              />
+              <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{family.visual.caption}</figcaption>
+            </figure>
+          )
+        }
+      </div>
     </div>
   </section>
 

@@ -22,6 +22,12 @@ export type SolutionRelatedLink = {
   description?: string;
 };
 
+export type SolutionVisual = {
+  src: string;
+  alt: string;
+  caption: string;
+};
+
 /** Landing-page copy for an Application. Not a second Application identity. */
 export type Solution = {
   slug: string;
@@ -38,6 +44,8 @@ export type Solution = {
   featuredProductSlugs?: readonly string[];
   faq?: readonly SolutionFaq[];
   relatedLinks?: readonly SolutionRelatedLink[];
+  visual?: SolutionVisual;
+  diagram?: SolutionVisual;
 };
 
 export const solutions = [
@@ -65,6 +73,16 @@ export const solutions = [
       "Select a mobile charging system with the required storage and output power",
       "Confirm final operating and deployment configuration before quotation",
     ],
+    visual: {
+      src: "/solutions/roadside-ev-rescue-hero.webp",
+      alt: "TAICO mobile energy storage charging system connected to an electric vehicle at a roadside service area",
+      caption: "Roadside EV rescue application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/roadside-rescue-workflow.webp",
+      alt: "Five-stage roadside EV rescue charging workflow diagram",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
     useCase: {
       title: "Roadside rescue workflow",
       description:
@@ -125,6 +143,16 @@ export const solutions = [
       "Assess travel paths, grades, clearance, and operating space",
       "Confirm final configuration and operating procedure before deployment",
     ],
+    visual: {
+      src: "/solutions/charge-on-demand-hero.webp",
+      alt: "TAICO charging robot connected to a parked electric vehicle in a commercial parking facility",
+      caption: "On-demand charging application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/charging-robot-parking-workflow.webp",
+      alt: "Plan-view diagram of a charging robot moving to a parked electric vehicle",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
   },
   {
     slug: "ac-output-e-generator",
@@ -141,6 +169,16 @@ export const solutions = [
       "Review deployment access, transport, and operating conditions",
       "Confirm the project-specific power configuration",
     ],
+    visual: {
+      src: "/solutions/ac-output-e-generator-hero.webp",
+      alt: "TAICO mobile energy storage system supplying temporary AC power and EV charging at an outdoor operations site",
+      caption: "AC output / E-generator application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/ac-output-dual-use.webp",
+      alt: "Energy-flow diagram of mobile storage supplying DC EV charging and AC electrical load",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
   },
   {
     slug: "temporary-engineering-power",
@@ -157,6 +195,16 @@ export const solutions = [
       "Review deployment access, transport, and operating conditions",
       "Confirm the project-specific power configuration",
     ],
+    visual: {
+      src: "/solutions/temporary-engineering-power-hero.webp",
+      alt: "TAICO mobile power system supplying temporary electrical power at an engineering worksite",
+      caption: "Engineering power application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/engineering-power.webp",
+      alt: "Diagram of mobile energy storage supplying temporary site distribution and loads",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
   },
   {
     slug: "pv-storage-charger",
@@ -173,6 +221,16 @@ export const solutions = [
       "Confirm the PV-storage charging requirements",
       "Confirm the final system configuration before deployment",
     ],
+    visual: {
+      src: "/solutions/pv-storage-charger-hero.webp",
+      alt: "TAICO mobile energy storage system charging an EV beside a solar canopy",
+      caption: "PV-storage charging application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/mobile-pv-storage.webp",
+      alt: "Energy-flow diagram from solar PV through mobile energy storage to EV charging",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
   },
   {
     slug: "pv-ess-charging",
@@ -189,6 +247,16 @@ export const solutions = [
       "Determine whether PV input is required for the project",
       "Confirm the final station configuration and installation scope",
     ],
+    visual: {
+      src: "/solutions/pv-ess-charging-hero.webp",
+      alt: "TAICO stationary energy storage charging cabinet at a solar-canopy EV charging site",
+      caption: "PV-ESS charging application context. Catalog product photography, not a customer project.",
+    },
+    diagram: {
+      src: "/solutions/diagrams/stationary-pv-ess.webp",
+      alt: "System diagram of solar PV, energy storage, grid connection, and EV charging",
+      caption: "Planning diagram for application context. Not a customer project or operating procedure.",
+    },
   },
 ] as const satisfies readonly Solution[];
 

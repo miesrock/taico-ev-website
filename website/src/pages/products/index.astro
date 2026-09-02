@@ -16,13 +16,30 @@ const groups = getPublishedFamilies().map((family) => ({
   <section class="relative overflow-hidden">
     <WaveField intensity="mid" />
     <div class="section-pad relative z-10">
-      <p class="label-tech">TKMC product range</p>
-      <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold tracking-wide text-ink">
-        Energy storage charging, organized by deployment.
-      </h1>
-      <p class="mt-4 max-w-2xl text-muted">
-        Compare the published TAICO MC 2026 Catalog v1.3 range by product format, capacity, and output power.
-      </p>
+      <div class="grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
+        <div>
+          <p class="label-tech">TKMC product range</p>
+          <h1 class="font-display mt-4 text-4xl font-semibold tracking-wide text-ink">
+            Energy storage charging, organized by deployment.
+          </h1>
+          <p class="mt-4 max-w-2xl text-muted">
+            Compare the published TAICO MC 2026 Catalog v1.3 range by product format, capacity, and output power.
+          </p>
+        </div>
+        <figure class="glass overflow-hidden rounded-3xl">
+          <img
+            src="/products/taico-pi01-product-range-group.webp"
+            alt="TAICO product range group showing mobile charging, charging robot, mobile power, and stationary charging formats"
+            width="1774"
+            height="887"
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+            class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[2/1]"
+          />
+          <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">Catalog product photography, not a customer project.</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 

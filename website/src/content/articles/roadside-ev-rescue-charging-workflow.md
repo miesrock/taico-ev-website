@@ -6,8 +6,8 @@ publishedAt: 2026-08-24
 order: 3
 hero:
   src: /articles/roadside-ev-rescue-workflow-hero.webp
-  alt: "Published catalog application views of TKMC-800 and TKMC-1500 mobile charging systems."
-  caption: "Published catalog application imagery for TKMC-800 and TKMC-1500. These images show application context and are not customer case studies."
+  alt: "Five-step roadside EV charging workflow from request through dispatch, arrival, charging, and handoff."
+  caption: "Editorial workflow illustration for planning. Not a customer case study or universal operating procedure."
 figure:
   src: /articles/roadside-rescue-five-step-workflow.svg
   alt: "Five-step roadside EV rescue planning workflow from request qualification to reset and recharge."

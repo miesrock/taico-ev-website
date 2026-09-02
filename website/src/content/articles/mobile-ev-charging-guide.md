@@ -6,11 +6,11 @@ publishedAt: 2026-08-24
 order: 1
 hero:
   src: /articles/mobile-ev-charger-buyers-guide-hero.webp
-  alt: "Catalog application views of transported mobile EV charging, a self-propelled charging robot, and a mobile power system."
-  caption: "Published catalog application imagery showing three mobile charging formats. Final configuration depends on the project."
+  alt: "Editorial illustration of four TAICO charging deployment formats from mobile charging to stationary charging."
+  caption: "Editorial illustration of deployment formats. Final configuration depends on the project."
 figure:
-  src: /articles/mobile-ev-charger-selection-process.svg
-  alt: "Six-step mobile EV charger selection process from operating scenario to a catalog-backed shortlist."
+  src: /articles/mobile-ev-charger-selection-map.webp
+  alt: "Decision map from operating scenario to mobile charging, charging robot, mobile power, or stationary charging."
   caption: "A practical qualification sequence for turning an operating requirement into a catalog-backed shortlist."
 quickAnswer: "Start with the operating scenario, service pattern, vehicle and connector mix, recharge source, and deployment constraints. Then use published product data to create a shortlist and request a project-specific configuration review."
 cta:

@@ -3,16 +3,40 @@ import CtaBand from "../../components/CtaBand.astro";
 import WaveField from "../../components/WaveField.astro";
 import Layout from "../../layouts/Layout.astro";
 import { resourceLinks } from "../../data/navigation";
-import { site } from "../../data/site";
 ---
 
 <Layout title="Resources | TAICO EV" description="Product comparison and technical documentation for the TAICO EV TKMC range.">
   <section class="relative overflow-hidden">
     <WaveField intensity="low" />
     <div class="section-pad relative z-10">
-      <p class="label-tech">Verified resources</p>
-      <h1 class="font-display mt-4 max-w-3xl text-4xl font-semibold tracking-wide text-ink">Catalog facts for a better starting conversation.</h1>
-      <p class="mt-4 max-w-2xl text-muted">Product specifications are presented from TAICO MC 2026 Catalog v1.3. Request project documentation for a current configuration review.</p>
+      <div class="grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
+        <div>
+          <p class="label-tech">Verified resources</p>
+          <h1 class="font-display mt-4 text-4xl font-semibold tracking-wide text-ink">Catalog facts for a better starting conversation.</h1>
+          <p class="mt-4 max-w-xl text-muted">Product specifications are presented from TAICO MC 2026 Catalog v1.3. Request project documentation for a current configuration review.</p>
+          <div class="mt-8 flex flex-wrap gap-3">
+            <a class="btn-primary" href="/contact/">Request technical documentation</a>
+            <a class="btn-ghost" href="/resources/product-comparison/">Compare TKMC products</a>
+          </div>
+        </div>
+        <figure class="glass overflow-hidden rounded-3xl">
+          <a href="/products/" class="block">
+            <img
+              src="/resources/taico-r01-resources-engineering-hero.webp"
+              alt="TAICO charging product on an engineering desk with technical documentation, a laptop schematic, and a charging connector"
+              width="1448"
+              height="1086"
+              loading="eager"
+              decoding="async"
+              fetchpriority="high"
+              class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[4/3]"
+            />
+          </a>
+          <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">
+            Catalog v1.3 · Engineering resource context, not a customer project
+          </figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -20,7 +44,25 @@ import { site } from "../../data/site";
     <div class="grid gap-5 md:grid-cols-2">
       {resourceLinks.map((resource) => <a href={resource.href} class="glass glass-hover rounded-3xl p-6"><p class="label-tech">Resource</p><h2 class="mt-3 text-xl font-semibold text-ink">{resource.label}</h2><p class="mt-3 text-sm leading-relaxed text-muted">{resource.description}</p><span class="mt-6 inline-block text-sm font-semibold text-wave-cyan">Open resource →</span></a>)}
     </div>
-    <div id="technical-documentation" class="glass mt-6 rounded-3xl p-6"><p class="label-tech">Latest technical documents</p><h2 class="mt-3 text-xl font-semibold text-ink">Request the latest catalog and project documentation</h2><p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">Documentation requests are handled by the TAICO EV team so the material can match your target market and configuration requirements.</p><a href="/contact/" class="btn-primary mt-6">Request technical documentation</a></div>
+    <div id="technical-documentation" class="glass mt-6 overflow-hidden rounded-3xl">
+      <div class="grid items-center gap-6 lg:grid-cols-[0.42fr_0.58fr]">
+        <div class="p-6">
+          <p class="label-tech">Latest technical documents</p>
+          <h2 class="mt-3 text-xl font-semibold text-ink">Request the latest catalog and project documentation</h2>
+          <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted">Documentation requests are handled by the TAICO EV team so the material can match your target market and configuration requirements.</p>
+          <a href="/contact/" class="btn-primary mt-6">Request technical documentation</a>
+        </div>
+        <img
+          src="/resources/taico-r02-technical-documentation-hero.webp"
+          alt="TAICO product beside a structured stack of catalog, datasheet, and dimensional documentation"
+          width="1586"
+          height="992"
+          loading="lazy"
+          decoding="async"
+          class="aspect-[16/10] h-auto w-full object-cover lg:aspect-[8/5]"
+        />
+      </div>
+    </div>
   </section>
 
   <CtaBand title="Ready to discuss a configuration?" />
