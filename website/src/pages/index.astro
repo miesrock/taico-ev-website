@@ -1,5 +1,6 @@
 ---
 import CtaBand from "../components/CtaBand.astro";
+import EnergyFlow from "../components/EnergyFlow.astro";
 import Layout from "../layouts/Layout.astro";
 import { getPublishedFamilies } from "../data/families";
 import { getPublishedProducts, type Product } from "../data/products";
@@ -177,6 +178,8 @@ const heroSlides = [
       </figure>
     </div>
   </section>
+
+  <EnergyFlow />
 
   <section id="solutions" class="section-pad !pt-0">
     <p class="label-tech">Product exploration</p>
