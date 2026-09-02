@@ -787,6 +787,88 @@
     }
   }
 
+  .scene-banner {
+    position: relative;
+    isolation: isolate;
+    min-height: 520px;
+    overflow: hidden;
+    color: #f4f7fb;
+  }
+
+  .scene-banner img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 72% 42%;
+  }
+
+  .scene-banner::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(4, 6, 12, 0.72) 0%, rgba(4, 6, 12, 0.28) 42%, transparent 68%);
+  }
+
+  .scene-banner-copy {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    min-height: inherit;
+    max-width: 72rem;
+    margin-inline: auto;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 3.5rem 1.25rem;
+  }
+
+  .scene-banner-copy h2 {
+    font-family: var(--font-display);
+    margin-top: 0.75rem;
+    max-width: 22rem;
+    font-size: clamp(1.7rem, 3.4vw, 2.6rem);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: 0.04em;
+  }
+
+  .scene-banner-copy p:last-of-type {
+    margin-top: 0.85rem;
+    max-width: 26rem;
+    color: rgba(226, 232, 240, 0.82);
+    line-height: 1.6;
+  }
+
+  .scene-banner-copy .btn-hero-ghost {
+    width: fit-content;
+    margin-top: 1.35rem;
+  }
+
+  @media (min-width: 1024px) {
+    .scene-banner {
+      min-height: clamp(520px, 38vw, 680px);
+      aspect-ratio: 21 / 9;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .scene-banner {
+      min-height: 0;
+      aspect-ratio: 4 / 5;
+    }
+
+    .scene-banner img {
+      object-position: 78% 38%;
+    }
+
+    .scene-banner::after {
+      background: linear-gradient(180deg, transparent 28%, rgba(4, 6, 12, 0.78) 100%);
+    }
+  }
+
   .grid-overlay {
     background-image:
       linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),
