@@ -362,6 +362,110 @@
     );
   }
 
+  .chapter-nav {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 72rem;
+    margin-inline: auto;
+    border-top: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .chapter-link {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    padding: 1.1rem 1rem 1.2rem;
+    border-right: 1px solid var(--color-line);
+    border-bottom: 1px solid var(--color-line);
+    border-radius: 0;
+    background: transparent;
+    text-decoration: none;
+    transition: background-color 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
+  }
+
+  .chapter-link:nth-child(2n) {
+    border-right: 0;
+  }
+
+  .chapter-id {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--color-wave-cyan);
+  }
+
+  .chapter-title {
+    display: inline-block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1.35;
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: transparent;
+    text-underline-offset: 0.28em;
+    transition: text-decoration-color 0.18s ease, transform 0.18s ease;
+  }
+
+  .chapter-link:hover {
+    background: color-mix(in srgb, var(--color-wave-cyan) 6%, transparent);
+  }
+
+  .chapter-link:hover .chapter-title,
+  .chapter-link:focus-visible .chapter-title {
+    text-decoration-color: var(--color-wave-cyan);
+  }
+
+  .chapter-link:hover .chapter-title {
+    transform: translateY(-1px);
+  }
+
+  .chapter-link:focus-visible {
+    outline: 2px solid var(--color-wave-cyan);
+    outline-offset: -2px;
+  }
+
+  @media (min-width: 1024px) {
+    .chapter-nav {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .chapter-link:nth-child(2n) {
+      border-right: 1px solid var(--color-line);
+    }
+
+    .chapter-link:nth-child(3n) {
+      border-right: 0;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .chapter-nav {
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+    }
+
+    .chapter-link {
+      border-bottom: 0;
+    }
+
+    .chapter-link:nth-child(3n) {
+      border-right: 1px solid var(--color-line);
+    }
+
+    .chapter-link:nth-child(6n) {
+      border-right: 0;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .chapter-link,
+    .chapter-link:hover .chapter-title {
+      transition: none;
+      transform: none;
+    }
+  }
+
   .grid-overlay {
     background-image:
       linear-gradient(rgba(148, 163, 184, 0.06) 1px, transparent 1px),

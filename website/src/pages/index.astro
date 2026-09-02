@@ -146,16 +146,14 @@ const heroSlides = [
 
   <div class="wave-divider"></div>
 
-  <section class="section-pad !pb-8">
-    <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-      {solutionEntries.map((item, index) => (
-        <a href={`/solutions/${item.presentation.slug}/`} class="glass glass-hover rounded-2xl px-4 py-3">
-          <p class="font-mono text-[10px] uppercase tracking-[0.2em] text-wave-cyan">CH-{String(index + 1).padStart(2, "0")}</p>
-          <p class="mt-1 text-sm font-medium text-ink">{item.application.title}</p>
-        </a>
-      ))}
-    </div>
-  </section>
+  <nav class="chapter-nav" aria-label="Solution chapters">
+    {solutionEntries.map((item, index) => (
+      <a href={`/solutions/${item.presentation.slug}/`} class="chapter-link">
+        <span class="chapter-id">CH-{String(index + 1).padStart(2, "0")}</span>
+        <span class="chapter-title">{item.application.title}</span>
+      </a>
+    ))}
+  </nav>
 
   <section class="section-pad !pt-8">
     <div class="hero-object">
