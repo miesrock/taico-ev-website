@@ -26,6 +26,8 @@ export type SolutionVisual = {
   src: string;
   alt: string;
   caption: string;
+  /** Overlay copy side. Use "right" when the product subject sits on the left. */
+  align?: "left" | "right";
 };
 
 /** Landing-page copy for an Application. Not a second Application identity. */
@@ -147,6 +149,7 @@ export const solutions = [
       src: "/solutions/charge-on-demand-hero.webp",
       alt: "TAICO charging robot connected to a parked electric vehicle in a commercial parking facility",
       caption: "On-demand charging application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     diagram: {
       src: "/solutions/diagrams/charging-robot-parking-workflow.webp",
@@ -173,6 +176,7 @@ export const solutions = [
       src: "/solutions/ac-output-e-generator-hero.webp",
       alt: "TAICO mobile energy storage system supplying temporary AC power and EV charging at an outdoor operations site",
       caption: "AC output / E-generator application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     diagram: {
       src: "/solutions/diagrams/ac-output-dual-use.webp",
@@ -199,6 +203,7 @@ export const solutions = [
       src: "/solutions/temporary-engineering-power-hero.webp",
       alt: "TAICO mobile power system supplying temporary electrical power at an engineering worksite",
       caption: "Engineering power application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     diagram: {
       src: "/solutions/diagrams/engineering-power.webp",
@@ -225,6 +230,7 @@ export const solutions = [
       src: "/solutions/pv-storage-charger-hero.webp",
       alt: "TAICO mobile energy storage system charging an EV beside a solar canopy",
       caption: "PV-storage charging application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     diagram: {
       src: "/solutions/diagrams/mobile-pv-storage.webp",
@@ -251,6 +257,7 @@ export const solutions = [
       src: "/solutions/pv-ess-charging-hero.webp",
       alt: "TAICO stationary energy storage charging cabinet at a solar-canopy EV charging site",
       caption: "PV-ESS charging application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     diagram: {
       src: "/solutions/diagrams/stationary-pv-ess.webp",

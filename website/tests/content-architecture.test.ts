@@ -119,6 +119,26 @@ test("every published article relates to a commercial entity with resolvable slu
   }
 });
 
+test("solution and product pages use a full-bleed hero board", () => {
+  const pages = [
+    "src/pages/solutions/[slug].astro",
+    "src/pages/products/[slug].astro",
+    "src/pages/products/category/[slug].astro",
+    "src/pages/products/index.astro",
+  ];
+
+  for (const page of pages) {
+    const source = read(page);
+    assert.match(source, /<PageHero/, page);
+    assert.doesNotMatch(source, /lg:grid-cols-\[0\.42fr_0\.58fr\]/, page);
+  }
+
+  const hero = read("src/components/PageHero.astro");
+  assert.match(hero, /data-page-hero/);
+  assert.match(hero, /data-hero-align=\{align\}/);
+  assert.match(hero, /absolute inset-0 h-full w-full object-cover/);
+});
+
 test("public navigation and routes keep Applications off the primary IA", () => {
   assert.deepEqual(primaryNavigation.map((item) => item.key), ["products", "solutions", "resources"]);
   assert.equal(existsSync(join(websiteRoot, "src/pages/products/index.astro")), true);
