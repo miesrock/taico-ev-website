@@ -74,9 +74,11 @@ const heroSlides = [
             <a class="btn-hero-ghost !px-4 !py-2 text-xs" href="/contact/">Talk to a specialist</a>
           </div>
           <p class="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/50" data-hero-caption aria-live="polite" title={heroSlides[0].context}>
-            {heroSlides[0].label} · Catalog v1.3
-            {" "}
-            <a href={heroSlides[0].href} class="text-wave-cyan hover:underline">View product →</a>
+            <span data-hero-caption-label>{heroSlides[0].label}</span>
+            <span aria-hidden="true"> · </span>
+            <span>Catalog v1.3</span>
+            <span aria-hidden="true"> </span>
+            <a data-hero-caption-link href={heroSlides[0].href} class="text-wave-cyan hover:underline">View product →</a>
           </p>
         </div>
       </div>
@@ -107,6 +109,8 @@ const heroSlides = [
         const slides = [...root.querySelectorAll("[data-hero-slide]")];
         const dots = [...root.querySelectorAll("[data-hero-dot]")];
         const caption = root.querySelector("[data-hero-caption]");
+        const captionLabel = root.querySelector("[data-hero-caption-label]");
+        const captionLink = root.querySelector("[data-hero-caption-link]");
         const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         let index = 0;
         let timer = 0;
@@ -124,9 +128,10 @@ const heroSlides = [
             dot.setAttribute("aria-current", i === index ? "true" : "false");
           });
           const item = captions[index];
-          if (caption && item) {
-            caption.innerHTML = `${item.label} · Catalog v1.3 <a href="${item.href}" class="text-wave-cyan hover:underline">View product →</a>`;
-            caption.setAttribute("title", item.context);
+          if (item) {
+            if (captionLabel) captionLabel.textContent = item.label;
+            if (captionLink) captionLink.setAttribute("href", item.href);
+            caption?.setAttribute("title", item.context);
           }
         };
         const play = () => {
