@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import CtaBand from "../../components/CtaBand.astro";
-import WaveField from "../../components/WaveField.astro";
+import PageHero from "../../components/PageHero.astro";
 import Layout from "../../layouts/Layout.astro";
 import { getFeaturedProductsForSolution, getProductsForSolution, resolveSolutionFaq } from "../../data/products";
 import { getApplicationForSolution, getSolution, getSolutionStructuredData, solutions } from "../../data/solutions";
@@ -13,6 +13,7 @@ export function getStaticPaths() {
 
 const solution = getSolution(Astro.params.slug!);
 if (!solution) throw new Error(`Unknown solution: ${Astro.params.slug}`);
+if (!solution.visual) throw new Error(`Solution ${solution.slug} is missing a hero visual`);
 const application = getApplicationForSolution(solution);
 
 const isSeoLandingPage = Boolean(solution.seo);
@@ -34,54 +35,34 @@ const relatedArticles = (await getCollection("articles"))
 <Layout title={seoTitle} description={seoDescription} canonicalPath={`/solutions/${solution.slug}/`}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
-  <section class="relative overflow-hidden">
-    <WaveField intensity="mid" />
-    <div class="section-pad relative z-10 !pt-12 !pb-16 sm:!pt-16">
-      <nav aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-faint">
-          <li><a href="/" class="transition hover:text-wave-cyan">Home</a></li>
-          <li aria-hidden="true">/</li>
-          <li><a href="/#solutions" class="transition hover:text-wave-cyan">Solutions</a></li>
-          <li aria-hidden="true">/</li>
-          <li class="text-wave-cyan" aria-current="page">{application.title}</li>
-        </ol>
-      </nav>
-      <div class="mt-8 grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
-        <div>
-          <p class="label-tech">{solution.eyebrow}</p>
-          <h1 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink sm:text-5xl"><span class="text-gradient">{solution.h1 ?? application.title}</span></h1>
-          <p class="mt-5 text-xl leading-relaxed text-ink/90">{solution.headline}</p>
-          <p class="mt-4 text-muted leading-relaxed">{solution.intro ?? application.summary}</p>
-          <div class="mt-8 flex flex-wrap gap-3">
-            {isSeoLandingPage ? <>
-              <a class="btn-primary" href="/contact/">Request System Configuration</a>
-              <a class="btn-ghost" href="#recommended-configurations">Explore TKMC Systems</a>
-            </> : <>
-              <a class="btn-primary" href="/contact/">Discuss this scenario</a>
-              <a class="btn-ghost" href="/products/">View products</a>
-            </>}
-          </div>
-        </div>
-        {
-          solution.visual && (
-            <figure class="glass overflow-hidden rounded-3xl">
-              <img
-                src={solution.visual.src}
-                alt={solution.visual.alt}
-                width="1586"
-                height="992"
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[8/5]"
-              />
-              <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{solution.visual.caption}</figcaption>
-            </figure>
-          )
-        }
-      </div>
+  <PageHero
+    src={solution.visual.src}
+    alt={solution.visual.alt}
+    caption={solution.visual.caption}
+    align={solution.visual.align}
+  >
+    <nav aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">
+        <li><a href="/" class="transition hover:text-white">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/#solutions" class="transition hover:text-white">Solutions</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-wave-cyan" aria-current="page">{application.title}</li>
+      </ol>
+    </nav>
+    <p class="label-tech mt-5">{solution.eyebrow}</p>
+    <h1 class="font-display mt-3 text-2xl font-semibold leading-tight tracking-wide text-white sm:text-4xl">{solution.h1 ?? application.title}</h1>
+    <p class="mt-4 hidden max-w-md text-sm leading-relaxed text-white/75 lg:block">{solution.intro ?? solution.headline}</p>
+    <div class="mt-6 flex flex-wrap gap-2">
+      {isSeoLandingPage ? <>
+        <a class="btn-primary !px-4 !py-2 text-xs" href="/contact/">Request System Configuration</a>
+        <a class="btn-hero-ghost !px-4 !py-2 text-xs" href="#recommended-configurations">Explore TKMC Systems</a>
+      </> : <>
+        <a class="btn-primary !px-4 !py-2 text-xs" href="/contact/">Discuss this scenario</a>
+        <a class="btn-hero-ghost !px-4 !py-2 text-xs" href="/products/">View products</a>
+      </>}
     </div>
-  </section>
+  </PageHero>
 
   <section id={isSeoLandingPage ? "why-mobile-charging" : undefined} class="section-pad !py-12">
     {isSeoLandingPage ? <>

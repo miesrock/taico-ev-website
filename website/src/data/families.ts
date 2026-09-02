@@ -55,6 +55,8 @@ export type FamilyVisual = {
   src: string;
   alt: string;
   caption: string;
+  /** Overlay copy side. Use "right" when the product subject sits on the left. */
+  align?: "left" | "right";
 };
 
 export type ProductFamily = {
@@ -84,6 +86,7 @@ export const productFamilies: ProductFamily[] = [
       src: "/products/family/mobile-charging-hero.webp",
       alt: "TAICO mobile charging systems in a roadside and fleet-service charging context",
       caption: "Mobile charging application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     seo: {
       title: "Mobile Charging Systems | Mobile EV Chargers | TAICO EV",
@@ -151,6 +154,7 @@ export const productFamilies: ProductFamily[] = [
       src: "/products/family/charging-robot-hero.webp",
       alt: "TAICO charging robot moving between parked electric vehicles in a commercial parking facility",
       caption: "On-demand charging application context. Catalog product photography, not a customer project.",
+      align: "right",
     },
     seo: {
       title: "Charging Robot | Self-Propelled Mobile EV Charger | TAICO EV",

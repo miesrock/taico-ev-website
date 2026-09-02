@@ -1,0 +1,56 @@
+---
+interface Props {
+  src: string;
+  alt: string;
+  caption?: string;
+  imageClass?: string;
+  align?: "left" | "right";
+}
+
+const {
+  src,
+  alt,
+  caption,
+  align = "left",
+  imageClass = align === "right"
+    ? "object-[28%_40%] lg:object-[20%_center]"
+    : "object-[72%_30%] lg:object-[80%_center]",
+} = Astro.props;
+const isRight = align === "right";
+---
+
+<section class="relative isolate h-[calc(100svh-4.75rem)] min-h-[32rem] overflow-hidden" data-page-hero data-hero-align={align}>
+  <img
+    src={src}
+    alt={alt}
+    width="1600"
+    height="1000"
+    loading="eager"
+    decoding="async"
+    fetchpriority="high"
+    class:list={["absolute inset-0 h-full w-full object-cover", imageClass]}
+  />
+  <div
+    class:list={[
+      "absolute inset-y-0 hidden w-[42%] lg:block",
+      isRight ? "right-0 bg-gradient-to-l from-[#04060c]/80 to-transparent" : "left-0 bg-gradient-to-r from-[#04060c]/80 to-transparent",
+    ]}
+    aria-hidden="true"
+  ></div>
+  <div class="absolute inset-x-0 bottom-0 h-[52%] bg-gradient-to-t from-[#04060c]/85 to-transparent lg:hidden" aria-hidden="true"></div>
+  <div class="relative z-10 mx-auto grid h-full max-w-6xl grid-cols-1 px-4 pt-8 pb-12 sm:px-6 lg:grid-cols-12">
+    {isRight && <div class="hidden lg:col-span-7 lg:block" aria-hidden="true"></div>}
+    <div class="flex min-h-0 flex-col justify-end lg:col-span-5">
+      <div class="hero-copy rounded-3xl px-5 py-5 sm:px-6 sm:py-6">
+        <slot />
+        {
+          caption && (
+            <p class="mt-4 font-mono text-[10px] uppercase tracking-[0.14em] text-white/50">{caption}</p>
+          )
+        }
+      </div>
+    </div>
+    {!isRight && <div class="hidden lg:col-span-7 lg:block" aria-hidden="true"></div>}
+  </div>
+</section>
+<div class="wave-divider"></div>

@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import CtaBand from "../../../components/CtaBand.astro";
-import WaveField from "../../../components/WaveField.astro";
+import PageHero from "../../../components/PageHero.astro";
 import Layout from "../../../layouts/Layout.astro";
 import { getApplication } from "../../../data/applications";
 import { getProductFamily, getPublishedFamilies } from "../../../data/families";
@@ -22,6 +22,7 @@ export function getStaticPaths() {
 
 const family = getProductFamily(Astro.params.slug!);
 if (!family) throw new Error(`Unknown product family: ${Astro.params.slug}`);
+if (!family.visual) throw new Error(`Product family ${family.slug} is missing a hero visual`);
 
 const products = getFamilyProducts(family.slug);
 const ranges = getFamilyRanges(family, products);
@@ -50,44 +51,25 @@ const familyPath = getFamilyHref(family.slug);
 <Layout title={family.seo.title} description={family.seo.description} canonicalPath={familyPath}>
   <script slot="head" type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
-  <section class="relative overflow-hidden">
-    <WaveField intensity="low" />
-    <div class="section-pad relative z-10 !pt-12 !pb-12 sm:!pt-16">
-      <nav aria-label="Breadcrumb">
-        <ol class="flex flex-wrap items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-faint">
-          <li><a href="/" class="transition hover:text-wave-cyan">Home</a></li>
-          <li aria-hidden="true">/</li>
-          <li><a href="/products/" class="transition hover:text-wave-cyan">Products</a></li>
-          <li aria-hidden="true">/</li>
-          <li class="text-wave-cyan" aria-current="page">{family.title}</li>
-        </ol>
-      </nav>
-      <div class="mt-8 grid items-center gap-8 lg:grid-cols-[0.42fr_0.58fr] lg:gap-12">
-        <div>
-          <p class="label-tech">Product family</p>
-          <h1 class="font-display mt-4 text-4xl font-semibold tracking-wide text-ink">{family.title}</h1>
-          <p class="mt-4 max-w-xl leading-relaxed text-muted">{family.description}</p>
-        </div>
-        {
-          family.visual && (
-            <figure class="glass overflow-hidden rounded-3xl">
-              <img
-                src={family.visual.src}
-                alt={family.visual.alt}
-                width="1280"
-                height="720"
-                loading="eager"
-                decoding="async"
-                fetchpriority="high"
-                class="aspect-[16/10] h-auto w-full object-cover object-center sm:aspect-[16/9]"
-              />
-              <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">{family.visual.caption}</figcaption>
-            </figure>
-          )
-        }
-      </div>
-    </div>
-  </section>
+  <PageHero
+    src={family.visual.src}
+    alt={family.visual.alt}
+    caption={family.visual.caption}
+    align={family.visual.align}
+  >
+    <nav aria-label="Breadcrumb">
+      <ol class="flex flex-wrap items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-white/55">
+        <li><a href="/" class="transition hover:text-white">Home</a></li>
+        <li aria-hidden="true">/</li>
+        <li><a href="/products/" class="transition hover:text-white">Products</a></li>
+        <li aria-hidden="true">/</li>
+        <li class="text-wave-cyan" aria-current="page">{family.title}</li>
+      </ol>
+    </nav>
+    <p class="label-tech mt-5">Product family</p>
+    <h1 class="font-display mt-3 text-2xl font-semibold leading-tight tracking-wide text-white sm:text-4xl">{family.title}</h1>
+    <p class="mt-4 hidden max-w-md text-sm leading-relaxed text-white/75 lg:block">{family.description}</p>
+  </PageHero>
 
   {
     rangeItems.length > 0 && (

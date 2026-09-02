@@ -1,0 +1,53 @@
+---
+/**
+ * Homepage rhythm-break: a dark technical section.
+ *
+ * This diagram is the TKMC *family capability envelope*, not a literal
+ * electrical topology. Catalog v1.3 (website/src/data/products.ts) supports
+ * battery storage + DC EV charging on every published model. PV input and
+ * AC output are model-specific. Grid-complementary deployment is catalogued
+ * only on stationary TKMC-2000 / TKMC-2600; AC 3-phase recharge is a
+ * recharge mode, not a universal live grid-input path. Do not draw
+ * PV → battery → EV or Grid → battery → AC as a definitive wiring diagram.
+ *
+ * TODO(engineering): confirm whether any single configuration operates PV
+ * and grid as simultaneous interchangeable inputs, and whether AC output
+ * and DC charging run in parallel on models that publish both.
+ */
+---
+
+<section class="energy-flow" aria-labelledby="energy-flow-heading">
+  <div class="energy-flow-inner">
+    <p class="label-tech">Energy flow</p>
+    <h2 id="energy-flow-heading" class="energy-flow-title">One platform. Multiple deployment paths.</h2>
+    <p class="energy-flow-body">The TKMC range combines battery storage and DC charging, with AC output or PV-storage capabilities available on selected configurations.</p>
+
+    <div class="energy-diagram" aria-hidden="true">
+      <div class="energy-node">
+        <span class="energy-node-id">01</span>
+        <span class="energy-node-label">Supported input options</span>
+        <span class="energy-node-meta">Selected: PV / grid</span>
+      </div>
+      <div class="energy-line energy-line-pulse"></div>
+      <div class="energy-core">
+        <span class="energy-node-id">02</span>
+        <span class="energy-node-label">TKMC storage</span>
+        <span class="energy-node-meta">Energy core</span>
+      </div>
+      <div class="energy-line"></div>
+      <div class="energy-node">
+        <span class="energy-node-id">03</span>
+        <span class="energy-node-label">Supported output options</span>
+        <span class="energy-node-meta">DC charging / selected AC</span>
+      </div>
+    </div>
+    <p class="energy-flow-note">Conceptual path of the family capability envelope. Not a wiring diagram. Final configuration is project-specific.</p>
+
+    <ul class="energy-caps">
+      <li><span>Storage</span></li>
+      <li><span>DC charging</span></li>
+      <li><span>Selected AC output</span></li>
+      <li><span>Selected PV input</span></li>
+    </ul>
+  </div>
+</section>
