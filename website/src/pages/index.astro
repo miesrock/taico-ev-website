@@ -158,16 +158,24 @@ const heroSlides = [
   </section>
 
   <section class="section-pad !pt-8">
-    <div class="grid items-center gap-10 lg:grid-cols-2">
+    <div class="hero-object">
       <div>
         <p class="label-tech">Energy constraints</p>
         <h2 class="font-display mt-4 text-3xl font-semibold tracking-wide text-ink">Deploy charging capacity where the operation needs it.</h2>
         <p class="mt-4 text-muted leading-relaxed">The TKMC range combines energy storage, DC charging, and selected AC or PV-storage capabilities across mobile and stationary deployment formats.</p>
         <ul class="mt-6 grid gap-3 sm:grid-cols-2">{["Charging away from fixed bays", "Changing operating locations", "Temporary and engineering power", "PV-storage charging deployment"].map((item) => <li class="glass rounded-2xl px-4 py-5 text-sm text-ink">{item}</li>)}</ul>
       </div>
-      <figure class="glass overflow-hidden rounded-3xl">
-        <img src="/home/taico-h02-operating-constraint.webp" alt="Diagram showing a mobile charger bringing charging capacity to an electric vehicle away from a fixed grid point" width="1586" height="992" loading="lazy" decoding="async" class="aspect-[16/10] h-auto w-full object-cover" />
-        <figcaption class="border-t border-line px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-faint">Operating-constraint diagram. Editorial illustration, not a customer project.</figcaption>
+      <figure class="hero-object-visual" data-product-visual>
+        <img
+          src="/home/taico-h02-operating-constraint.webp"
+          alt="Diagram showing a mobile charger bringing charging capacity to an electric vehicle away from a fixed grid point"
+          width="1586"
+          height="992"
+          loading="lazy"
+          decoding="async"
+          class="hero-object-image"
+        />
+        <figcaption class="hero-object-caption">Operating-constraint diagram. Editorial illustration, not a customer project.</figcaption>
       </figure>
     </div>
   </section>

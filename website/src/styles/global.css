@@ -283,6 +283,74 @@
     @apply mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-20;
   }
 
+  .hero-object {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+
+  .hero-object-visual {
+    position: relative;
+    display: flex;
+    min-height: clamp(300px, 48vw, 620px);
+    flex-direction: column;
+    justify-content: center;
+    overflow: visible;
+  }
+
+  .hero-object-visual::before {
+    content: "";
+    position: absolute;
+    inset: -6% -8%;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(148, 163, 184, 0.16) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(148, 163, 184, 0.16) 1px, transparent 1px);
+    background-size: 28px 28px;
+    mask-image: radial-gradient(circle at 62% 48%, #000 0%, rgba(0, 0, 0, 0.85) 35%, transparent 78%);
+    opacity: 0.7;
+  }
+
+  .hero-object-image {
+    position: relative;
+    z-index: 1;
+    width: min(128%, 840px);
+    max-width: none;
+    height: auto;
+    object-fit: contain;
+    margin-inline: auto -6%;
+  }
+
+  .hero-object-caption {
+    position: relative;
+    z-index: 1;
+    margin-top: 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-faint);
+  }
+
+  @media (min-width: 1024px) {
+    .hero-object {
+      grid-template-columns: minmax(0, 0.44fr) minmax(0, 0.56fr);
+      gap: 1.25rem 1.75rem;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .hero-object-visual {
+      min-height: 300px;
+    }
+
+    .hero-object-image {
+      width: min(108%, 640px);
+      margin-inline: auto;
+    }
+  }
+
   .wave-divider {
     height: 1px;
     background: linear-gradient(
