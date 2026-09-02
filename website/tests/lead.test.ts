@@ -207,7 +207,7 @@ const leadEnv = (database: FakeDatabase, overrides: Partial<LeadEnv> = {}): Lead
   ...overrides,
 });
 
-async function submitLead(database: FakeDatabase, body = validRequest, overrides: Partial<LeadEnv> = {}, emailOk = true, accept = "application/json") {
+async function submitLead(database: FakeDatabase, body = validRequest, overrides: Partial<LeadEnv> = {}, emailOk = true, accept = "application/json", referer = "") {
   const pending: Promise<unknown>[] = [];
   const originalFetch = globalThis.fetch;
   let emailCalls = 0;
@@ -228,6 +228,7 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
           origin: "https://taicoev.com",
           accept,
           "content-type": "application/x-www-form-urlencoded",
+          ...(referer ? { referer } : {}),
         },
         body: new URLSearchParams(body),
       }),
@@ -245,6 +246,72 @@ async function submitLead(database: FakeDatabase, body = validRequest, overrides
     globalThis.fetch = originalFetch;
   }
 }
+
+test("derives clean same-site referrer context without trusting external paths", async () => {
+  const cases = [
+    { referer: "https://taicoev.com/products/tkmc-800/?utm_source=partner", field: "product_slug", value: "tkmc-800" },
+    { referer: "https://taicoev.com/solutions/mobile-ev-charger-roadside-rescue/", field: "solution_slug", value: "mobile-ev-charger-roadside-rescue" },
+    { referer: "https://taicoev.com/applications/roadside-ev-rescue/", field: "application_slug", value: "roadside-ev-rescue" },
+  ] as const;
+
+  for (const [index, testCase] of cases.entries()) {
+    const database = new FakeDatabase();
+    const body = {
+      ...validRequest,
+      source: "",
+      product: "",
+      solution: "",
+      application_context: "",
+      page_path: "",
+      referrer: testCase.referer,
+      utm_source: "partner",
+      submission_key: `33333333-3333-4333-8333-33333333333${index + 1}`,
+    };
+    const { response } = await submitLead(database, body, {}, true, "application/json", "https://taicoev.com/contact/");
+
+    assert.equal(response.status, 200);
+    assert.equal(database.row?.source_component, "internal-referrer");
+    assert.equal(database.row?.page_path, new URL(testCase.referer).pathname);
+    assert.equal(database.row?.[testCase.field], testCase.value);
+    assert.equal(database.row?.utm_source, "partner");
+  }
+
+  const externalDatabase = new FakeDatabase();
+  const externalBody = {
+    ...validRequest,
+    source: "",
+    product: "",
+    solution: "",
+    application_context: "",
+    page_path: "",
+    referrer: "https://example.com/products/tkmc-800/",
+    submission_key: "44444444-4444-4444-8444-444444444444",
+  };
+  const { response } = await submitLead(externalDatabase, externalBody, {}, true, "application/json", "https://taicoev.com/contact/");
+
+  assert.equal(response.status, 200);
+  assert.equal(externalDatabase.row?.source_component, "contact-page");
+  assert.equal(externalDatabase.row?.page_path, "/contact/");
+  assert.equal(externalDatabase.row?.product_slug, null);
+  assert.equal(externalDatabase.row?.referrer, "https://example.com/products/tkmc-800/");
+
+  const fallbackDatabase = new FakeDatabase();
+  const fallbackBody = {
+    ...validRequest,
+    source: "",
+    product: "",
+    solution: "",
+    application_context: "",
+    page_path: "",
+    referrer: "",
+    submission_key: "55555555-5555-4555-8555-555555555555",
+  };
+  const { response: fallbackResponse } = await submitLead(fallbackDatabase, fallbackBody, {}, true, "application/json", "https://taicoev.com/products/tkmc-800/");
+
+  assert.equal(fallbackResponse.status, 200);
+  assert.equal(fallbackDatabase.row?.source_component, "internal-referrer");
+  assert.equal(fallbackDatabase.row?.product_slug, "tkmc-800");
+});
 
 test("stores a server-derived ICP snapshot and ignores client ICP fields", async () => {
   const database = new FakeDatabase();

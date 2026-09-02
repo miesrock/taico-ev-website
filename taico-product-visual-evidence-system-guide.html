@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>TAICO Product Visual / Evidence Asset System 标准指南</title>
+<style>
+  :root{
+    --bg:#eef4fb;
+    --paper:#ffffff;
+    --ink:#122033;
+    --muted:#5d6f86;
+    --line:#d8e2ee;
+    --blue:#1aa6d9;
+    --blue2:#5d5ce8;
+    --soft:#f6f9fc;
+    --ok:#138a62;
+    --warn:#b96b14;
+    --bad:#b84444;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif;
+    background:linear-gradient(180deg,#eaf2fb 0%,#f8fbfe 100%);
+    color:var(--ink);
+    line-height:1.65;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 22px 80px}
+  .hero{
+    background:linear-gradient(135deg,#f9fcff 0%,#edf5fb 50%,#eef0ff 100%);
+    border:1px solid #cfe0ef;
+    border-top:12px solid var(--blue);
+    padding:48px 48px 42px;
+    border-radius:22px;
+    box-shadow:0 18px 50px rgba(32,64,96,.10);
+    overflow:hidden;
+    position:relative;
+  }
+  .hero:after{
+    content:"";
+    position:absolute;right:-120px;top:-130px;width:420px;height:420px;border-radius:50%;
+    border:1px solid rgba(26,166,217,.18);
+    box-shadow:0 0 0 70px rgba(93,92,232,.03),0 0 0 140px rgba(26,166,217,.025);
+  }
+  .kicker{font-size:13px;letter-spacing:.28em;color:#0f91bd;font-weight:700;text-transform:uppercase}
+  h1{font-size:44px;line-height:1.12;margin:14px 0 16px;max-width:850px}
+  .lead{font-size:19px;color:#405673;max-width:900px}
+  .badge-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:22px}
+  .badge{padding:8px 12px;border-radius:999px;background:#eaf5fb;border:1px solid #c9e7f3;color:#176c89;font-size:13px;font-weight:700}
+  section{margin-top:28px;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:30px 32px;box-shadow:0 10px 30px rgba(31,52,73,.055)}
+  h2{font-size:28px;margin:0 0 14px}
+  h3{font-size:20px;margin:24px 0 10px}
+  p{margin:9px 0;color:#31445d}
+  .note{background:#f1f7fb;border-left:4px solid var(--blue);padding:14px 16px;border-radius:10px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  .card{background:var(--soft);border:1px solid var(--line);border-radius:14px;padding:18px}
+  .card h3{margin-top:0}
+  table{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+  th,td{border-bottom:1px solid var(--line);padding:12px 10px;text-align:left;vertical-align:top}
+  th{background:#f5f8fb;color:#23364d}
+  code,pre{font-family:"SFMono-Regular",Consolas,monospace}
+  pre{background:#0f1722;color:#d9e6f4;padding:18px;border-radius:12px;overflow:auto;font-size:13px;line-height:1.55}
+  .flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:18px 0}
+  .flow .node{background:#f4f8fb;border:1px solid #cfdce8;padding:11px 14px;border-radius:12px;font-weight:700}
+  .arrow{color:#6a7d92;font-size:20px}
+  .level{display:flex;gap:12px;align-items:stretch;flex-wrap:wrap}
+  .level .box{flex:1;min-width:180px;border-radius:14px;padding:16px;border:1px solid var(--line)}
+  .l0{background:#f7f7f7}.l1{background:#eef4ff}.l2{background:#eefaf5}.l3{background:#fff7eb}
+  .good{color:var(--ok);font-weight:700}.warn{color:var(--warn);font-weight:700}.bad{color:var(--bad);font-weight:700}
+  .footer{margin-top:30px;color:#708096;font-size:13px;text-align:center}
+  .rule{font-weight:700;color:#0e7fa6}
+  ul{padding-left:20px}
+  li{margin:6px 0;color:#31445d}
+  .mini{font-size:13px;color:#6c7d91}
+  .diagram{
+    background:linear-gradient(180deg,#f9fbfd,#f3f7fb);
+    border:1px solid #dbe5ef;border-radius:16px;padding:18px;margin-top:16px
+  }
+  .caption{font-size:13px;color:#6b7c90;margin-top:8px}
+  @media(max-width:780px){
+    h1{font-size:34px}
+    .hero{padding:34px 24px}
+    section{padding:24px 20px}
+    .grid2,.grid3{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">TAICO EV · Visual System Standard</div>
+    <h1>Product Visual / Evidence Asset System 标准指南</h1>
+    <p class="lead">用于 TAICO EV 官网 Homepage、Family、Solution、Product、Resources、Knowledge、Case Study 的统一图片生产、AI 生成、证据分级和页面使用规范。</p>
+    <div class="badge-row">
+      <span class="badge">参考：BESEN 首页 / Landing Page</span>
+      <span class="badge">目标：从“资料站”升级为“制造企业橱窗”</span>
+      <span class="badge">AI 可生成场景，但 Evidence 必须分级</span>
+    </div>
+  </div>
+
+  <section>
+    <h2>01. 核心结论</h2>
+    <div class="note">
+      TAICO 目前的 Typography、Card、Grid 和信息结构已经较清晰；下一步不应继续增加装饰性 UI，而应补齐真实的 <b>Product / Context / Capability / Evidence</b> 四层视觉资产。
+    </div>
+    <div class="diagram">
+      <svg viewBox="0 0 980 190" width="100%" role="img" aria-label="PCCE flow">
+        <rect x="35" y="55" width="190" height="80" rx="14" fill="#e8f7fc" stroke="#87d2ea"/>
+        <rect x="285" y="55" width="190" height="80" rx="14" fill="#eef0ff" stroke="#b8b9ef"/>
+        <rect x="535" y="55" width="190" height="80" rx="14" fill="#eef8f3" stroke="#a9dbc5"/>
+        <rect x="785" y="55" width="160" height="80" rx="14" fill="#fff5e8" stroke="#efc58d"/>
+        <text x="130" y="88" text-anchor="middle" font-size="22" font-weight="700" fill="#17324d">Product</text>
+        <text x="130" y="115" text-anchor="middle" font-size="14" fill="#48617a">产品是什么</text>
+        <text x="380" y="88" text-anchor="middle" font-size="22" font-weight="700" fill="#17324d">Context</text>
+        <text x="380" y="115" text-anchor="middle" font-size="14" fill="#48617a">在哪里使用</text>
+        <text x="630" y="88" text-anchor="middle" font-size="22" font-weight="700" fill="#17324d">Capability</text>
+        <text x="630" y="115" text-anchor="middle" font-size="14" fill="#48617a">我们能做什么</text>
+        <text x="865" y="88" text-anchor="middle" font-size="22" font-weight="700" fill="#17324d">Evidence</text>
+        <text x="865" y="115" text-anchor="middle" font-size="14" fill="#48617a">为什么可信</text>
+        <path d="M225 95H285M475 95H535M725 95H785" stroke="#8498ad" stroke-width="3" marker-end="url(#a)"/>
+        <defs><marker id="a" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#8498ad"/></marker></defs>
+      </svg>
+      <div class="caption">BESEN 值得学习的不是“大图”，而是用图片完成 PCCE：产品 → 场景 → 能力 → 证据。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>02. BESEN 首页如何使用图片</h2>
+    <div class="grid2">
+      <div class="card">
+        <h3>Hero：先让用户“看懂行业”</h3>
+        <p>首屏通过 EV、充电设备、停车/建筑环境，让用户几乎不读文字就知道产品类别和应用场景。</p>
+        <p class="rule">规则：首页 Hero 优先卖“场景中的产品”，不要只卖参数或抽象科技感。</p>
+      </div>
+      <div class="card">
+        <h3>Evidence Chain：图片本身承担销售任务</h3>
+        <p>工厂、展会、安装、测试、包装、项目、OEM/ODM 等图片分别证明不同商业能力。</p>
+        <p class="rule">规则：每张图都要回答一个采购问题。</p>
+      </div>
+      <div class="card">
+        <h3>Brand Visual + Evidence Visual 混合</h3>
+        <p>品牌图负责吸引和定位，真实证据图负责可信度。只做漂亮图会像广告，只做纪实图会像供应商目录。</p>
+      </div>
+      <div class="card">
+        <h3>视觉顺序对应采购认知顺序</h3>
+        <div class="flow">
+          <span class="node">你是谁</span><span class="arrow">→</span>
+          <span class="node">你卖什么</span><span class="arrow">→</span>
+          <span class="node">你能不能做</span><span class="arrow">→</span>
+          <span class="node">凭什么信</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>03. Landing Page 图片使用规则</h2>
+    <table>
+      <thead><tr><th>页面类型</th><th>Hero 首图</th><th>后续视觉</th><th>主要任务</th></tr></thead>
+      <tbody>
+        <tr><td>Homepage</td><td>品牌场景 + 产品</td><td>产品家族、工厂、项目、认证</td><td>建立品类认知与企业可信度</td></tr>
+        <tr><td>Family Page</td><td>产品家族 + 典型场景</td><td>型号差异、安装、比较</td><td>帮助选型</td></tr>
+        <tr><td>Solution</td><td>应用场景优先</td><td>架构图、部署、推荐产品、案例</td><td>回答“是否适合我的项目”</td></tr>
+        <tr><td>Product</td><td>真实产品主视觉</td><td>细节、安装、尺寸、测试、认证</td><td>让产品可被工程采购</td></tr>
+        <tr><td>Resources</td><td>产品 + 工程资料场景</td><td>Guide、Comparison、Documentation</td><td>建立专业资料入口</td></tr>
+        <tr><td>Knowledge</td><td>Diagram / Annotated Visual</td><td>流程、对比、结构图</td><td>降低理解成本</td></tr>
+        <tr><td>Case Study</td><td>真实项目现场</td><td>安装、细节、配电、运行</td><td>最高等级 Evidence</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>04. TAICO Product Visual 标准资产包</h2>
+    <div class="grid3">
+      <div class="card"><h3>P1 Hero Product</h3><p>3/4 角主视觉、统一光线、统一比例。用于 Product / Family / Selector。</p></div>
+      <div class="card"><h3>P2 Front</h3><p>正面标准图。用于型号比较、产品卡片、参数页。</p></div>
+      <div class="card"><h3>P3 Side / Back</h3><p>接口、接线、安装、线缆管理等结构信息。</p></div>
+      <div class="card"><h3>P4 Detail</h3><p>屏幕、RFID、connector、急停、外壳、指示灯等局部。</p></div>
+      <div class="card"><h3>P5 Engineering</h3><p>Front / Side / Back / Dimensions / Mounting Points。</p></div>
+      <div class="card"><h3>P6 Installation</h3><p>墙装、立柱、停车场、车库等真实安装或 Reference-Locked 场景。</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>05. Scenario Visual 场景库</h2>
+    <div class="grid3">
+      <div class="card"><h3>Residential</h3><p>住宅、车库、Wallbox、EV。</p></div>
+      <div class="card"><h3>Apartment</h3><p>地下停车、多枪位、配电与负载管理。</p></div>
+      <div class="card"><h3>Workplace</h3><p>办公园区、员工停车、白天充电。</p></div>
+      <div class="card"><h3>Commercial</h3><p>商场、公共停车、多个充电位。</p></div>
+      <div class="card"><h3>Fleet</h3><p>Van / Truck、Depot、集中充电。</p></div>
+      <div class="card"><h3>Installer</h3><p>配电箱、施工人员、安装过程。</p></div>
+    </div>
+    <p class="mini">原则：Solution Page 的图要先表现“应用场景”，产品只是场景的一部分。</p>
+  </section>
+
+  <section>
+    <h2>06. Evidence Asset 标准</h2>
+    <div class="grid2">
+      <div class="card"><h3>Factory</h3><ul><li>工厂外观</li><li>Assembly</li><li>Testing</li><li>Warehouse</li><li>Packaging</li></ul></div>
+      <div class="card"><h3>Certification</h3><ul><li>证书原件</li><li>证书编号</li><li>适用产品</li><li>对应标准</li></ul></div>
+      <div class="card"><h3>Project</h3><ul><li>全景</li><li>产品安装</li><li>停车/场地布局</li><li>配电/施工</li><li>运行状态</li></ul></div>
+      <div class="card"><h3>Commercial</h3><ul><li>展会</li><li>客户来访</li><li>装柜/发货</li><li>海外市场活动</li></ul></div>
+    </div>
+    <div class="note"><b>Case Study、认证、工厂、测试、客户项目不能用 AI 伪造。</b> AI 可以辅助清理背景、构图、统一风格，但不能把不存在的事实包装成真实 Evidence。</div>
+  </section>
+
+  <section>
+    <h2>07. AI 图片使用规范</h2>
+    <div class="level">
+      <div class="box l0"><b>F1 · Exact Product</b><p>真实摄影 / CAD / 3D Render。外观 100% 一致。</p></div>
+      <div class="box l1"><b>F2 · Reference-Locked AI</b><p>真实产品作为 reference，AI 只扩展环境、光影、场景。</p></div>
+      <div class="box l2"><b>F3 · Conceptual</b><p>纯概念图，不出现可识别具体型号。</p></div>
+    </div>
+    <h3>推荐流程</h3>
+    <div class="flow">
+      <span class="node">真实产品 PNG / 3D</span><span class="arrow">→</span>
+      <span class="node">锁定比例 / 接口 / Logo</span><span class="arrow">→</span>
+      <span class="node">AI 生成环境</span><span class="arrow">→</span>
+      <span class="node">人工 QA</span>
+    </div>
+    <table>
+      <thead><tr><th>使用场景</th><th>AI 是否适合</th><th>要求</th></tr></thead>
+      <tbody>
+        <tr><td>Homepage Hero</td><td class="good">适合</td><td>Reference-Locked，产品一致</td></tr>
+        <tr><td>Solution Hero</td><td class="good">适合</td><td>场景真实、技术逻辑合理</td></tr>
+        <tr><td>Product Detail</td><td class="warn">谨慎</td><td>优先真实摄影 / Render</td></tr>
+        <tr><td>Factory / Testing</td><td class="bad">不用于伪造</td><td>必须真实</td></tr>
+        <tr><td>Case Study</td><td class="bad">不用于伪造</td><td>必须真实项目</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>08. Evidence Level 分级</h2>
+    <div class="level">
+      <div class="box l0"><b>L0 Decorative</b><p>渐变、抽象背景、概念图。</p></div>
+      <div class="box l1"><b>L1 Render</b><p>真实产品的 3D / Studio Render。</p></div>
+      <div class="box l2"><b>L2 Real Product</b><p>真实产品摄影，证明产品存在。</p></div>
+      <div class="box l3"><b>L3 Operational Evidence</b><p>真实工厂、测试、安装、项目、客户、Shipment。</p></div>
+    </div>
+    <p class="rule">网站长期方向：减少 L0 依赖，增加 L2 / L3 占比。</p>
+  </section>
+
+  <section>
+    <h2>09. TAICO 页面映射</h2>
+    <pre>Homepage
+  Scenario Hero
+  → Product Family
+  → Application
+  → Factory / Capability
+  → Project Evidence
+  → Certification
+  → CTA
+
+Family Page
+  Product Family + Scenario Hero
+  → Product Range
+  → Comparison
+  → Installation
+  → Technical Evidence
+  → Case
+
+Solution Page
+  Application Hero
+  → Problem
+  → Architecture Diagram
+  → Recommended Products
+  → Installation
+  → Case Evidence
+
+Product Page
+  Product Hero
+  → Details
+  → Specs
+  → Installation
+  → Testing
+  → Certification
+  → Case
+
+Resources
+  Product + Engineering Context
+  → Buyer Guides
+  → Technical Knowledge
+  → Product Comparison
+  → Documentation
+
+Case Study
+  Real Photography Only
+  → Site
+  → Installed Product
+  → Electrical / Construction
+  → Result</pre>
+  </section>
+
+  <section>
+    <h2>10. 文件结构与 Metadata</h2>
+    <pre>src/assets/
+  product/
+    TKMC-A/
+      hero/
+      front/
+      detail/
+      dimension/
+      installation/
+  scenario/
+    residential/
+    apartment/
+    workplace/
+    commercial/
+    fleet/
+  factory/
+    exterior/
+    assembly/
+    testing/
+    warehouse/
+    packaging/
+  project/
+    UK/
+    Germany/
+    Middle-East/
+  certification/
+  technical/
+    diagrams/
+    comparison/
+    workflow/
+  business/
+    exhibition/
+    customer-visit/
+    shipment/</pre>
+
+    <h3>推荐 Metadata</h3>
+    <pre>id: ev-residential-001
+type: scenario
+application: residential
+products:
+  - TKMC-A
+
+visual_source:
+  product: real_reference
+  environment: ai_generated
+
+product_fidelity: F2
+evidence_level: L0
+
+approved_for:
+  - homepage
+  - solution
+  - family
+
+not_approved_for:
+  - case-study
+  - certification
+  - factory-proof
+
+status: approved</pre>
+  </section>
+
+  <section>
+    <h2>11. SEO 图片规则</h2>
+    <ul>
+      <li>AI 图片本身不会因为“AI 生成”自动导致 SEO 降权；重点是相关性、可信度、页面质量和用户体验。</li>
+      <li>使用 WebP / AVIF，Hero 控制文件体积。</li>
+      <li>固定 width / height，避免 CLS。</li>
+      <li>文件名语义化，例如 <code>residential-ev-charging-taico.webp</code>。</li>
+      <li>alt 描述画面真实内容，不把 AI 概念场景写成真实项目。</li>
+      <li>真实 Case、Factory、Certification 的图片和正文应绑定可验证事实。</li>
+    </ul>
+    <pre>&lt;img
+  src="/images/residential-ev-charging-taico.webp"
+  alt="TAICO wall-mounted AC EV charger in a residential garage setting"
+  width="1600"
+  height="1000"
+/&gt;</pre>
+  </section>
+
+  <section>
+    <h2>12. 第一阶段 Minimum Asset Set</h2>
+    <table>
+      <thead><tr><th>类别</th><th>建议数量</th><th>优先级</th></tr></thead>
+      <tbody>
+        <tr><td>主力产品 Hero</td><td>8–12</td><td>高</td></tr>
+        <tr><td>产品细节</td><td>30</td><td>高</td></tr>
+        <tr><td>安装 / AI Reference-Locked 场景</td><td>10</td><td>高</td></tr>
+        <tr><td>工厂</td><td>10</td><td>高</td></tr>
+        <tr><td>测试</td><td>10</td><td>高</td></tr>
+        <tr><td>包装 / 发货</td><td>8</td><td>中高</td></tr>
+        <tr><td>认证</td><td>全部整理</td><td>高</td></tr>
+        <tr><td>完整 Case</td><td>3 个</td><td>最高</td></tr>
+        <tr><td>Technical Diagram</td><td>10</td><td>中高</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>13. Visual Evidence Flywheel</h2>
+    <div class="diagram">
+      <svg viewBox="0 0 1000 360" width="100%" role="img" aria-label="Visual evidence flywheel">
+        <g font-family="Arial, sans-serif">
+          <circle cx="500" cy="180" r="128" fill="#f7fbfd" stroke="#c9dce9" stroke-width="2"/>
+          <text x="500" y="165" text-anchor="middle" font-size="24" font-weight="700" fill="#16314b">Visual Evidence</text>
+          <text x="500" y="198" text-anchor="middle" font-size="17" fill="#597087">Asset System</text>
+
+          <g fill="#fff" stroke="#bed3e2">
+            <rect x="70" y="45" width="180" height="58" rx="12"/>
+            <rect x="70" y="255" width="180" height="58" rx="12"/>
+            <rect x="750" y="45" width="180" height="58" rx="12"/>
+            <rect x="750" y="255" width="180" height="58" rx="12"/>
+          </g>
+          <text x="160" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a55">Product / R&D</text>
+          <text x="160" y="290" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a55">Factory / Testing</text>
+          <text x="840" y="80" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a55">Shipment / Market</text>
+          <text x="840" y="290" text-anchor="middle" font-size="17" font-weight="700" fill="#1a3a55">Project / Case</text>
+
+          <path d="M250 75 C360 50,390 60,420 90" fill="none" stroke="#58a8c8" stroke-width="3"/>
+          <path d="M165 103 C185 180,200 220,250 270" fill="none" stroke="#58a8c8" stroke-width="3"/>
+          <path d="M250 285 C350 330,650 330,750 285" fill="none" stroke="#58a8c8" stroke-width="3"/>
+          <path d="M840 255 C870 190,865 140,840 103" fill="none" stroke="#58a8c8" stroke-width="3"/>
+          <path d="M750 75 C650 40,610 50,580 90" fill="none" stroke="#58a8c8" stroke-width="3"/>
+        </g>
+      </svg>
+      <div class="caption">每一次研发、生产、测试、发货、安装都应产生可复用视觉资产，再反哺 Website / SEO / Sales / Social。</div>
+    </div>
+  </section>
+
+  <section>
+    <h2>14. 最终执行原则</h2>
+    <ol>
+      <li><b>先定义图片任务，再生产图片。</b> 每张图必须对应 Product / Context / Capability / Evidence 中至少一个角色。</li>
+      <li><b>AI 负责补“橱窗层”，真实素材负责“证据层”。</b></li>
+      <li><b>产品一致性优先于画面漂亮。</b> 具体型号必须 Reference-Locked 或使用真实 Render。</li>
+      <li><b>Landing Page 不使用同一种 Hero。</b> 不同页面的首图任务不同。</li>
+      <li><b>Case、工厂、认证、测试不允许 AI 伪造事实。</b></li>
+      <li><b>所有图片进入 Asset Library，并带 Metadata。</b> 让 Codex / Agent 可以自动检索和组装页面。</li>
+      <li><b>长期目标不是积累“更多图片”，而是积累“更多可验证 Evidence”。</b></li>
+    </ol>
+  </section>
+
+  <div class="footer">TAICO EV · Product Visual / Evidence Asset System · Standard Guide v1.0</div>
+</div>
+</body>
+</html>

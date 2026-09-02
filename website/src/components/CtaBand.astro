@@ -1,27 +1,15 @@
 ---
-import { contactHref } from "../data/site.ts";
 interface Props {
   title?: string;
   body?: string;
   label?: string;
-  source?: string;
-  product?: string;
-  solution?: string;
-  application?: string;
-  pagePath?: string;
 }
 
 const {
   title = "Tell Us About Your Charging Challenge",
   body = "Share your site constraints, vehicle mix, and deployment timeline. We will map a mobile energy solution.",
   label = "Request configuration",
-  source = "cta-band",
-  product,
-  solution,
-  application,
-  pagePath,
 } = Astro.props;
-const href = contactHref({ source, product, solution, application, page: pagePath });
 ---
 
 <section class="section-pad">
@@ -44,7 +32,7 @@ const href = contactHref({ source, product, solution, application, page: pagePat
     </h2>
     <p class="mt-3 max-w-xl text-muted">{body}</p>
     <div class="mt-8 flex flex-wrap gap-3">
-      <a class="btn-primary" href={href}>{label}</a>
+      <a class="btn-primary" href="/contact/">{label}</a>
       <a class="btn-ghost" href="/resources/product-comparison/">Compare TKMC products</a>
     </div>
   </div>

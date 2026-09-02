@@ -221,6 +221,42 @@ function validateContext(input: Record<string, unknown>) {
   return Object.keys(errors).length ? { ok: false as const, fields: errors } : { ok: true as const, value: fields };
 }
 
+function applyInternalReferrerContext(input: Record<string, unknown>, request: Request) {
+  const referrer = normalizeText(input.referrer);
+  if (!referrer) return;
+
+  let referrerUrl: URL;
+  try {
+    const requestUrl = new URL(request.url);
+    referrerUrl = new URL(referrer);
+    if (referrerUrl.origin !== requestUrl.origin) return;
+  } catch {
+    return;
+  }
+
+  const pagePath = referrerUrl.pathname;
+  if (!/^\/[\x20-\x7e]{0,199}$/.test(pagePath)) return;
+
+  // ponytail: only exact catalog detail routes receive controlled slugs; extend this map for new route families.
+  const match = pagePath.match(/^\/(products|solutions|applications)\/([a-z0-9-]+)\/$/);
+  if (!match) return;
+
+  const [, type, slug] = match;
+  const knownRoute = (type === "products" && productSlugs.has(slug))
+    || (type === "solutions" && solutionSlugs.has(slug))
+    || (type === "applications" && applicationSlugs.has(slug));
+  if (!knownRoute) return;
+
+  input.source = "internal-referrer";
+  input.page_path = pagePath;
+  input.product = "";
+  input.solution = "";
+  input.application_context = "";
+  if (type === "products") input.product = slug;
+  if (type === "solutions") input.solution = slug;
+  if (type === "applications") input.application_context = slug;
+}
+
 async function verifyTurnstile(token: string, secret: string, idempotencyKey: string): Promise<"ok" | "failed" | "unavailable"> {
   if (!token || token.length > 2048) return "failed";
   try {
@@ -373,7 +409,9 @@ export async function onRequest(context: LeadRequestContext): Promise<Response> 
   if (parsed === "too_large") return errorResponse(context, 413, "INVALID_REQUEST");
   if (parsed === "invalid") return errorResponse(context, 400, "INVALID_REQUEST");
   const input = formDataRecord(parsed);
-  if (!input.referrer) input.referrer = request.headers.get("referer") || "";
+  const requestReferrer = normalizeText(request.headers.get("referer") || "");
+  if (!input.referrer && requestReferrer) input.referrer = requestReferrer;
+  applyInternalReferrerContext(input, request);
   if (normalizeText(input.website)) return errorResponse(context, 400, "INVALID_REQUEST");
 
   const leadResult = validateLead(input);
